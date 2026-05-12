@@ -1,0 +1,55 @@
+name: Varam-Dynamics Scanner
+# Scans top 50 Hyperliquid assets for CPR breakout signals
+# Sends ranked alerts to Telegram with scoring breakdown
+# Also opens paper positions for all 3 exit styles
+# Runs every 2 hours — public repo = unlimited free minutes
+
+on:
+  schedule:
+    - cron: '0 */2 * * *'    # every 2 hours (00:00, 02:00, 04:00 ... UTC)
+  workflow_dispatch: {}        # allow manual trigger
+
+concurrency:
+  group: varam-dynamics-scan
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    permissions:
+      contents: write          # needed to commit paper trade state
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run scanner
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID:   ${{ secrets.TELEGRAM_CHAT_ID }}
+          ACCOUNT_SIZE:       ${{ secrets.ACCOUNT_SIZE }}
+        run: python main.py scan
+
+      - name: Commit paper trade state
+        run: |
+          git config user.name  "varam-dynamics-bot"
+          git config user.email "varam-dynamics-bot@users.noreply.github.com"
+          git add results/ || true
+          if git diff --staged --quiet; then
+            echo "No state changes to commit"
+          else
+            git commit -m "scan: $(date -u +%FT%TZ)"
+            git pull --rebase origin main
+            git push
+          fi

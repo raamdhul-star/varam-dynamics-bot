@@ -1,0 +1,53 @@
+name: Varam-Dynamics Monitor
+# Updates open paper trade positions with current prices every hour
+# Sends Telegram notification when positions close
+
+on:
+  schedule:
+    - cron: '30 * * * *'    # every hour at :30 (offset from scanner at :00)
+  workflow_dispatch: {}
+
+concurrency:
+  group: varam-dynamics-monitor
+  cancel-in-progress: false
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Update paper positions
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID:   ${{ secrets.TELEGRAM_CHAT_ID }}
+          ACCOUNT_SIZE:       ${{ secrets.ACCOUNT_SIZE }}
+        run: python main.py monitor
+
+      - name: Commit state
+        run: |
+          git config user.name  "varam-dynamics-bot"
+          git config user.email "varam-dynamics-bot@users.noreply.github.com"
+          git add results/ || true
+          if git diff --staged --quiet; then
+            echo "No changes"
+          else
+            git commit -m "monitor: $(date -u +%FT%TZ)"
+            git pull --rebase origin main
+            git push
+          fi
