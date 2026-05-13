@@ -96,6 +96,13 @@ def run_scan():
             else:
                 print(f"  ➖ {sym:<8} {tf:>4}  {direction:<6}  {sb.total_score:.1f}/10")
 
+    # Deduplicate: keep only the highest scoring signal per asset
+    # (prevents DOGE 1h and DOGE 4h both alerting simultaneously)
+    seen_assets = {}
+    for sig in sorted(all_sigs, key=lambda x: x.total_score, reverse=True):
+        if sig.symbol not in seen_assets:
+            seen_assets[sig.symbol] = sig
+    all_sigs = list(seen_assets.values())
     all_sigs.sort(key=lambda x: x.total_score, reverse=True)
     top = all_sigs[:5]
     print(f"\nSending top {len(top)} signals to Telegram...")
