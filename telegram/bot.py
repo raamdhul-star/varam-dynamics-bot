@@ -160,14 +160,15 @@ def _card(sb, acct):
     tfs  = ", ".join(sb.agreeing_tfs) if sb.agreeing_tfs else sb.interval
     cap  = " ⚠️HL max" if levi.get("capped") else ""
     chg  = abs(sb.tp_price-sb.entry_price)/sb.entry_price*100
+    chg_sign = "-" if sb.direction=="short" else "+"
     return (
         f"{'━'*32}\n"
         f"<b>{de} {sb.symbol} {sb.direction.upper()}</b>  "
         f"[<b>{sb.total_score:.1f}/10</b>] {sb.risk_emoji} {sb.risk_label}\n"
         f"  TF: {sb.interval} | CPR: {sb.cpr_type}\n"
         f"  🎯 Entry  <code>{sb.entry_price:.6g}</code>\n"
-        f"  🟢 Target <code>{sb.tp_price:.6g}</code> (+{chg:.1f}%)\n"
-        f"  🔴 Stop   <code>{sb.sl_price:.6g}</code> (-{sb.sl_pct:.2f}%)\n"
+        f"  🟢 Target <code>{sb.tp_price:.6g}</code> ({chg_sign}{chg:.1f}%)\n"
+        f"  🔴 Stop   <code>{sb.sl_price:.6g}</code> ({'+' if sb.direction=='short' else '-'}{sb.sl_pct:.2f}%)\n"
         f"  ⚖️ R:R {sb.rr_ratio:.2f}:1\n"
         f"  💡 Suggested: <b>{levi.get('leverage','?')}x</b>{cap} | "
         f"${levi.get('position_sz','?')} | {levi.get('qty','?')} {sb.symbol}\n"
