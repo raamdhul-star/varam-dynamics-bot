@@ -6,7 +6,7 @@ name: Varam-Dynamics Scanner
 
 on:
   schedule:
-    - cron: '0 */2 * * *'    # every 2 hours (00:00, 02:00, 04:00 ... UTC)
+    - cron: '0 * * * *'    # every hour
   workflow_dispatch: {}        # allow manual trigger
 
 concurrency:
