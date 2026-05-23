@@ -55,26 +55,33 @@ def _append_history(trade: dict) -> None:
 def open_position(signal_score) -> None:
     """
     Open 3 parallel paper positions for a new signal.
+    One set per asset maximum — skips if asset already has open positions.
     signal_score: ScoreBreakdown object from scorer.py
     """
     positions = _load_state()
-    now = datetime.now(timezone.utc).isoformat()
 
+    # ── Deduplication: skip if this asset already has open positions ──
+    open_symbols = {p["symbol"] for p in positions if p.get("status") == "open"}
+    if signal_score.symbol in open_symbols:
+        print(f"[tracker] SKIP {signal_score.symbol} — already has open position")
+        return
+
+    now = datetime.now(timezone.utc).isoformat()
     for style in EXIT_STYLES:
         pos = {
-            "id":          f"{signal_score.symbol}_{signal_score.interval}_{style}_{now[:10]}",
-            "symbol":      signal_score.symbol,
-            "interval":    signal_score.interval,
-            "direction":   signal_score.direction,
-            "exit_style":  style,
-            "entry_price": signal_score.entry_price,
-            "sl_price":    signal_score.sl_price,
-            "tp_price":    signal_score.tp_price,
-            "current_sl":  signal_score.sl_price,   # tracks trailing
-            "score":       signal_score.total_score,
-            "risk_label":  signal_score.risk_label,
-            "open_time":   now,
-            "status":      "open",
+            "id":           f"{signal_score.symbol}_{signal_score.interval}_{style}_{now[:10]}",
+            "symbol":       signal_score.symbol,
+            "interval":     signal_score.interval,
+            "direction":    signal_score.direction,
+            "exit_style":   style,
+            "entry_price":  signal_score.entry_price,
+            "sl_price":     signal_score.sl_price,
+            "tp_price":     signal_score.tp_price,
+            "current_sl":   signal_score.sl_price,
+            "score":        signal_score.total_score,
+            "risk_label":   signal_score.risk_label,
+            "open_time":    now,
+            "status":       "open",
             "peak_pnl_pct": 0.0,
         }
         positions.append(pos)
