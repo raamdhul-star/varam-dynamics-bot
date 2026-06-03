@@ -29,6 +29,41 @@ def ist_now():
            .strftime("%d %b %Y, %I:%M %p IST")
 
 
+# ── Friendly labels for the auto paper-trade update message (display only) ──
+EXIT_STYLE_LABELS = {
+    "fixed_pct":  "Fixed % Exit",
+    "cpr_target": "CPR Target Exit",
+    "trailing":   "Trailing Stop Exit",
+}
+EXIT_STYLE_MEANING = {
+    "fixed_pct":  "this paper trade used the fixed +10%/-7% rule, not the trailing stop.",
+    "cpr_target": "this paper trade aimed for the CPR-based target line (R1/S1).",
+    "trailing":   "this paper trade trailed the stop to protect profit as price moved our way.",
+}
+
+
+def _format_close(c: dict) -> str:
+    """Build a layman-friendly Telegram line for one closed paper trade.
+    Display only — uses values already computed by the tracker."""
+    style   = c.get("exit_style", "")
+    label   = EXIT_STYLE_LABELS.get(style, style)
+    meaning = EXIT_STYLE_MEANING.get(style, "")
+    won     = c.get("result") == "win"
+    emoji   = "✅" if won else "❌"
+    verdict = "Win" if won else "Loss"
+    lines = [
+        f"{emoji} <b>{c.get('symbol','')} {str(c.get('direction','')).upper()}</b> — {verdict}",
+        f"   Exit method: {label}",
+        f"   Result: {c.get('pnl_pct',0.0):+.2f}%",
+    ]
+    entry, exitp = c.get("entry_price"), c.get("exit_price")
+    if entry is not None and exitp is not None:
+        lines.append(f"   Entry {entry:.6g} → Exit {exitp:.6g}")
+    if meaning:
+        lines.append(f"   Meaning: {meaning}")
+    return "\n".join(lines)
+
+
 def _prepare(df):
     if df is None or len(df) < 35: return None
     df = attach_cpr(df)
@@ -114,12 +149,10 @@ def run_scan():
     if cur_px:
         closed = update_positions(cur_px)
         if closed:
-            msgs = ["📋 <b>Paper Trade Update</b>\n"]
+            msgs = ["📋 <b>Paper Trade Update</b> (auto-simulated by the bot)\n"]
             for c in closed:
-                e = "✅" if c["result"]=="win" else "❌"
-                msgs.append(f"{e} <b>{c['symbol']}</b> {c['direction']} "
-                            f"[{c['exit_style']}]  {c['pnl_pct']:+.2f}%")
-            tg.send_message("\n".join(msgs))
+                msgs.append(_format_close(c))
+            tg.send_message("\n\n".join(msgs))
 
     print(f"\nScan complete — {ist_now()}")
 

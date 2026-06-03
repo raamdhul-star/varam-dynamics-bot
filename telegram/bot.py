@@ -10,7 +10,7 @@ Processed by monitor workflow (hourly GitHub Actions run).
 """
 from __future__ import annotations
 import csv, json, os
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from pathlib import Path
 import requests
 
@@ -23,6 +23,11 @@ TRADE_LOG.parent.mkdir(parents=True, exist_ok=True)
 MAX_TRADES   = 5
 LEV_OPTIONS  = [2, 3, 5, 7, 10, 15, 20, 25, 50]
 SIZE_PCT     = [25, 50, 75, 100]
+
+# ── Duplicate-alert suppression (Option D) ──────────────────────────────────
+ALERTED_TTL_DAYS = 35      # remember an alerted signal candle for this long
+MAX_ALERTED      = 2000    # hard cap on remembered signal IDs (file size guard)
+MAX_BATCHES      = 12       # how many recent alert messages stay button-tappable
 
 
 # ── Core API ──────────────────────────────────────────────────────────────
@@ -128,6 +133,39 @@ def _ld():
 def _sv(st): STATE_FILE.write_text(json.dumps(st,indent=2,default=str))
 
 
+# ── Signal identity + state cleanup (Option D) ──────────────────────────────
+
+def _signal_id(sig: dict) -> str:
+    """Stable identity for a signal — same candle ⇒ same id.
+    Price movement alone does NOT change this id; a new candle,
+    new direction, or new timeframe does."""
+    return (f"{sig.get('symbol')}_{sig.get('direction')}"
+            f"_{sig.get('interval')}_{sig.get('bar_time')}")
+
+def _prune_alerted(alerted: dict, now: datetime) -> dict:
+    """Drop expired ids (older than TTL), then cap to the most recent N."""
+    cutoff = now - timedelta(days=ALERTED_TTL_DAYS)
+    kept = {}
+    for sid, ts in alerted.items():
+        try:
+            if datetime.fromisoformat(ts) >= cutoff:
+                kept[sid] = ts
+        except Exception:
+            continue
+    if len(kept) > MAX_ALERTED:
+        newest = sorted(kept.items(), key=lambda kv: kv[1], reverse=True)[:MAX_ALERTED]
+        kept = dict(newest)
+    return kept
+
+def _prune_batches(batches: dict) -> dict:
+    """Keep only the most recent MAX_BATCHES alert snapshots."""
+    if len(batches) <= MAX_BATCHES:
+        return batches
+    newest = sorted(batches.items(),
+                    key=lambda kv: kv[1].get("time", ""), reverse=True)[:MAX_BATCHES]
+    return dict(newest)
+
+
 # ── Trade log ─────────────────────────────────────────────────────────────
 
 FIELDS = ["timestamp","symbol","direction","entry_price","exit_price",
@@ -179,18 +217,54 @@ def send_alert(signals, scan_time, acct=200.0):
     if not signals:
         send_message(f"🔍 <b>VARAM-DYNAMICS</b>\n🕐 {scan_time}\nNo signals.")
         return None
-    n   = len(signals)
+
+    st  = _ld()
+    now = datetime.now(timezone.utc)
+    alerted = _prune_alerted(st.get("alerted", {}), now)
+
+    # ── Option D dedup: skip any signal whose exact candle was already sent ──
+    fresh = []
+    for s in signals:
+        sig = {"symbol":s.symbol, "direction":s.direction, "interval":s.interval,
+               "score":s.total_score, "entry":s.entry_price,
+               "sl":s.sl_price, "tp":s.tp_price,
+               "sl_pct":s.sl_pct, "rr":s.rr_ratio,
+               "bar_time":str(s.bar_time)}
+        if _signal_id(sig) in alerted:
+            print(f"[tg] SKIP duplicate alert — {_signal_id(sig)}")
+            continue
+        fresh.append((s, sig))
+
+    if not fresh:
+        st["alerted"] = alerted
+        _sv(st)
+        print("[tg] No new signals to alert (all already sent)")
+        return None
+
+    sbs  = [s   for s, _ in fresh]
+    sigs = [sig for _, sig in fresh]
+
+    n   = len(sbs)
     hdr = f"🔔 <b>VARAM-DYNAMICS</b> — {n} signal{'s' if n>1 else ''}\n🕐 {scan_time}\n\n"
-    txt = hdr + "\n\n".join(_card(s,acct) for s in signals)
+    txt = hdr + "\n\n".join(_card(s,acct) for s in sbs)
     txt += "\n\n" + "━"*32 + "\nTap below to log your trades 👇"
-    r = send_message(txt, markup=alert_kb())
-    st = _ld()
-    st["sigs"] = [{"symbol":s.symbol,"direction":s.direction,
-                   "score":s.total_score,"entry":s.entry_price,
-                   "sl":s.sl_price,"tp":s.tp_price,
-                   "sl_pct":s.sl_pct,"rr":s.rr_ratio} for s in signals]
+    r   = send_message(txt, markup=alert_kb())
+    mid = r["result"]["message_id"] if r and r.get("ok") else None
+
+    # ── Remember these candles so we never alert the same one twice ──
+    for sig in sigs:
+        alerted[_signal_id(sig)] = now.isoformat()
+    st["alerted"] = _prune_alerted(alerted, now)
+
+    # ── Snapshot this batch so ITS buttons resolve to THESE prices ──
+    if mid is not None:
+        batches = st.get("batches", {})
+        batches[str(mid)] = {"time": now.isoformat(), "sigs": sigs}
+        st["batches"] = _prune_batches(batches)
+
+    st["sigs"] = sigs    # latest batch (used by typed-command fallback flow)
     _sv(st)
-    return r["result"]["message_id"] if r and r.get("ok") else None
+    return mid
 
 
 # ── Callback processor ────────────────────────────────────────────────────
@@ -220,7 +294,14 @@ def _cb(data, mid, st, acct):
         edit_message(mid,"⏭ Signals skipped. Next scan ~2h.")
 
     elif data == "SELECT":
-        st["sel"] = []
+        # Resolve to the signal data from the alert that was actually tapped,
+        # NOT whatever the latest scan produced.
+        batch = st.get("batches", {}).get(str(mid))
+        if batch is None:
+            edit_message(mid, "⚠️ This alert is old. Please use the latest signal message.")
+            return
+        st["sigs"] = batch["sigs"]
+        st["sel"]  = []
         edit_message(mid,"Which trades did you take?\nTap to select, then Done ✅",
                      markup=multiselect_kb(st.get("sigs",[]),set()))
 
