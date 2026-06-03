@@ -48,6 +48,19 @@ jobs:
             echo "No changes"
           else
             git commit -m "monitor: $(date -u +%FT%TZ)"
-            git pull --rebase origin main
-            git push
+            # Retry pull-rebase + push up to 3 times to survive transient
+            # remote errors (e.g. "commit_refs") and scanner/monitor push races.
+            n=0
+            until [ "$n" -ge 3 ]; do
+              if git pull --rebase origin main && git push; then
+                echo "Push succeeded on attempt $((n + 1))"
+                exit 0
+              fi
+              git rebase --abort 2>/dev/null || true
+              n=$((n + 1))
+              echo "Push attempt $n failed; retrying in 5s..."
+              sleep 5
+            done
+            echo "ERROR: all 3 push attempts failed"
+            exit 1
           fi
