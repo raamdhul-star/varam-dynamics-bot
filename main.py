@@ -184,8 +184,15 @@ def run_monitor():
                         cur_px[sym] = float(df["close"].iloc[-1])
             send_checkin(manual, cur_px)
 
-    # Process any pending Telegram button taps
-    tg.process_callbacks(ACCOUNT_SIZE)
+    # Process any pending Telegram button taps — ONLY in polling mode.
+    # In webhook mode the Vercel endpoint handles taps; calling getUpdates
+    # here would 409-conflict with the active webhook. Default is polling,
+    # so behaviour is unchanged when the env var is absent.
+    callback_mode = os.environ.get("TELEGRAM_CALLBACK_MODE", "polling").strip().lower()
+    if callback_mode == "polling":
+        tg.process_callbacks(ACCOUNT_SIZE)
+    else:
+        print(f"[monitor] callback mode={callback_mode}: skipping polling (webhook handles taps)")
     print(f"[monitor] Done — {ist_now()}")
 
 
