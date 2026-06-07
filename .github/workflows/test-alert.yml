@@ -1,0 +1,103 @@
+name: Varam-Dynamics TEST Alert (manual only)
+# One-off, MANUAL-ONLY workflow to validate the Telegram button/callback path.
+# Sends exactly ONE clearly-marked TEST alert using the real send_alert() path
+# (same inline buttons + batch snapshot as production), then commits ONLY
+# results/telegram_state.json so the scheduled monitor can resolve a button tap.
+#
+# It does NOT scan, does NOT open paper positions, does NOT write trade history.
+# There is NO cron schedule — it runs only when you click "Run workflow".
+
+on:
+  workflow_dispatch: {}
+
+concurrency:
+  group: varam-dynamics-test-alert
+  cancel-in-progress: false
+
+jobs:
+  test-alert:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Send ONE test alert (real send_alert path)
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID:   ${{ secrets.TELEGRAM_CHAT_ID }}
+          ACCOUNT_SIZE:       ${{ secrets.ACCOUNT_SIZE }}
+        run: |
+          python - <<'PY'
+          import os, sys
+          from types import SimpleNamespace
+          from datetime import datetime, timezone
+          sys.path.insert(0, os.getcwd())
+          import telegram.bot as tg
+
+          banner = (
+              "🧪 VARAM-DYNAMICS TEST ALERT\n\n"
+              "This is a button/system test only.\n"
+              "This is NOT a real trade call.\n"
+              "Do NOT trade based on this message.\n\n"
+              "TEST ONLY — BTC SHORT (synthetic numbers below)\n\n"
+              "⚠️ Disclaimer: This test is for system validation only. "
+              "Trading crypto, perpetual futures, and derivatives involves "
+              "high risk. This is educational only. DYOR."
+          )
+
+          # Synthetic, clearly-fake signal. Symbol 'TESTBTC' can never collide
+          # with a real asset id, so it cannot suppress a real BTC alert.
+          sig = SimpleNamespace(
+              symbol="TESTBTC", direction="short", interval="1d",
+              total_score=8.0, entry_price=1000.0, sl_price=1050.0,
+              tp_price=900.0, sl_pct=5.0, rr_ratio=2.0,
+              cpr_type="TEST", is_narrow=False,
+              bar_time=datetime.now(timezone.utc).isoformat(),
+              risk_emoji="🟢", risk_label="Low Risk", agreeing_tfs=["1d"],
+          )
+
+          acct = float(os.environ.get("ACCOUNT_SIZE") or "200")
+          mid = tg.send_alert([sig], banner, acct)   # only writes telegram_state.json
+          if not mid:
+              raise SystemExit("TEST alert failed: no Telegram message_id returned")
+          print("[test-alert] send_alert returned message_id:", mid)
+          PY
+
+      - name: Commit ONLY telegram_state.json
+        run: |
+          git config user.name  "varam-dynamics-bot"
+          git config user.email "varam-dynamics-bot@users.noreply.github.com"
+          git add results/telegram_state.json
+          if git diff --staged --quiet; then
+            echo "No telegram_state change to commit"
+          else
+            git commit -m "test-alert: send one manual test alert"
+            git checkout -- . 2>/dev/null || true   # drop any incidental asset_cache refresh
+            n=0
+            until [ "$n" -ge 3 ]; do
+              if git pull --rebase origin main && git push; then
+                echo "Push succeeded on attempt $((n + 1))"
+                exit 0
+              fi
+              git rebase --abort 2>/dev/null || true
+              n=$((n + 1))
+              echo "Push attempt $n failed; retrying in 5s..."
+              sleep 5
+            done
+            echo "ERROR: all 3 push attempts failed"
+            exit 1
+          fi
