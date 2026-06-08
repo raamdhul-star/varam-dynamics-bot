@@ -188,7 +188,7 @@ def run_monitor():
     # In webhook mode the Vercel endpoint handles taps; calling getUpdates
     # here would 409-conflict with the active webhook. Default is polling,
     # so behaviour is unchanged when the env var is absent.
-    callback_mode = os.environ.get("TELEGRAM_CALLBACK_MODE", "polling").strip().lower()
+    callback_mode = (os.environ.get("TELEGRAM_CALLBACK_MODE") or "polling").strip().lower()
     if callback_mode == "polling":
         tg.process_callbacks(ACCOUNT_SIZE)
     else:

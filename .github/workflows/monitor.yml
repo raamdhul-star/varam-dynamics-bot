@@ -37,6 +37,9 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID:   ${{ secrets.TELEGRAM_CHAT_ID }}
           ACCOUNT_SIZE:       ${{ secrets.ACCOUNT_SIZE }}
+          # Non-sensitive Repository Variable (defaults to polling when unset).
+          # Lets a future go-live flip callback handling to the webhook.
+          TELEGRAM_CALLBACK_MODE: ${{ vars.TELEGRAM_CALLBACK_MODE }}
         run: python main.py monitor
 
       - name: Commit state
