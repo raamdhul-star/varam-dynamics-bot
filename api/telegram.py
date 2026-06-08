@@ -1,18 +1,20 @@
 """
-api/telegram.py — Varam-Dynamics Telegram webhook (Phase 2B, Vercel Python BETA)
+api/telegram.py — Varam-Dynamics Telegram webhook (Phase 2C, Vercel Python BETA)
 ==============================================================================
-SCOPE (Phase 1 + 2A + 2B):
+SCOPE (Phase 1 + 2A + 2B + 2C):
   • verify the Telegram secret header (X-Telegram-Bot-Api-Secret-Token)
   • /whoami  → reply caller's chat/user id
   • Help/TEST/PING callback → instant acknowledgement
-  • SELECT callback → read state (read-only from GitHub), show the multi-select
-    screen, and start an empty per-user session in Upstash Redis
+  • SELECT  → show multi-select, start empty per-user session (Upstash)
   • TOGGLE_<sym>_<dir> → add/remove an asset (cap 5), persist, re-render ticks
-  • DONE → summarise the selection (END of Phase 2B)
+  • DONE    → build a queue from picks and start leverage selection
+  • LEV_<sym>_<dir>_<n>          → store leverage, show size buttons
+  • SZ_<sym>_<dir>_<lev>_<amt>   → store size, advance queue, then PREVIEW
 
-Server-side session state lives in Upstash Redis (per user+message), NOT in the
-repo. NOT YET (Phase 2C+): leverage / size / confirm / close / invite-only /
-trade logging. This endpoint NEVER writes to the repo / results/.
+PREVIEW is the END of Phase 2C: it shows configured trades but logs NOTHING.
+Preset leverage/size buttons only (custom + back deferred -> "coming soon").
+NOT YET (Phase 2D+): trade logging / confirm / close / invite-only. This
+endpoint NEVER writes to the repo / results/; session state lives in Upstash.
 
 Self-contained: standard library only; does NOT import telegram/bot.py (whose
 import-time mkdir() would be fragile on Vercel's read-only filesystem). The two
@@ -83,6 +85,9 @@ def _load_remote_state() -> dict:
 # ── Upstash Redis REST session store (stdlib only; no new dependency) ───────
 SESSION_TTL = 1800     # 30 minutes
 MAX_SELECT  = 5
+LEV_OPTIONS = [2, 3, 5, 7, 10, 15, 20, 25, 50]   # mirror telegram/bot.py
+SIZE_PCT    = [25, 50, 75, 100]                  # mirror telegram/bot.py
+RISK_PCT    = 0.07                               # 7% account risk per trade
 
 def _kv_creds() -> tuple[str, str]:
     url = (os.environ.get("UPSTASH_REDIS_REST_URL")
@@ -134,6 +139,62 @@ def _load_session(user_id, message_id):
     return _kv_get(_sess_key(user_id, message_id))
 
 
+# ── Asset metadata (read-only from GitHub) + account size + leverage math ───
+
+def _load_asset_cache() -> dict:
+    """symbol -> {max_leverage, sz_decimals} from results/asset_cache.json.
+    Returns {} on any failure (caller falls back to safe defaults)."""
+    url = (f"https://api.github.com/repos/{GITHUB_REPO}"
+           f"/contents/results/asset_cache.json?ref={GITHUB_REF}")
+    headers = {"Accept": "application/vnd.github.raw+json",
+               "User-Agent": "varam-dynamics-webhook"}
+    token = os.environ.get("GITHUB_TOKEN", "")
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    try:
+        req = urllib.request.Request(url, headers=headers)
+        with urllib.request.urlopen(req, timeout=10) as r:
+            data = json.loads(r.read().decode())
+        out = {}
+        for a in data.get("assets", []):
+            sym = a.get("symbol")
+            if sym:
+                out[sym] = {"max_leverage": int(a.get("max_leverage", 10)),
+                            "sz_decimals": int(a.get("sz_decimals", 2))}
+        return out
+    except Exception as e:
+        print(f"[webhook] asset_cache fetch failed: {e}")
+        return {}
+
+def _asset_meta(cache: dict, symbol: str) -> tuple[int, int]:
+    m = cache.get(symbol) or {}
+    return int(m.get("max_leverage", 10)), int(m.get("sz_decimals", 2))
+
+def _account_size() -> float:
+    try:
+        return float(os.environ.get("ACCOUNT_SIZE") or "200")
+    except Exception:
+        return 200.0
+
+def calc_leverage(entry: float, sl: float, account_size: float,
+                  risk_pct: float, max_lev: int, sz_decimals: int) -> dict:
+    """Pure leverage/size math (mirror scanner/assets.calc_leverage, with
+    max_lev/sz_decimals supplied from asset_cache)."""
+    if not entry or not sl or entry <= 0 or sl <= 0:
+        return {"leverage": 1, "position_sz": round(account_size, 2), "qty": 0,
+                "risk_usd": round(account_size * risk_pct, 2), "sl_pct": 0,
+                "capped": False}
+    sl_pct = abs(entry - sl) / entry or 0.01
+    risk_usd = account_size * risk_pct
+    raw = risk_usd / (account_size * sl_pct)
+    final = min(round(raw, 1), max_lev)
+    pos = account_size * final
+    return {"leverage": final, "position_sz": round(pos, 2),
+            "qty": round(pos / entry, sz_decimals),
+            "risk_usd": round(risk_usd, 2), "sl_pct": round(sl_pct * 100, 2),
+            "capped": raw > max_lev}
+
+
 # ── Pure keyboard builders (mirror telegram/bot.py; no side-effects) ────────
 
 def _kb(rows: list) -> dict:
@@ -152,6 +213,49 @@ def multiselect_kb(sigs: list, selected: set) -> dict:
                            else "⏭ Done (nothing selected)"),
                   "callback_data": "DONE"}])
     return _kb(rows)
+
+
+def leverage_kb(sym: str, direction: str, suggested: float, max_lev: int) -> dict:
+    """Preset leverage buttons (custom/back deferred in Phase 2C)."""
+    opts = [l for l in LEV_OPTIONS if l <= max_lev]
+    rows, row = [], []
+    for l in opts:
+        star = "⭐" if abs(l - suggested) < 0.6 else ""
+        row.append({"text": f"{star}{l}x",
+                    "callback_data": f"LEV_{sym}_{direction}_{l}"})
+        if len(row) == 4:
+            rows.append(row); row = []
+    if row:
+        rows.append(row)
+    return _kb(rows)
+
+
+def size_kb(sym: str, direction: str, lev: float, acct: float) -> dict:
+    """Preset size buttons (custom deferred in Phase 2C)."""
+    rows, row = [], []
+    for pct in SIZE_PCT:
+        amt = round(acct * pct / 100)
+        row.append({"text": f"${amt} ({pct}%)",
+                    "callback_data": f"SZ_{sym}_{direction}_{lev}_{amt}"})
+        if len(row) == 2:
+            rows.append(row); row = []
+    if row:
+        rows.append(row)
+    return _kb(rows)
+
+
+def _preview_text(configured: list) -> str:
+    """Preview summary of configured trades. Phase 2C END — logs nothing."""
+    lines = ["🔍 <b>Preview — NOT logged</b>"]
+    for c in configured:
+        arrow = "📈" if c["direction"] == "long" else "📉"
+        lines.append(
+            f"{arrow} <b>{c['symbol']} {c['direction'].upper()}</b> — "
+            f"Entry {c['entry']:.6g} · {c['leverage']:g}x · "
+            f"${c['size_usd']:g} · risk ${c['risk_usd']:g}")
+    lines.append("\n⚠️ This is only a preview. <b>No trade has been logged.</b> "
+                 "Trade logging comes later.")
+    return "\n".join(lines)
 
 
 # ── Routing ──────────────────────────────────────────────────────────────────
@@ -208,6 +312,16 @@ def _route(update: dict) -> str:
         def _batch_for_mid():
             return (_load_remote_state().get("batches") or {}).get(str(mid))
 
+        def _show_leverage(current):
+            acct = _account_size()
+            max_lev, dec = _asset_meta(_load_asset_cache(), current["symbol"])
+            sug = calc_leverage(current.get("entry"), current.get("sl"),
+                                acct, RISK_PCT, max_lev, dec)["leverage"]
+            _edit(f"⚙️ <b>{current['symbol']} {current['direction'].upper()}</b>\n"
+                  f"Entry {current['entry']:.6g} · SL {current['sl']:.6g} · "
+                  f"TP {current['tp']:.6g}\n⭐ Suggested: {sug:g}x\nChoose leverage:",
+                  leverage_kb(current["symbol"], current["direction"], sug, max_lev))
+
         # ---- SELECT: show multi-select + start an empty session ----
         if data == "SELECT":
             batch = _batch_for_mid()
@@ -245,20 +359,107 @@ def _route(update: dict) -> str:
                   multiselect_kb(batch["sigs"], set(it["symbol"] for it in sel)))
             return "toggle"
 
-        # ---- DONE: summarise selection (Phase 2B endpoint) ----
+        # ---- DONE: build queue from picks, start leverage selection ----
         if data == "DONE":
             sess = _load_session(user_id, mid)
             sel  = (sess or {}).get("selected", [])
             if not sel:
                 _edit("⏭ Nothing selected.")
                 return "done_empty"
-            lines = ["✅ <b>Selected trades</b>:"]
+            batch = _batch_for_mid()
+            if not batch or not batch.get("sigs"):
+                _edit("⚠️ This alert is old. Please use the latest signal message.")
+                return "select_old"
+            by_sym = {s["symbol"]: s for s in batch["sigs"]}
+            queue = []
             for it in sel:
-                arrow = "📈" if it["direction"] == "long" else "📉"
-                lines.append(f"{arrow} {it['symbol']} {it['direction'].upper()}")
-            lines.append("\n(Next steps coming soon.)")
-            _edit("\n".join(lines))
-            return "done"
+                s = by_sym.get(it["symbol"])
+                if not s:
+                    continue
+                queue.append({"symbol": it["symbol"], "direction": it["direction"],
+                              "entry": s.get("entry"), "sl": s.get("sl"), "tp": s.get("tp")})
+            if not queue:
+                _edit("⏭ Nothing selected.")
+                return "done_empty"
+            sess["current"]    = queue[0]
+            sess["queue"]      = queue[1:]
+            sess["configured"] = []
+            sess["updated_at"] = _now_iso()
+            if not _kv_set(_sess_key(user_id, mid), sess):
+                _edit("⚠️ Selection temporarily unavailable, please try again.")
+                return "kv_unavailable"
+            _show_leverage(sess["current"])
+            return "lev_prompt"
+
+        # ---- LEV: store leverage for current asset, show size ----
+        if data.startswith("LEV_"):
+            parts = data.split("_", 3)
+            if len(parts) < 4:
+                return "ignored"
+            _, sym, direction, n = parts
+            if n == "custom":
+                _edit("✏️ Custom leverage coming soon — please pick a preset value.")
+                return "coming_soon"
+            sess = _load_session(user_id, mid)
+            cur  = (sess or {}).get("current")
+            if not sess or not cur:
+                _edit("⚠️ Session expired — tap Select on the latest alert again.")
+                return "session_expired"
+            try:
+                lev = float(n)
+            except ValueError:
+                return "ignored"
+            cur["leverage"]    = lev
+            sess["current"]    = cur
+            sess["updated_at"] = _now_iso()
+            if not _kv_set(_sess_key(user_id, mid), sess):
+                _edit("⚠️ Selection temporarily unavailable, please try again.")
+                return "kv_unavailable"
+            _edit(f"⚙️ <b>{sym} {direction.upper()}</b> — {lev:g}x\nChoose position size:",
+                  size_kb(sym, direction, lev, _account_size()))
+            return "size_prompt"
+
+        # ---- SZ: store size, advance queue, then PREVIEW (no logging) ----
+        if data.startswith("SZ_"):
+            parts = data.split("_", 4)
+            if len(parts) < 5:
+                return "ignored"
+            _, sym, direction, lv, amt = parts
+            if amt == "custom":
+                _edit("✏️ Custom size coming soon — please pick a preset value.")
+                return "coming_soon"
+            sess = _load_session(user_id, mid)
+            cur  = (sess or {}).get("current")
+            if not sess or not cur:
+                _edit("⚠️ Session expired — tap Select on the latest alert again.")
+                return "session_expired"
+            try:
+                lev, size = float(lv), float(amt)
+            except ValueError:
+                return "ignored"
+            entry, sl = cur.get("entry"), cur.get("sl")
+            risk_usd = round(size * abs(entry - sl) / entry, 2) if entry else 0.0
+            configured = sess.get("configured", [])
+            configured.append({"symbol": sym, "direction": direction,
+                               "entry": entry, "sl": sl, "tp": cur.get("tp"),
+                               "leverage": lev, "size_usd": size, "risk_usd": risk_usd})
+            sess["configured"] = configured
+            q = sess.get("queue", [])
+            if q:
+                sess["current"]    = q[0]
+                sess["queue"]      = q[1:]
+                sess["updated_at"] = _now_iso()
+                if not _kv_set(_sess_key(user_id, mid), sess):
+                    _edit("⚠️ Selection temporarily unavailable, please try again.")
+                    return "kv_unavailable"
+                _show_leverage(sess["current"])
+                return "lev_prompt"
+            # queue empty -> final preview (logs nothing)
+            sess["current"]    = None
+            sess["updated_at"] = _now_iso()
+            _kv_set(_sess_key(user_id, mid), sess)   # best-effort
+            _edit(_preview_text(configured))
+            return "preview"
 
         # ---- Help / test acknowledgement ----
         if data in ("HELP", "TEST", "PING") and chat_id is not None:
@@ -297,7 +498,7 @@ class handler(BaseHTTPRequestHandler):
         self.wfile.write(data)
 
     def do_GET(self):  # health check — no secrets exposed
-        self._send(200, {"ok": True, "service": "varam-dynamics-webhook", "phase": "2B"})
+        self._send(200, {"ok": True, "service": "varam-dynamics-webhook", "phase": "2C"})
 
     def do_POST(self):
         try:
