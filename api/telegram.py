@@ -1,16 +1,18 @@
 """
-api/telegram.py — Varam-Dynamics Telegram webhook (Phase 2A, Vercel Python BETA)
+api/telegram.py — Varam-Dynamics Telegram webhook (Phase 2B, Vercel Python BETA)
 ==============================================================================
-SCOPE (Phase 1 + Phase 2A only):
+SCOPE (Phase 1 + 2A + 2B):
   • verify the Telegram secret header (X-Telegram-Bot-Api-Secret-Token)
   • /whoami  → reply caller's chat/user id
   • Help/TEST/PING callback → instant acknowledgement
-  • SELECT callback → read state (read-only from GitHub), resolve the tapped
-    alert's batch snapshot, and show the multi-select screen (empty selection)
+  • SELECT callback → read state (read-only from GitHub), show the multi-select
+    screen, and start an empty per-user session in Upstash Redis
+  • TOGGLE_<sym>_<dir> → add/remove an asset (cap 5), persist, re-render ticks
+  • DONE → summarise the selection (END of Phase 2B)
 
-NOT YET (Phase 2B+): TOGGLE / DONE / leverage / size / confirm / close /
-invite-only / trade logging / any state WRITE. This endpoint performs NO writes
-to the repo and keeps NO server-side session state in Phase 2A.
+Server-side session state lives in Upstash Redis (per user+message), NOT in the
+repo. NOT YET (Phase 2C+): leverage / size / confirm / close / invite-only /
+trade logging. This endpoint NEVER writes to the repo / results/.
 
 Self-contained: standard library only; does NOT import telegram/bot.py (whose
 import-time mkdir() would be fragile on Vercel's read-only filesystem). The two
@@ -23,6 +25,7 @@ from http.server import BaseHTTPRequestHandler
 import json
 import os
 import urllib.request
+from datetime import datetime, timezone
 
 
 # ── Config ──────────────────────────────────────────────────────────────────
@@ -75,6 +78,60 @@ def _load_remote_state() -> dict:
     except Exception as e:
         print(f"[webhook] state fetch failed: {e}")
         return {}
+
+
+# ── Upstash Redis REST session store (stdlib only; no new dependency) ───────
+SESSION_TTL = 1800     # 30 minutes
+MAX_SELECT  = 5
+
+def _kv_creds() -> tuple[str, str]:
+    url = (os.environ.get("UPSTASH_REDIS_REST_URL")
+           or os.environ.get("KV_REST_API_URL") or "")
+    tok = (os.environ.get("UPSTASH_REDIS_REST_TOKEN")
+           or os.environ.get("KV_REST_API_TOKEN") or "")
+    return url.rstrip("/"), tok
+
+def _kv_cmd(args: list):
+    """Run one Redis command via Upstash REST. Returns result, or None on any
+    failure (missing creds, network, error). Never prints token or values."""
+    url, tok = _kv_creds()
+    if not url or not tok:
+        return None
+    try:
+        req = urllib.request.Request(
+            url, data=json.dumps(args).encode(),
+            headers={"Authorization": f"Bearer {tok}",
+                     "Content-Type": "application/json"})
+        with urllib.request.urlopen(req, timeout=10) as r:
+            return json.loads(r.read().decode()).get("result")
+    except Exception as e:
+        print(f"[webhook] kv error: {type(e).__name__}")
+        return None
+
+def _kv_get(key: str):
+    res = _kv_cmd(["GET", key])
+    if not res:
+        return None
+    try:
+        return json.loads(res)
+    except Exception:
+        return None
+
+def _kv_set(key: str, value: dict, ttl_seconds: int = SESSION_TTL) -> bool:
+    return _kv_cmd(["SET", key, json.dumps(value), "EX", str(int(ttl_seconds))]) == "OK"
+
+def _sess_key(user_id, message_id) -> str:
+    return f"sess:{user_id}:{message_id}"
+
+def _now_iso() -> str:
+    return datetime.now(timezone.utc).isoformat()
+
+def _new_session(user_id, message_id) -> dict:
+    return {"user_id": user_id, "message_id": message_id, "selected": [],
+            "created_at": _now_iso(), "updated_at": _now_iso()}
+
+def _load_session(user_id, message_id):
+    return _kv_get(_sess_key(user_id, message_id))
 
 
 # ── Pure keyboard builders (mirror telegram/bot.py; no side-effects) ────────
@@ -137,29 +194,73 @@ def _route(update: dict) -> str:
         m     = cb.get("message") or {}
         mid   = m.get("message_id")
         chat_id = (m.get("chat") or {}).get("id")
+        user_id = (cb.get("from") or {}).get("id")
         # Clear the spinner instantly.
         _tg("answerCallbackQuery", {"callback_query_id": cb_id})
 
-        # ---- Phase 2A: SELECT -> show multi-select (read-only) ----
+        def _edit(text, markup=None):
+            p = {"chat_id": chat_id, "message_id": mid,
+                 "text": text, "parse_mode": "HTML"}
+            if markup is not None:
+                p["reply_markup"] = markup
+            _tg("editMessageText", p)
+
+        def _batch_for_mid():
+            return (_load_remote_state().get("batches") or {}).get(str(mid))
+
+        # ---- SELECT: show multi-select + start an empty session ----
         if data == "SELECT":
-            state = _load_remote_state()
-            batch = (state.get("batches") or {}).get(str(mid))
+            batch = _batch_for_mid()
             if not batch or not batch.get("sigs"):
-                _tg("editMessageText", {
-                    "chat_id": chat_id, "message_id": mid,
-                    "text": "⚠️ This alert is old. Please use the latest signal message.",
-                    "parse_mode": "HTML",
-                })
+                _edit("⚠️ This alert is old. Please use the latest signal message.")
                 return "select_old"
-            _tg("editMessageText", {
-                "chat_id": chat_id, "message_id": mid,
-                "text": "Which trades did you take?\nTap to select, then Done ✅",
-                "parse_mode": "HTML",
-                "reply_markup": multiselect_kb(batch["sigs"], set()),
-            })
+            if not _kv_set(_sess_key(user_id, mid), _new_session(user_id, mid)):
+                _edit("⚠️ Selection temporarily unavailable, please try again.")
+                return "kv_unavailable"
+            _edit("Which trades did you take?\nTap to select, then Done ✅",
+                  multiselect_kb(batch["sigs"], set()))
             return "select_shown"
 
-        # ---- Phase 1: Help / test acknowledgement ----
+        # ---- TOGGLE: add/remove an asset (cap 5) ----
+        if data.startswith("TOGGLE_"):
+            _, sym, direction = data.split("_", 2)
+            batch = _batch_for_mid()
+            if not batch or not batch.get("sigs"):
+                _edit("⚠️ This alert is old. Please use the latest signal message.")
+                return "select_old"
+            sess = _load_session(user_id, mid) or _new_session(user_id, mid)
+            sel  = sess.get("selected", [])
+            syms = [it["symbol"] for it in sel]
+            if sym in syms:
+                sel = [it for it in sel if it["symbol"] != sym]          # remove
+            elif len(sel) < MAX_SELECT:
+                sel.append({"symbol": sym, "direction": direction})      # add
+            # else: at cap -> ignore the add
+            sess["selected"]   = sel
+            sess["updated_at"] = _now_iso()
+            if not _kv_set(_sess_key(user_id, mid), sess):
+                _edit("⚠️ Selection temporarily unavailable, please try again.")
+                return "kv_unavailable"
+            _edit("Which trades did you take?\nTap to select, then Done ✅",
+                  multiselect_kb(batch["sigs"], set(it["symbol"] for it in sel)))
+            return "toggle"
+
+        # ---- DONE: summarise selection (Phase 2B endpoint) ----
+        if data == "DONE":
+            sess = _load_session(user_id, mid)
+            sel  = (sess or {}).get("selected", [])
+            if not sel:
+                _edit("⏭ Nothing selected.")
+                return "done_empty"
+            lines = ["✅ <b>Selected trades</b>:"]
+            for it in sel:
+                arrow = "📈" if it["direction"] == "long" else "📉"
+                lines.append(f"{arrow} {it['symbol']} {it['direction'].upper()}")
+            lines.append("\n(Next steps coming soon.)")
+            _edit("\n".join(lines))
+            return "done"
+
+        # ---- Help / test acknowledgement ----
         if data in ("HELP", "TEST", "PING") and chat_id is not None:
             _tg("sendMessage", {
                 "chat_id": chat_id,
@@ -196,7 +297,7 @@ class handler(BaseHTTPRequestHandler):
         self.wfile.write(data)
 
     def do_GET(self):  # health check — no secrets exposed
-        self._send(200, {"ok": True, "service": "varam-dynamics-webhook", "phase": "2A"})
+        self._send(200, {"ok": True, "service": "varam-dynamics-webhook", "phase": "2B"})
 
     def do_POST(self):
         try:
