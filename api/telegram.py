@@ -1,7 +1,7 @@
 """
-api/telegram.py — Varam-Dynamics Telegram webhook (Phase 2C, Vercel Python BETA)
+api/telegram.py — Varam-Dynamics Telegram webhook (Phase 2D, Vercel Python BETA)
 ==============================================================================
-SCOPE (Phase 1 + 2A + 2B + 2C):
+SCOPE (Phase 1 + 2A + 2B + 2C + 2D):
   • verify the Telegram secret header (X-Telegram-Bot-Api-Secret-Token)
   • /whoami  → reply caller's chat/user id
   • Help/TEST/PING callback → instant acknowledgement
@@ -10,11 +10,12 @@ SCOPE (Phase 1 + 2A + 2B + 2C):
   • DONE    → build a queue from picks and start leverage selection
   • LEV_<sym>_<dir>_<n>          → store leverage, show size buttons
   • SZ_<sym>_<dir>_<lev>_<amt>   → store size, advance queue, then PREVIEW
+  • CONFIRM → record OPEN trades to Upstash key trades:<user_id> (idempotent)
 
-PREVIEW is the END of Phase 2C: it shows configured trades but logs NOTHING.
-Preset leverage/size buttons only (custom + back deferred -> "coming soon").
-NOT YET (Phase 2D+): trade logging / confirm / close / invite-only. This
-endpoint NEVER writes to the repo / results/; session state lives in Upstash.
+Phase 2D records OPEN trades to UPSTASH ONLY (per-user, keyed by numeric id).
+It does NOT write to GitHub / results/ / trades.csv / paper-trade files, and
+has NO close flow. NOT YET (Phase 2E+): close flow, durable CSV via GitHub
+Contents API, invite-only. Session/trade state lives in Upstash.
 
 Self-contained: standard library only; does NOT import telegram/bot.py (whose
 import-time mkdir() would be fragile on Vercel's read-only filesystem). The two
@@ -83,7 +84,7 @@ def _load_remote_state() -> dict:
 
 
 # ── Upstash Redis REST session store (stdlib only; no new dependency) ───────
-SESSION_TTL = 1800     # 30 minutes
+SESSION_TTL = 1800     # 30 minutes — ONLY for the in-progress button session
 MAX_SELECT  = 5
 LEV_OPTIONS = [2, 3, 5, 7, 10, 15, 20, 25, 50]   # mirror telegram/bot.py
 SIZE_PCT    = [25, 50, 75, 100]                  # mirror telegram/bot.py
@@ -122,8 +123,14 @@ def _kv_get(key: str):
     except Exception:
         return None
 
-def _kv_set(key: str, value: dict, ttl_seconds: int = SESSION_TTL) -> bool:
-    return _kv_cmd(["SET", key, json.dumps(value), "EX", str(int(ttl_seconds))]) == "OK"
+def _kv_set(key: str, value: dict, ttl_seconds: int | None = SESSION_TTL) -> bool:
+    # ttl_seconds=None -> SET with NO expiry. Used for open-trade records, which
+    # must persist until explicitly closed/cancelled/abandoned (a later phase).
+    # Sessions keep the default SESSION_TTL so they still self-clean.
+    cmd = ["SET", key, json.dumps(value)]
+    if ttl_seconds is not None:
+        cmd += ["EX", str(int(ttl_seconds))]
+    return _kv_cmd(cmd) == "OK"
 
 def _sess_key(user_id, message_id) -> str:
     return f"sess:{user_id}:{message_id}"
@@ -253,9 +260,12 @@ def _preview_text(configured: list) -> str:
             f"{arrow} <b>{c['symbol']} {c['direction'].upper()}</b> — "
             f"Entry {c['entry']:.6g} · {c['leverage']:g}x · "
             f"${c['size_usd']:g} · risk ${c['risk_usd']:g}")
-    lines.append("\n⚠️ This is only a preview. <b>No trade has been logged.</b> "
-                 "Trade logging comes later.")
+    lines.append("\n🔻 Review, then tap <b>Confirm &amp; log</b> to record these as open trades.")
     return "\n".join(lines)
+
+
+def _confirm_kb() -> dict:
+    return _kb([[{"text": "✅ Confirm & log", "callback_data": "CONFIRM"}]])
 
 
 # ── Routing ──────────────────────────────────────────────────────────────────
@@ -377,7 +387,8 @@ def _route(update: dict) -> str:
                 if not s:
                     continue
                 queue.append({"symbol": it["symbol"], "direction": it["direction"],
-                              "entry": s.get("entry"), "sl": s.get("sl"), "tp": s.get("tp")})
+                              "entry": s.get("entry"), "sl": s.get("sl"), "tp": s.get("tp"),
+                              "score": s.get("score")})
             if not queue:
                 _edit("⏭ Nothing selected.")
                 return "done_empty"
@@ -442,7 +453,8 @@ def _route(update: dict) -> str:
             configured = sess.get("configured", [])
             configured.append({"symbol": sym, "direction": direction,
                                "entry": entry, "sl": sl, "tp": cur.get("tp"),
-                               "leverage": lev, "size_usd": size, "risk_usd": risk_usd})
+                               "leverage": lev, "size_usd": size, "risk_usd": risk_usd,
+                               "score": cur.get("score")})
             sess["configured"] = configured
             q = sess.get("queue", [])
             if q:
@@ -458,8 +470,67 @@ def _route(update: dict) -> str:
             sess["current"]    = None
             sess["updated_at"] = _now_iso()
             _kv_set(_sess_key(user_id, mid), sess)   # best-effort
-            _edit(_preview_text(configured))
+            _edit(_preview_text(configured), _confirm_kb())
             return "preview"
+
+        # ---- CONFIRM: record OPEN trades to Upstash (idempotent) ----
+        if data == "CONFIRM":
+            sess = _load_session(user_id, mid)
+            if not sess:
+                _edit("⚠️ Session expired — tap Select on the latest alert again.")
+                return "session_expired"
+            if sess.get("logged"):
+                _edit("ℹ️ Already logged — these trades were recorded.")
+                return "already_logged"
+            configured = sess.get("configured", [])
+            if not configured:
+                _edit("Nothing to log.")
+                return "nothing_to_log"
+            acct  = _account_size()
+            cache = _load_asset_cache()
+            now   = _now_iso()
+            uname = (cb.get("from") or {}).get("username")   # display only, NOT identity
+            records = []
+            for c in configured:
+                max_lev, dec = _asset_meta(cache, c["symbol"])
+                sug = calc_leverage(c.get("entry"), c.get("sl"),
+                                    acct, RISK_PCT, max_lev, dec)["leverage"]
+                records.append({
+                    "trade_id":           f"{user_id}:{mid}:{c['symbol']}",
+                    "user_id":            user_id,          # identity = numeric id
+                    "username":           uname,            # display only
+                    "symbol":             c["symbol"],
+                    "direction":          c["direction"],
+                    "entry_price":        c.get("entry"),
+                    "sl_price":           c.get("sl"),
+                    "tp_price":           c.get("tp"),
+                    "leverage_used":      c.get("leverage"),
+                    "leverage_suggested": sug,
+                    "size_usd":           c.get("size_usd"),
+                    "risk_usd":           c.get("risk_usd"),
+                    "signal_score":       c.get("score"),
+                    "status":             "open",
+                    "opened_at":          now,
+                    "last_updated_at":    now,
+                    "last_reminded_at":   None,
+                    "stale_after_days":   7,
+                    "message_id":         mid,
+                    "batch_id":           str(mid),
+                })
+            # Append to trades:<user_id>, de-duplicating by trade_id (defensive).
+            # NO TTL: open trades must persist until explicitly closed later.
+            key = f"trades:{user_id}"
+            existing = _kv_get(key) or []
+            have = {t.get("trade_id") for t in existing}
+            to_add = [r for r in records if r["trade_id"] not in have]
+            if not _kv_set(key, existing + to_add, ttl_seconds=None):
+                _edit("⚠️ Temporarily unavailable, please try again.")
+                return "kv_unavailable"
+            sess["logged"] = True
+            sess["updated_at"] = _now_iso()
+            _kv_set(_sess_key(user_id, mid), sess)   # best-effort; dedupe still guards
+            _edit(f"✅ Logged {len(records)} open trade(s).")
+            return "logged"
 
         # ---- Help / test acknowledgement ----
         if data in ("HELP", "TEST", "PING") and chat_id is not None:
@@ -498,7 +569,7 @@ class handler(BaseHTTPRequestHandler):
         self.wfile.write(data)
 
     def do_GET(self):  # health check — no secrets exposed
-        self._send(200, {"ok": True, "service": "varam-dynamics-webhook", "phase": "2C"})
+        self._send(200, {"ok": True, "service": "varam-dynamics-webhook", "phase": "2D"})
 
     def do_POST(self):
         try:
