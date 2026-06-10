@@ -1,20 +1,18 @@
 """
-api/telegram.py — Varam-Dynamics Telegram webhook (Phase 2E-a, Vercel Python BETA)
+api/telegram.py — Varam-Dynamics Telegram webhook (Phase 2F, Vercel Python BETA)
 ==============================================================================
-SCOPE (Phase 1 + 2A + 2B + 2C + 2D + 2E-a):
+SCOPE (Phase 1 + 2A..2E-a + 2F invite-only):
   • verify the Telegram secret header (X-Telegram-Bot-Api-Secret-Token)
-  • /whoami  → reply caller's chat/user id
-  • Help/TEST/PING callback → instant acknowledgement
-  • SELECT / TOGGLE / DONE / LEV / SZ → preview (intake flow)
-  • CONFIRM → record OPEN trades to Upstash key trades:<user_id> (idempotent)
-  • /mytrades → list open trades with short Close buttons (CLOSE:<index>)
-  • CLOSE:<index> → pick a trade; PX:target|stop|be|manual → set exit price
-  • close computes P&L, moves trade trades:<uid> -> closed_trades:<uid>
+  • PUBLIC: /start /whoami /help /request_access
+  • APPROVED-ONLY: SELECT/TOGGLE/DONE/LEV/SZ/CONFIRM, /mytrades, CLOSE/PX,
+    manual close-price messages  (full intake + close lifecycle)
+  • ADMIN-ONLY: /pending, AP:<index> (approve), RJ:<index> (reject)
 
-Phase 2E-a writes to UPSTASH ONLY (open + closed trades, both NO TTL; sessions
-keep TTL). It does NOT write to GitHub / results/ / trades.csv / paper files,
-and has NO cancel/abandon flow. NOT YET (Phase 2E-b+): durable CSV via GitHub
-Contents API (needs a token), cancel/abandon, invite-only.
+Identity = numeric from.id (username/display are display-only). Admin =
+ADMIN_CHAT_ID and is IMPLICITLY approved (never locked out). Allowlist lives in
+Upstash (users:allowlist / users:pending, both NO TTL). Phase 2F writes to
+UPSTASH ONLY — no GitHub / results/ / CSV / paper writes. NOT YET: CSV sync
+(2E-b, needs token), cancel/abandon, multi-admin, webhook cut-over.
 
 Self-contained: standard library only; does NOT import telegram/bot.py (whose
 import-time mkdir() would be fragile on Vercel's read-only filesystem). The two
@@ -325,6 +323,36 @@ def _close_summary(c: dict) -> str:
             f"Result: {c['result']}  ·  {c['close_reason']}")
 
 
+# ── Invite-only access control (Phase 2F; Upstash only, no TTL) ─────────────
+NOT_APPROVED = "⏳ Not approved yet. Send /request_access to request access."
+
+def _admin_id() -> int:
+    try:
+        return int(os.environ.get("ADMIN_CHAT_ID") or 0)
+    except Exception:
+        return 0
+
+def _is_admin(user_id) -> bool:
+    aid = _admin_id()
+    return bool(aid) and user_id == aid
+
+def _allowlist() -> dict:
+    return _kv_get("users:allowlist") or {}
+
+def _pending() -> dict:
+    return _kv_get("users:pending") or {}
+
+def _is_approved(user_id) -> bool:
+    if _is_admin(user_id):          # admin is implicitly approved (never locked out)
+        return True
+    rec = _allowlist().get(str(user_id))
+    return bool(rec) and rec.get("status") == "approved"
+
+def _pending_list(pend: dict) -> list:
+    # deterministic order so /pending listing and AP:/RJ:<index> resolve alike
+    return [pend[k] for k in sorted(pend) if pend[k].get("status") == "pending"]
+
+
 # ── Routing ──────────────────────────────────────────────────────────────────
 
 def _route(update: dict) -> str:
@@ -349,6 +377,9 @@ def _route(update: dict) -> str:
             })
             return "whoami"
         if text.startswith("/mytrades"):
+            if not _is_approved(user_id):
+                _tg("sendMessage", {"chat_id": chat_id, "text": NOT_APPROVED})
+                return "blocked"
             opens = [t for t in (_kv_get(f"trades:{user_id}") or [])
                      if t.get("status") == "open"]
             if not opens:
@@ -363,17 +394,65 @@ def _route(update: dict) -> str:
             _tg("sendMessage", {"chat_id": chat_id, "text": "\n".join(lines),
                                 "parse_mode": "HTML", "reply_markup": _mytrades_kb(opens)})
             return "mytrades"
-        if text.startswith("/help") or text.startswith("/start"):
+        if text.startswith("/start"):
+            if _is_approved(user_id):
+                _tg("sendMessage", {"chat_id": chat_id,
+                    "text": "👋 Welcome back — you're approved.\nSend /mytrades to manage your trades."})
+                return "start_approved"
+            _tg("sendMessage", {"chat_id": chat_id,
+                "text": ("👋 Welcome to Varam-Dynamics.\n"
+                         "⏳ You're not approved yet. Send /request_access to request access.")})
+            return "start_unapproved"
+        if text.startswith("/help"):
             _tg("sendMessage", {
                 "chat_id": chat_id,
                 "text": ("🧪 Varam-Dynamics webhook is online.\n"
-                         "Commands: /whoami · /mytrades\n"
+                         "Commands: /start · /whoami · /request_access · /mytrades\n"
                          "This is a system endpoint — not financial advice."),
             })
             return "help"
+        if text.startswith("/request_access"):
+            if _is_approved(user_id):
+                _tg("sendMessage", {"chat_id": chat_id, "text": "✅ You're already approved."})
+                return "already_approved"
+            pend = _pending()
+            if str(user_id) in pend and pend[str(user_id)].get("status") == "pending":
+                _tg("sendMessage", {"chat_id": chat_id, "text": "⏳ Your request is already pending."})
+                return "already_pending"
+            dn = " ".join(x for x in [frm.get("first_name"), frm.get("last_name")] if x)
+            pend[str(user_id)] = {"user_id": user_id, "username": frm.get("username"),
+                                  "display_name": dn, "status": "pending",
+                                  "requested_at": _now_iso()}
+            if not _kv_set("users:pending", pend, ttl_seconds=None):
+                _tg("sendMessage", {"chat_id": chat_id,
+                                    "text": "⚠️ Temporarily unavailable, please try again."})
+                return "kv_unavailable"
+            _tg("sendMessage", {"chat_id": chat_id,
+                                "text": "✅ Request received — an admin will review it."})
+            return "request_recorded"
+        if text.startswith("/pending"):
+            if not _is_admin(user_id):
+                _tg("sendMessage", {"chat_id": chat_id, "text": "⛔ Not authorised."})
+                return "denied"
+            items = _pending_list(_pending())
+            if not items:
+                _tg("sendMessage", {"chat_id": chat_id, "text": "No pending requests."})
+                return "pending_empty"
+            lines, rows = ["🕓 <b>Pending access requests</b>:"], []
+            for i, r in enumerate(items):
+                lines.append(f"{i + 1}. id <code>{r.get('user_id')}</code> "
+                             f"@{r.get('username')} {r.get('display_name') or ''}".rstrip())
+                rows.append([{"text": f"✅ Approve {i + 1}", "callback_data": f"AP:{i}"},
+                             {"text": f"🚫 Reject {i + 1}",  "callback_data": f"RJ:{i}"}])
+            _tg("sendMessage", {"chat_id": chat_id, "text": "\n".join(lines),
+                                "parse_mode": "HTML", "reply_markup": _kb(rows)})
+            return "pending"
         # ---- manual exit price (only while a close session awaits it) ----
         cs = _kv_get(_close_key(user_id))
         if cs and cs.get("awaiting_price") and cs.get("trade_id"):
+            if not _is_approved(user_id):
+                _tg("sendMessage", {"chat_id": chat_id, "text": NOT_APPROVED})
+                return "blocked"
             try:
                 exit_px = float(text.replace(",", "").strip())
             except ValueError:
@@ -430,6 +509,14 @@ def _route(update: dict) -> str:
                   f"Entry {current['entry']:.6g} · SL {current['sl']:.6g} · "
                   f"TP {current['tp']:.6g}\n⭐ Suggested: {sug:g}x\nChoose leverage:",
                   leverage_kb(current["symbol"], current["direction"], sug, max_lev))
+
+        # ---- Access gate: trading callbacks require an approved user ----
+        _TRADE_CB     = {"SELECT", "SKIP", "DONE", "CONFIRM"}
+        _TRADE_PREFIX = ("TOGGLE_", "LEV_", "SZ_", "CLOSE:", "PX:")
+        if (data in _TRADE_CB or any(data.startswith(p) for p in _TRADE_PREFIX)) \
+                and not _is_approved(user_id):
+            _edit(NOT_APPROVED)
+            return "blocked"
 
         # ---- SELECT: show multi-select + start an empty session ----
         if data == "SELECT":
@@ -686,6 +773,40 @@ def _route(update: dict) -> str:
             _edit(_close_summary(res))
             return "closed"
 
+        # ---- AP:/RJ:<index> — admin approve / reject (admin only) ----
+        if data.startswith("AP:") or data.startswith("RJ:"):
+            if not _is_admin(user_id):
+                _edit("⛔ Not authorised.")
+                return "denied"
+            try:
+                idx = int(data.split(":", 1)[1])
+            except ValueError:
+                return "ignored"
+            pend = _pending()
+            items = _pending_list(pend)
+            if idx < 0 or idx >= len(items):
+                _edit("⚠️ Request not found (already handled?).")
+                return "pending_not_found"
+            rec   = items[idx]
+            uid_s = str(rec.get("user_id"))
+            now   = _now_iso()
+            allow = _allowlist()
+            if data.startswith("AP:"):
+                allow[uid_s] = {**rec, "status": "approved",
+                                "approved_at": now, "approved_by": user_id}
+                verdict, tag = "✅ Approved", "approved"
+            else:
+                allow[uid_s] = {**rec, "status": "rejected",
+                                "rejected_at": now, "rejected_by": user_id}
+                verdict, tag = "🚫 Rejected", "rejected"
+            if not _kv_set("users:allowlist", allow, ttl_seconds=None):
+                _edit("⚠️ Temporarily unavailable, please try again.")
+                return "kv_unavailable"
+            pend.pop(uid_s, None)
+            _kv_set("users:pending", pend, ttl_seconds=None)
+            _edit(f"{verdict} user <code>{uid_s}</code>.")
+            return tag
+
         # ---- Help / test acknowledgement ----
         if data in ("HELP", "TEST", "PING") and chat_id is not None:
             _tg("sendMessage", {
@@ -723,7 +844,7 @@ class handler(BaseHTTPRequestHandler):
         self.wfile.write(data)
 
     def do_GET(self):  # health check — no secrets exposed
-        self._send(200, {"ok": True, "service": "varam-dynamics-webhook", "phase": "2E-a"})
+        self._send(200, {"ok": True, "service": "varam-dynamics-webhook", "phase": "2F"})
 
     def do_POST(self):
         try:
