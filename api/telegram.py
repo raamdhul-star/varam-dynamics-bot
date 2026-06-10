@@ -1,21 +1,20 @@
 """
-api/telegram.py — Varam-Dynamics Telegram webhook (Phase 2D, Vercel Python BETA)
+api/telegram.py — Varam-Dynamics Telegram webhook (Phase 2E-a, Vercel Python BETA)
 ==============================================================================
-SCOPE (Phase 1 + 2A + 2B + 2C + 2D):
+SCOPE (Phase 1 + 2A + 2B + 2C + 2D + 2E-a):
   • verify the Telegram secret header (X-Telegram-Bot-Api-Secret-Token)
   • /whoami  → reply caller's chat/user id
   • Help/TEST/PING callback → instant acknowledgement
-  • SELECT  → show multi-select, start empty per-user session (Upstash)
-  • TOGGLE_<sym>_<dir> → add/remove an asset (cap 5), persist, re-render ticks
-  • DONE    → build a queue from picks and start leverage selection
-  • LEV_<sym>_<dir>_<n>          → store leverage, show size buttons
-  • SZ_<sym>_<dir>_<lev>_<amt>   → store size, advance queue, then PREVIEW
+  • SELECT / TOGGLE / DONE / LEV / SZ → preview (intake flow)
   • CONFIRM → record OPEN trades to Upstash key trades:<user_id> (idempotent)
+  • /mytrades → list open trades with short Close buttons (CLOSE:<index>)
+  • CLOSE:<index> → pick a trade; PX:target|stop|be|manual → set exit price
+  • close computes P&L, moves trade trades:<uid> -> closed_trades:<uid>
 
-Phase 2D records OPEN trades to UPSTASH ONLY (per-user, keyed by numeric id).
-It does NOT write to GitHub / results/ / trades.csv / paper-trade files, and
-has NO close flow. NOT YET (Phase 2E+): close flow, durable CSV via GitHub
-Contents API, invite-only. Session/trade state lives in Upstash.
+Phase 2E-a writes to UPSTASH ONLY (open + closed trades, both NO TTL; sessions
+keep TTL). It does NOT write to GitHub / results/ / trades.csv / paper files,
+and has NO cancel/abandon flow. NOT YET (Phase 2E-b+): durable CSV via GitHub
+Contents API (needs a token), cancel/abandon, invite-only.
 
 Self-contained: standard library only; does NOT import telegram/bot.py (whose
 import-time mkdir() would be fragile on Vercel's read-only filesystem). The two
@@ -268,6 +267,64 @@ def _confirm_kb() -> dict:
     return _kb([[{"text": "✅ Confirm & log", "callback_data": "CONFIRM"}]])
 
 
+# ── Close flow helpers (Phase 2E-a; Upstash only, no TTL on trade keys) ──────
+
+def _close_key(user_id) -> str:
+    return f"close:{user_id}"
+
+def _mytrades_kb(opens: list) -> dict:
+    return _kb([[{"text": f"Close {t.get('symbol')} {t.get('direction', '').upper()}",
+                  "callback_data": f"CLOSE:{i}"}] for i, t in enumerate(opens)])
+
+def _px_kb() -> dict:
+    return _kb([[{"text": "🎯 Target", "callback_data": "PX:target"},
+                 {"text": "🛑 Stop",   "callback_data": "PX:stop"}],
+                [{"text": "⚖️ Breakeven", "callback_data": "PX:be"},
+                 {"text": "✏️ Manual",   "callback_data": "PX:manual"}]])
+
+def _close_trade(user_id, trade_id, exit_price, reason):
+    """Move an open trade -> closed with computed P&L. Returns the closed dict,
+    'not_found', or None (KV failure). Both trade keys persist with NO TTL."""
+    opens = _kv_get(f"trades:{user_id}") or []
+    tr = next((t for t in opens
+               if t.get("trade_id") == trade_id and t.get("status") == "open"), None)
+    if not tr:
+        return "not_found"
+    entry = tr.get("entry_price")
+    if not entry:
+        return "not_found"
+    size = tr.get("size_usd") or 0
+    if tr.get("direction") == "long":
+        pnl_pct = (exit_price - entry) / entry * 100
+    else:
+        pnl_pct = (entry - exit_price) / entry * 100
+    eps = 0.05
+    result = "win" if pnl_pct > eps else "loss" if pnl_pct < -eps else "breakeven"
+    now = _now_iso()
+    closed = {**tr, "exit_price": exit_price, "pnl_pct": round(pnl_pct, 3),
+              "pnl_usd": round(size * pnl_pct / 100, 2), "result": result,
+              "closed_at": now, "close_reason": reason, "status": "closed",
+              "last_updated_at": now, "csv_synced": False}
+    # 1) record the close first (dedupe) so a later failure can't lose the trade
+    closed_list = _kv_get(f"closed_trades:{user_id}") or []
+    if not any(c.get("trade_id") == trade_id for c in closed_list):
+        closed_list = closed_list + [closed]
+    if not _kv_set(f"closed_trades:{user_id}", closed_list, ttl_seconds=None):
+        return None
+    # 2) remove from the open list
+    new_opens = [t for t in opens if t.get("trade_id") != trade_id]
+    if not _kv_set(f"trades:{user_id}", new_opens, ttl_seconds=None):
+        return None
+    return closed
+
+def _close_summary(c: dict) -> str:
+    emoji = "✅" if c["result"] == "win" else "❌" if c["result"] == "loss" else "↔️"
+    return (f"{emoji} <b>{c['symbol']} {c['direction'].upper()} closed</b>\n"
+            f"Entry {float(c['entry_price']):.6g} → Exit {float(c['exit_price']):.6g}\n"
+            f"P&amp;L: {c['pnl_pct']:+.2f}%  (${c['pnl_usd']:+.2f})\n"
+            f"Result: {c['result']}  ·  {c['close_reason']}")
+
+
 # ── Routing ──────────────────────────────────────────────────────────────────
 
 def _route(update: dict) -> str:
@@ -280,6 +337,7 @@ def _route(update: dict) -> str:
         chat = msg.get("chat") or {}
         frm  = msg.get("from") or {}
         chat_id = chat.get("id")
+        user_id = frm.get("id")
         if text.startswith("/whoami"):
             _tg("sendMessage", {
                 "chat_id": chat_id,
@@ -290,14 +348,55 @@ def _route(update: dict) -> str:
                 "parse_mode": "HTML",
             })
             return "whoami"
+        if text.startswith("/mytrades"):
+            opens = [t for t in (_kv_get(f"trades:{user_id}") or [])
+                     if t.get("status") == "open"]
+            if not opens:
+                _tg("sendMessage", {"chat_id": chat_id, "text": "No open trades."})
+                return "mytrades_empty"
+            lines = ["📂 <b>Your open trades</b>:"]
+            for i, t in enumerate(opens):
+                arrow = "📈" if t.get("direction") == "long" else "📉"
+                lines.append(f"{i + 1}. {arrow} {t.get('symbol')} "
+                             f"{str(t.get('direction', '')).upper()} "
+                             f"@ {float(t.get('entry_price') or 0):.6g}")
+            _tg("sendMessage", {"chat_id": chat_id, "text": "\n".join(lines),
+                                "parse_mode": "HTML", "reply_markup": _mytrades_kb(opens)})
+            return "mytrades"
         if text.startswith("/help") or text.startswith("/start"):
             _tg("sendMessage", {
                 "chat_id": chat_id,
                 "text": ("🧪 Varam-Dynamics webhook is online.\n"
-                         "Commands: /whoami\n"
+                         "Commands: /whoami · /mytrades\n"
                          "This is a system endpoint — not financial advice."),
             })
             return "help"
+        # ---- manual exit price (only while a close session awaits it) ----
+        cs = _kv_get(_close_key(user_id))
+        if cs and cs.get("awaiting_price") and cs.get("trade_id"):
+            try:
+                exit_px = float(text.replace(",", "").strip())
+            except ValueError:
+                _tg("sendMessage", {"chat_id": chat_id,
+                                    "text": "⚠️ Please send a valid number for the exit price."})
+                return "manual_invalid"
+            if exit_px <= 0:
+                _tg("sendMessage", {"chat_id": chat_id,
+                                    "text": "⚠️ Exit price must be a positive number."})
+                return "manual_invalid"
+            res = _close_trade(user_id, cs["trade_id"], exit_px, "manual")
+            if res is None:
+                _tg("sendMessage", {"chat_id": chat_id,
+                                    "text": "⚠️ Temporarily unavailable, please try again."})
+                return "kv_unavailable"
+            if res == "not_found":
+                _tg("sendMessage", {"chat_id": chat_id,
+                                    "text": "⚠️ Already closed or not found."})
+                return "close_not_found"
+            _kv_set(_close_key(user_id), {"trade_id": None, "awaiting_price": False}, SESSION_TTL)
+            _tg("sendMessage", {"chat_id": chat_id, "text": _close_summary(res),
+                                "parse_mode": "HTML"})
+            return "manual_closed"
         return "ignored_message"
 
     # ---- button taps ----
@@ -532,6 +631,61 @@ def _route(update: dict) -> str:
             _edit(f"✅ Logged {len(records)} open trade(s).")
             return "logged"
 
+        # ---- CLOSE:<index> -> pick an open trade, show exit-price options ----
+        if data.startswith("CLOSE:"):
+            try:
+                idx = int(data.split(":", 1)[1])
+            except ValueError:
+                return "ignored"
+            opens = [t for t in (_kv_get(f"trades:{user_id}") or [])
+                     if t.get("status") == "open"]
+            if idx < 0 or idx >= len(opens):
+                _edit("⚠️ Already closed or not found.")
+                return "close_not_found"
+            tr = opens[idx]
+            if not _kv_set(_close_key(user_id),
+                           {"trade_id": tr["trade_id"], "awaiting_price": False}, SESSION_TTL):
+                _edit("⚠️ Temporarily unavailable, please try again.")
+                return "kv_unavailable"
+            _edit(f"Close <b>{tr['symbol']} {tr['direction'].upper()}</b> — choose exit price:",
+                  _px_kb())
+            return "close_selected"
+
+        # ---- PX:<kind> -> resolve exit price and close (or await manual) ----
+        if data.startswith("PX:"):
+            kind = data.split(":", 1)[1]
+            cs = _kv_get(_close_key(user_id))
+            if not cs or not cs.get("trade_id"):
+                _edit("⚠️ Session expired — send /mytrades to start again.")
+                return "session_expired"
+            if kind == "manual":
+                cs["awaiting_price"] = True
+                _kv_set(_close_key(user_id), cs, SESSION_TTL)
+                _edit("✏️ Send the exit price as a number (e.g. 1650.5).")
+                return "await_manual"
+            opens = [t for t in (_kv_get(f"trades:{user_id}") or [])
+                     if t.get("status") == "open"]
+            tr = next((t for t in opens if t.get("trade_id") == cs["trade_id"]), None)
+            if not tr:
+                _edit("⚠️ Already closed or not found.")
+                return "close_not_found"
+            px = {"target": tr.get("tp_price"), "stop": tr.get("sl_price"),
+                  "be": tr.get("entry_price")}.get(kind)
+            reason = {"target": "target", "stop": "stop", "be": "breakeven"}.get(kind)
+            if px is None or reason is None:
+                _edit("⚠️ Price unavailable for this option.")
+                return "px_unavailable"
+            res = _close_trade(user_id, cs["trade_id"], float(px), reason)
+            if res is None:
+                _edit("⚠️ Temporarily unavailable, please try again.")
+                return "kv_unavailable"
+            if res == "not_found":
+                _edit("⚠️ Already closed or not found.")
+                return "close_not_found"
+            _kv_set(_close_key(user_id), {"trade_id": None, "awaiting_price": False}, SESSION_TTL)
+            _edit(_close_summary(res))
+            return "closed"
+
         # ---- Help / test acknowledgement ----
         if data in ("HELP", "TEST", "PING") and chat_id is not None:
             _tg("sendMessage", {
@@ -569,7 +723,7 @@ class handler(BaseHTTPRequestHandler):
         self.wfile.write(data)
 
     def do_GET(self):  # health check — no secrets exposed
-        self._send(200, {"ok": True, "service": "varam-dynamics-webhook", "phase": "2D"})
+        self._send(200, {"ok": True, "service": "varam-dynamics-webhook", "phase": "2E-a"})
 
     def do_POST(self):
         try:
