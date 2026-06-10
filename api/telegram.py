@@ -22,8 +22,12 @@ Secrets are read from environment variables and NEVER printed.
 """
 from __future__ import annotations
 from http.server import BaseHTTPRequestHandler
+import base64
+import csv
+import io
 import json
 import os
+import urllib.error
 import urllib.request
 from datetime import datetime, timezone
 
@@ -353,6 +357,138 @@ def _pending_list(pend: dict) -> list:
     return [pend[k] for k in sorted(pend) if pend[k].get("status") == "pending"]
 
 
+# ── GitHub CSV history writer (Phase 2E-b1; token-safe, stdlib only) ────────
+CSV_PATH   = "results/manual_trades/trades.csv"
+CSV_HEADER = ["timestamp", "user_id", "username", "trade_id", "symbol", "direction",
+              "entry_price", "exit_price", "leverage_suggested", "leverage_used",
+              "size_usd", "risk_usd", "sl_price", "tp_price", "result", "pnl_pct",
+              "pnl_usd", "signal_score", "close_reason", "opened_at", "closed_at",
+              "message_id", "batch_id", "csv_synced"]
+
+def _gh_get(path: str):
+    """Read a repo file via Contents API. Returns (status, text, sha) where
+    status is ok|absent|no_token|error. NEVER prints the token."""
+    token = os.environ.get("GITHUB_TOKEN", "")
+    if not token:
+        return ("no_token", None, None)
+    url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{path}?ref={GITHUB_REF}"
+    req = urllib.request.Request(url, headers={
+        "Accept": "application/vnd.github+json",
+        "Authorization": f"Bearer {token}",
+        "User-Agent": "varam-dynamics-webhook"})
+    try:
+        with urllib.request.urlopen(req, timeout=10) as r:
+            data = json.loads(r.read().decode())
+        text = base64.b64decode(data.get("content", "")).decode()
+        return ("ok", text, data.get("sha"))
+    except urllib.error.HTTPError as e:
+        return ("absent", None, None) if e.code == 404 else ("error", None, None)
+    except Exception:
+        return ("error", None, None)
+
+def _gh_put(path: str, content_b64: str, message: str, sha: str | None = None) -> str:
+    """Create/update a repo file via Contents API. Returns
+    ok|no_token|conflict|error. NEVER prints the token."""
+    token = os.environ.get("GITHUB_TOKEN", "")
+    if not token:
+        return "no_token"
+    url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{path}"
+    payload = {"message": message, "content": content_b64, "branch": GITHUB_REF}
+    if sha:
+        payload["sha"] = sha
+    req = urllib.request.Request(url, data=json.dumps(payload).encode(), method="PUT",
+        headers={"Accept": "application/vnd.github+json",
+                 "Authorization": f"Bearer {token}",
+                 "Content-Type": "application/json",
+                 "User-Agent": "varam-dynamics-webhook"})
+    try:
+        with urllib.request.urlopen(req, timeout=10) as r:
+            r.read()
+        return "ok"
+    except urllib.error.HTTPError as e:
+        return "conflict" if e.code in (409, 422) else "error"
+    except Exception:
+        return "error"
+
+def _trade_to_row(c: dict) -> dict:
+    return {
+        "timestamp": c.get("closed_at"), "user_id": c.get("user_id"),
+        "username": c.get("username"), "trade_id": c.get("trade_id"),
+        "symbol": c.get("symbol"), "direction": c.get("direction"),
+        "entry_price": c.get("entry_price"), "exit_price": c.get("exit_price"),
+        "leverage_suggested": c.get("leverage_suggested"),
+        "leverage_used": c.get("leverage_used"), "size_usd": c.get("size_usd"),
+        "risk_usd": c.get("risk_usd"), "sl_price": c.get("sl_price"),
+        "tp_price": c.get("tp_price"), "result": c.get("result"),
+        "pnl_pct": c.get("pnl_pct"), "pnl_usd": c.get("pnl_usd"),
+        "signal_score": c.get("signal_score"), "close_reason": c.get("close_reason"),
+        "opened_at": c.get("opened_at"), "closed_at": c.get("closed_at"),
+        "message_id": c.get("message_id"), "batch_id": c.get("batch_id"),
+        "csv_synced": True,
+    }
+
+def _mark_synced(user_id, ids: set) -> None:
+    closed = _kv_get(f"closed_trades:{user_id}") or []
+    changed = False
+    for c in closed:
+        if c.get("trade_id") in ids and not c.get("csv_synced"):
+            c["csv_synced"] = True
+            changed = True
+    if changed:
+        _kv_set(f"closed_trades:{user_id}", closed, ttl_seconds=None)
+
+def _sync_history(user_id) -> dict:
+    """Sync this user's unsynced closed trades to the repo CSV. Upstash records
+    are marked csv_synced only after a successful PUT. Returns a status dict."""
+    closed = _kv_get(f"closed_trades:{user_id}") or []
+    unsynced = [c for c in closed if not c.get("csv_synced")]
+    if not unsynced:
+        return {"status": "noop", "synced": 0}
+    for _ in range(3):                      # retry on 409/sha-mismatch
+        st, text, sha = _gh_get(CSV_PATH)
+        if st == "no_token":
+            return {"status": "no_token"}
+        if st == "error":
+            return {"status": "error"}
+        existing_ids = set()
+        if st == "ok" and (text or "").strip():
+            for r in csv.DictReader(io.StringIO(text)):
+                if r.get("trade_id"):
+                    existing_ids.add(r.get("trade_id"))
+            create = False
+        else:
+            create = True
+        to_write = [c for c in unsynced if c.get("trade_id") not in existing_ids]
+        if not to_write:                    # all already in CSV -> just mark synced
+            _mark_synced(user_id, existing_ids)
+            return {"status": "ok", "synced": 0, "already": len(unsynced)}
+        buf = io.StringIO()
+        w = csv.DictWriter(buf, fieldnames=CSV_HEADER, lineterminator="\n",
+                           extrasaction="ignore")
+        if create:
+            w.writeheader()
+        for c in to_write:
+            w.writerow(_trade_to_row(c))
+        if create:
+            new_text = buf.getvalue()
+        else:
+            base = text if (text == "" or text.endswith("\n")) else text + "\n"
+            new_text = base + buf.getvalue()
+        content_b64 = base64.b64encode(new_text.encode()).decode()
+        ps = _gh_put(CSV_PATH, content_b64,
+                     f"sync {len(to_write)} manual trade(s)",
+                     sha=(None if create else sha))
+        if ps == "ok":
+            _mark_synced(user_id, existing_ids | {c["trade_id"] for c in to_write})
+            return {"status": "ok", "synced": len(to_write)}
+        if ps == "no_token":
+            return {"status": "no_token"}
+        if ps == "conflict":
+            continue                        # re-GET sha and retry
+        return {"status": "error"}
+    return {"status": "conflict"}
+
+
 # ── Routing ──────────────────────────────────────────────────────────────────
 
 def _route(update: dict) -> str:
@@ -447,6 +583,30 @@ def _route(update: dict) -> str:
             _tg("sendMessage", {"chat_id": chat_id, "text": "\n".join(lines),
                                 "parse_mode": "HTML", "reply_markup": _kb(rows)})
             return "pending"
+        if text.startswith("/sync_history"):
+            if not _is_admin(user_id):
+                _tg("sendMessage", {"chat_id": chat_id, "text": "⛔ Not authorised."})
+                return "denied"
+            res = _sync_history(user_id)
+            st = res.get("status")
+            if st == "no_token":
+                _tg("sendMessage", {"chat_id": chat_id,
+                                    "text": "⚠️ GitHub token missing; sync not run."})
+                return "sync_no_token"
+            if st == "noop":
+                _tg("sendMessage", {"chat_id": chat_id, "text": "No unsynced closed trades."})
+                return "sync_noop"
+            if st == "ok":
+                _tg("sendMessage", {"chat_id": chat_id,
+                                    "text": f"✅ Synced {res.get('synced', 0)} trade(s) to history."})
+                return "sync_ok"
+            if st == "conflict":
+                _tg("sendMessage", {"chat_id": chat_id,
+                                    "text": "⚠️ History file is busy — please retry."})
+                return "sync_conflict"
+            _tg("sendMessage", {"chat_id": chat_id,
+                                "text": "⚠️ Sync failed; trades remain pending."})
+            return "sync_error"
         # ---- manual exit price (only while a close session awaits it) ----
         cs = _kv_get(_close_key(user_id))
         if cs and cs.get("awaiting_price") and cs.get("trade_id"):
@@ -844,7 +1004,7 @@ class handler(BaseHTTPRequestHandler):
         self.wfile.write(data)
 
     def do_GET(self):  # health check — no secrets exposed
-        self._send(200, {"ok": True, "service": "varam-dynamics-webhook", "phase": "2F"})
+        self._send(200, {"ok": True, "service": "varam-dynamics-webhook", "phase": "2E-b1"})
 
     def do_POST(self):
         try:
