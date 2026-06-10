@@ -358,7 +358,8 @@ def _pending_list(pend: dict) -> list:
 
 
 # ── GitHub CSV history writer (Phase 2E-b1; token-safe, stdlib only) ────────
-CSV_PATH   = "results/manual_trades/trades.csv"
+CSV_PATH      = "results/manual_trades/trades.csv"
+TEST_CSV_PATH = "results/manual_trades/test_sync.csv"   # TEMPORARY write-proof only
 CSV_HEADER = ["timestamp", "user_id", "username", "trade_id", "symbol", "direction",
               "entry_price", "exit_price", "leverage_suggested", "leverage_used",
               "size_usd", "risk_usd", "sl_price", "tp_price", "result", "pnl_pct",
@@ -488,6 +489,45 @@ def _sync_history(user_id) -> dict:
         return {"status": "error"}
     return {"status": "conflict"}
 
+def _sync_test_write() -> str:
+    """TEMPORARY write-proof: append ONE synthetic row to TEST_CSV_PATH to prove
+    the Vercel GITHUB_TOKEN can write via the Contents API. Returns
+    ok|no_token|conflict|error. NEVER touches trades.csv or Upstash; builds the
+    row in code; never prints the token."""
+    row = {k: "" for k in CSV_HEADER}
+    row.update({"timestamp": _now_iso(), "user_id": 0, "username": "test",
+                "trade_id": f"test:{_now_iso()}", "symbol": "TESTSYNC",
+                "direction": "long", "entry_price": 1, "exit_price": 1,
+                "result": "test", "close_reason": "sync_test", "csv_synced": True})
+    for _ in range(3):                      # retry on 409/sha-mismatch
+        st, text, sha = _gh_get(TEST_CSV_PATH)
+        if st == "no_token":
+            return "no_token"
+        if st == "error":
+            return "error"
+        create = not (st == "ok" and (text or "").strip())
+        buf = io.StringIO()
+        w = csv.DictWriter(buf, fieldnames=CSV_HEADER, lineterminator="\n",
+                           extrasaction="ignore")
+        if create:
+            w.writeheader()
+        w.writerow(row)
+        if create:
+            new_text = buf.getvalue()
+        else:
+            base = text if (text == "" or text.endswith("\n")) else text + "\n"
+            new_text = base + buf.getvalue()
+        ps = _gh_put(TEST_CSV_PATH, base64.b64encode(new_text.encode()).decode(),
+                     "sync_test: write-proof row", sha=(None if create else sha))
+        if ps == "ok":
+            return "ok"
+        if ps == "no_token":
+            return "no_token"
+        if ps == "conflict":
+            continue
+        return "error"
+    return "conflict"
+
 
 # ── Routing ──────────────────────────────────────────────────────────────────
 
@@ -607,6 +647,26 @@ def _route(update: dict) -> str:
             _tg("sendMessage", {"chat_id": chat_id,
                                 "text": "⚠️ Sync failed; trades remain pending."})
             return "sync_error"
+        if text.startswith("/sync_test"):   # TEMPORARY write-proof (admin only)
+            if not _is_admin(user_id):
+                _tg("sendMessage", {"chat_id": chat_id, "text": "⛔ Not authorised."})
+                return "denied"
+            st = _sync_test_write()
+            if st == "no_token":
+                _tg("sendMessage", {"chat_id": chat_id,
+                                    "text": "⚠️ GitHub token missing; test not run."})
+                return "synctest_no_token"
+            if st == "ok":
+                _tg("sendMessage", {"chat_id": chat_id,
+                    "text": "✅ Wrote a test row to test_sync.csv — token WRITE works. "
+                            "Remember to delete this file."})
+                return "synctest_ok"
+            if st == "conflict":
+                _tg("sendMessage", {"chat_id": chat_id,
+                                    "text": "⚠️ test_sync.csv is busy — please retry."})
+                return "synctest_conflict"
+            _tg("sendMessage", {"chat_id": chat_id, "text": "⚠️ Test write failed."})
+            return "synctest_error"
         # ---- manual exit price (only while a close session awaits it) ----
         cs = _kv_get(_close_key(user_id))
         if cs and cs.get("awaiting_price") and cs.get("trade_id"):
