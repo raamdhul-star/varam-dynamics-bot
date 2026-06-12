@@ -319,16 +319,20 @@ def _close_trade(user_id, trade_id, exit_price, reason):
         return None
     return closed
 
-def _close_summary(c: dict) -> str:
+def _close_summary(c: dict, is_admin: bool = False) -> str:
     emoji = "✅" if c["result"] == "win" else "❌" if c["result"] == "loss" else "↔️"
-    return (f"{emoji} <b>{c['symbol']} {c['direction'].upper()} closed</b>\n"
+    saved = ("📝 Saved to your closed trades. Run /sync_history to file permanent history."
+             if is_admin else "📝 Saved to your closed trades.")
+    return (f"{emoji} <b>{c['symbol']} {c['direction'].upper()} — closed</b>\n"
             f"Entry {float(c['entry_price']):.6g} → Exit {float(c['exit_price']):.6g}\n"
-            f"P&amp;L: {c['pnl_pct']:+.2f}%  (${c['pnl_usd']:+.2f})\n"
-            f"Result: {c['result']}  ·  {c['close_reason']}")
+            f"Result: <b>{c['pnl_pct']:+.2f}%</b>  (${c['pnl_usd']:+.2f})  ·  {c['result']}\n"
+            f"Method: {c.get('close_reason')}\n"
+            f"{saved}")
 
 
 # ── Invite-only access control (Phase 2F; Upstash only, no TTL) ─────────────
-NOT_APPROVED = "⏳ Not approved yet. Send /request_access to request access."
+NOT_APPROVED = ("⏳ Not approved yet. Send /request_access to request access. "
+                "Send /help to learn more.")
 
 def _admin_id() -> int:
     try:
@@ -355,6 +359,43 @@ def _is_approved(user_id) -> bool:
 def _pending_list(pend: dict) -> list:
     # deterministic order so /pending listing and AP:/RJ:<index> resolve alike
     return [pend[k] for k in sorted(pend) if pend[k].get("status") == "pending"]
+
+
+# ── Help text + button (Phase 4.1; display only, generic labels) ────────────
+
+def _help_kb() -> dict:
+    return _kb([[{"text": "❓ Help", "callback_data": "HELP"}]])
+
+def _help_text(is_admin: bool = False) -> str:
+    lines = [
+        "ℹ️ <b>Varam-Dynamics — Help</b>", "",
+        "<b>Commands</b>",
+        "/start — your status &amp; quick start",
+        "/whoami — show your account id",
+        "/request_access — ask the admin for access",
+        "/mytrades — view &amp; close your logged trades",
+        "/help — this message",
+    ]
+    if is_admin:
+        lines.append("/sync_history — file closed trades to permanent history (admin)")
+    lines += [
+        "",
+        "<b>How it works</b>",
+        "Tap “✅ Select my trades” on a Signal alert to log trades you took, then "
+        "choose leverage &amp; size. Confirm records an OPEN trade.",
+        "",
+        "<b>Managing trades</b>",
+        "/mytrades lists open trades. Tap Close, pick an exit price, and the bot "
+        "calculates your profit/loss and files a CLOSED trade.",
+        "",
+        "⚠️ Only tap Confirm / Close for trades you really took — they create real records.",
+        "",
+        "Risk dots: 🟢 low · 🟡 medium · 🟠 elevated · 🔴 high",
+        "",
+        "⚠️ Educational only — not financial advice. High-risk markets; your "
+        "decisions are your own. DYOR.",
+    ]
+    return "\n".join(lines)
 
 
 # ── GitHub CSV history writer (Phase 2E-b1; token-safe, stdlib only) ────────
@@ -514,14 +555,20 @@ def _route(update: dict) -> str:
             return "whoami"
         if text.startswith("/mytrades"):
             if not _is_approved(user_id):
-                _tg("sendMessage", {"chat_id": chat_id, "text": NOT_APPROVED})
+                _tg("sendMessage", {"chat_id": chat_id, "text": NOT_APPROVED,
+                                    "reply_markup": _help_kb()})
                 return "blocked"
             opens = [t for t in (_kv_get(f"trades:{user_id}") or [])
                      if t.get("status") == "open"]
             if not opens:
-                _tg("sendMessage", {"chat_id": chat_id, "text": "No open trades."})
+                _tg("sendMessage", {"chat_id": chat_id,
+                    "text": ("📂 You have no open trades.\n\n"
+                             "When you log a trade from a Signal alert (Select → Confirm), "
+                             "it appears here so you can close it later.")})
                 return "mytrades_empty"
-            lines = ["📂 <b>Your open trades</b>:"]
+            lines = ["📂 <b>Your open trades</b>",
+                     "Tap a trade to close it — you'll pick the exit price; "
+                     "profit/loss is calculated automatically."]
             for i, t in enumerate(opens):
                 arrow = "📈" if t.get("direction") == "long" else "📉"
                 lines.append(f"{i + 1}. {arrow} {t.get('symbol')} "
@@ -532,20 +579,25 @@ def _route(update: dict) -> str:
             return "mytrades"
         if text.startswith("/start"):
             if _is_approved(user_id):
-                _tg("sendMessage", {"chat_id": chat_id,
-                    "text": "👋 Welcome back — you're approved.\nSend /mytrades to manage your trades."})
+                _tg("sendMessage", {"chat_id": chat_id, "parse_mode": "HTML",
+                    "reply_markup": _help_kb(),
+                    "text": ("👋 <b>Welcome back!</b> You're approved ✅\n\n"
+                             "You'll receive ranked Signal alerts. Tap “✅ Select my trades” "
+                             "on an alert to log a trade, or send /mytrades to manage open "
+                             "ones. /help anytime.\n\n"
+                             "⚠️ Educational only — not financial advice. High-risk markets; "
+                             "your decisions are your own.")})
                 return "start_approved"
-            _tg("sendMessage", {"chat_id": chat_id,
-                "text": ("👋 Welcome to Varam-Dynamics.\n"
-                         "⏳ You're not approved yet. Send /request_access to request access.")})
+            _tg("sendMessage", {"chat_id": chat_id, "parse_mode": "HTML",
+                "reply_markup": _help_kb(),
+                "text": ("👋 <b>Welcome to Varam-Dynamics.</b>\n\n"
+                         "This is a private, invite-only signal bot. You're not approved "
+                         "yet ⏳.\nSend /request_access to ask the admin for access.\n\n"
+                         "⚠️ Educational only — not financial advice. High-risk markets.")})
             return "start_unapproved"
         if text.startswith("/help"):
-            _tg("sendMessage", {
-                "chat_id": chat_id,
-                "text": ("🧪 Varam-Dynamics webhook is online.\n"
-                         "Commands: /start · /whoami · /request_access · /mytrades\n"
-                         "This is a system endpoint — not financial advice."),
-            })
+            _tg("sendMessage", {"chat_id": chat_id, "parse_mode": "HTML",
+                                "text": _help_text(_is_admin(user_id))})
             return "help"
         if text.startswith("/request_access"):
             if _is_approved(user_id):
@@ -611,7 +663,8 @@ def _route(update: dict) -> str:
         cs = _kv_get(_close_key(user_id))
         if cs and cs.get("awaiting_price") and cs.get("trade_id"):
             if not _is_approved(user_id):
-                _tg("sendMessage", {"chat_id": chat_id, "text": NOT_APPROVED})
+                _tg("sendMessage", {"chat_id": chat_id, "text": NOT_APPROVED,
+                                    "reply_markup": _help_kb()})
                 return "blocked"
             try:
                 exit_px = float(text.replace(",", "").strip())
@@ -633,8 +686,8 @@ def _route(update: dict) -> str:
                                     "text": "⚠️ Already closed or not found."})
                 return "close_not_found"
             _kv_set(_close_key(user_id), {"trade_id": None, "awaiting_price": False}, SESSION_TTL)
-            _tg("sendMessage", {"chat_id": chat_id, "text": _close_summary(res),
-                                "parse_mode": "HTML"})
+            _tg("sendMessage", {"chat_id": chat_id, "parse_mode": "HTML",
+                                "text": _close_summary(res, _is_admin(user_id))})
             return "manual_closed"
         return "ignored_message"
 
@@ -675,7 +728,7 @@ def _route(update: dict) -> str:
         _TRADE_PREFIX = ("TOGGLE_", "LEV_", "SZ_", "CLOSE:", "PX:")
         if (data in _TRADE_CB or any(data.startswith(p) for p in _TRADE_PREFIX)) \
                 and not _is_approved(user_id):
-            _edit(NOT_APPROVED)
+            _edit(NOT_APPROVED, _help_kb())
             return "blocked"
 
         # ---- SELECT: show multi-select + start an empty session ----
@@ -930,7 +983,7 @@ def _route(update: dict) -> str:
                 _edit("⚠️ Already closed or not found.")
                 return "close_not_found"
             _kv_set(_close_key(user_id), {"trade_id": None, "awaiting_price": False}, SESSION_TTL)
-            _edit(_close_summary(res))
+            _edit(_close_summary(res, _is_admin(user_id)))
             return "closed"
 
         # ---- AP:/RJ:<index> — admin approve / reject (admin only) ----
@@ -967,13 +1020,14 @@ def _route(update: dict) -> str:
             _edit(f"{verdict} user <code>{uid_s}</code>.")
             return tag
 
-        # ---- Help / test acknowledgement ----
-        if data in ("HELP", "TEST", "PING") and chat_id is not None:
-            _tg("sendMessage", {
-                "chat_id": chat_id,
-                "text": "🧪 Webhook test OK — your button tap was handled instantly.",
-            })
+        # ---- Help button -> real help text (admin-aware) ----
+        if data == "HELP" and chat_id is not None:
+            _tg("sendMessage", {"chat_id": chat_id, "parse_mode": "HTML",
+                                "text": _help_text(_is_admin(user_id))})
             return "callback_help"
+        if data in ("TEST", "PING") and chat_id is not None:
+            _tg("sendMessage", {"chat_id": chat_id, "text": "✅ ok"})
+            return "callback_ack"
         return "callback_ack"
 
     return "ignored"
