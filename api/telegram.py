@@ -377,7 +377,12 @@ def _help_text(is_admin: bool = False) -> str:
         "/help — this message",
     ]
     if is_admin:
-        lines.append("/sync_history — file closed trades to permanent history (admin)")
+        lines += [
+            "/status — bot status summary (admin)",
+            "/maintenance_start — announce maintenance start (admin)",
+            "/maintenance_done — announce maintenance complete (admin)",
+            "/sync_history — file closed trades to permanent history (admin)",
+        ]
     lines += [
         "",
         "<b>How it works</b>",
@@ -396,6 +401,33 @@ def _help_text(is_admin: bool = False) -> str:
         "decisions are your own. DYOR.",
     ]
     return "\n".join(lines)
+
+
+# ── Maintenance notices (Phase 4.1B; admin-only, advisory broadcast) ────────
+MAINT_START_TEXT = ("🔧 Maintenance started\n\n"
+                    "A bot update or verification is in progress.\n"
+                    "Signals and tracking may be briefly delayed.\n"
+                    "Avoid tapping trade buttons until the all-clear message.")
+MAINT_DONE_TEXT  = ("✅ Maintenance complete\n\n"
+                    "Bot checks are complete.\n"
+                    "Buttons, commands, scanner, and monitor are operating normally.")
+
+def _broadcast(text: str) -> tuple[int, int]:
+    """Send `text` to all approved users + admin (deduped by id). Returns
+    (sent, failed). Display/message only — no trade writes."""
+    ids = {str(uid) for uid, rec in (_allowlist() or {}).items()
+           if rec.get("status") == "approved"}
+    aid = _admin_id()
+    if aid:
+        ids.add(str(aid))
+    sent = failed = 0
+    for uid in ids:
+        r = _tg("sendMessage", {"chat_id": int(uid), "text": text})
+        if r and r.get("ok"):
+            sent += 1
+        else:
+            failed += 1
+    return sent, failed
 
 
 # ── GitHub CSV history writer (Phase 2E-b1; token-safe, stdlib only) ────────
@@ -659,6 +691,43 @@ def _route(update: dict) -> str:
             _tg("sendMessage", {"chat_id": chat_id,
                                 "text": "⚠️ Sync failed; trades remain pending."})
             return "sync_error"
+        if text.startswith("/maintenance_start"):
+            if not _is_admin(user_id):
+                _tg("sendMessage", {"chat_id": chat_id, "text": "⛔ Not authorised."})
+                return "denied"
+            sent, failed = _broadcast(MAINT_START_TEXT)
+            note = f"📣 Notice sent to {sent} approved user(s)."
+            if failed:
+                note += f" {failed} failed."
+            _tg("sendMessage", {"chat_id": chat_id, "text": note})
+            return "maintenance_start"
+        if text.startswith("/maintenance_done"):
+            if not _is_admin(user_id):
+                _tg("sendMessage", {"chat_id": chat_id, "text": "⛔ Not authorised."})
+                return "denied"
+            sent, failed = _broadcast(MAINT_DONE_TEXT)
+            note = f"📣 Notice sent to {sent} approved user(s)."
+            if failed:
+                note += f" {failed} failed."
+            _tg("sendMessage", {"chat_id": chat_id, "text": note})
+            return "maintenance_done"
+        if text.startswith("/status"):
+            if not _is_admin(user_id):
+                _tg("sendMessage", {"chat_id": chat_id, "text": "⛔ Not authorised."})
+                return "denied"
+            csv_line = ("ready (token present)" if os.environ.get("GITHUB_TOKEN")
+                        else "⚠️ token missing")
+            open_n = len([t for t in (_kv_get(f"trades:{user_id}") or [])
+                          if t.get("status") == "open"])
+            _tg("sendMessage", {"chat_id": chat_id, "text": (
+                "📊 Admin status\n"
+                "• Webhook: live ✅\n"
+                "• Callback handling: this Vercel webhook endpoint\n"
+                "• Manual trade logging: enabled\n"
+                f"• CSV history sync: {csv_line}\n"
+                f"• Your open trades: {open_n}\n\n"
+                "Reminder: Confirm / Close create real records.")})
+            return "status"
         # ---- manual exit price (only while a close session awaits it) ----
         cs = _kv_get(_close_key(user_id))
         if cs and cs.get("awaiting_price") and cs.get("trade_id"):
