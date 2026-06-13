@@ -269,6 +269,38 @@ def _confirm_kb() -> dict:
     return _kb([[{"text": "✅ Confirm & log", "callback_data": "CONFIRM"}]])
 
 
+def _logged_summary(records: list) -> str:
+    """Phase 4.2C: rich logged-trade summary (display only; built from records
+    already written to Upstash). Keeps the user oriented after Confirm."""
+    n = len(records)
+    lines = [f"✅ Logged {n} open trade{'s' if n != 1 else ''}", ""]
+    for i, r in enumerate(records, 1):
+        prefix = f"{i}. " if n > 1 else ""
+        lines.append(f"{prefix}<b>{r['symbol']} {str(r['direction']).upper()}</b>")
+        lines.append(f"Entry: {float(r['entry_price']):.6g}")
+        lines.append(f"Target: {float(r['tp_price']):.6g}")
+        lines.append(f"Stop: {float(r['sl_price']):.6g}")
+        lines.append(f"Leverage: {float(r['leverage_used']):g}x")
+        lines.append(f"Size: ${float(r['size_usd']):g}")
+        lines.append(f"Risk: ${float(r['risk_usd']):.2f}")
+        lines.append("")
+    lines.append("Send /mytrades to manage or close " + ("them." if n > 1 else "it."))
+    return "\n".join(lines)
+
+
+def _skip_text(batch: dict | None) -> str:
+    """Phase 4.2C: skip message, listing the skipped calls when batch context
+    is available. Logs nothing."""
+    lines = ["⏭️ Skipped", "", "No trade was logged from this alert."]
+    sigs = (batch or {}).get("sigs") or []
+    if sigs:
+        lines += ["", "Skipped:"]
+        for s in sigs:
+            lines.append(f"{s.get('symbol')} {str(s.get('direction', '')).upper()}")
+    lines += ["", "You can wait for the next Signal alert."]
+    return "\n".join(lines)
+
+
 # ── Close flow helpers (Phase 2E-a; Upstash only, no TTL on trade keys) ──────
 
 def _close_key(user_id) -> str:
@@ -800,6 +832,11 @@ def _route(update: dict) -> str:
             _edit(NOT_APPROVED, _help_kb())
             return "blocked"
 
+        # ---- SKIP: dismiss the alert with context (logs nothing) ----
+        if data == "SKIP":
+            _edit(_skip_text(_batch_for_mid()))
+            return "skipped"
+
         # ---- SELECT: show multi-select + start an empty session ----
         if data == "SELECT":
             batch = _batch_for_mid()
@@ -997,7 +1034,7 @@ def _route(update: dict) -> str:
             sess["logged"] = True
             sess["updated_at"] = _now_iso()
             _kv_set(_sess_key(user_id, mid), sess)   # best-effort; dedupe still guards
-            _edit(f"✅ Logged {len(records)} open trade(s).")
+            _edit(_logged_summary(records))
             return "logged"
 
         # ---- CLOSE:<index> -> pick an open trade, show exit-price options ----
