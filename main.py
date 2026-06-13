@@ -32,12 +32,12 @@ def ist_now():
 # ── Friendly labels for the auto paper-trade update message (display only) ──
 EXIT_STYLE_LABELS = {
     "fixed_pct":  "Fixed % Exit",
-    "cpr_target": "CPR Target Exit",
+    "cpr_target": "Target Exit",
     "trailing":   "Trailing Stop Exit",
 }
 EXIT_STYLE_MEANING = {
     "fixed_pct":  "this paper trade used the fixed +10%/-7% rule, not the trailing stop.",
-    "cpr_target": "this paper trade aimed for the CPR-based target line (R1/S1).",
+    "cpr_target": "this paper trade aimed for the target zone.",
     "trailing":   "this paper trade trailed the stop to protect profit as price moved our way.",
 }
 
@@ -215,7 +215,7 @@ def run_setup():
     print("Testing Telegram...")
     ok = tg.send_message(
         "✅ <b>Varam-Dynamics</b> connected!\n\n"
-        "I'll send CPR breakout alerts every 2 hours.\n"
+        "I'll send Signal alerts.\n"
         "Tap the buttons to log your trades.\n\n"
         "Send /help to see all commands."
     )

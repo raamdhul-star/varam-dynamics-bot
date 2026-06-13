@@ -203,7 +203,7 @@ def _card(sb, acct):
         f"{'━'*32}\n"
         f"<b>{de} {sb.symbol} {sb.direction.upper()}</b>  "
         f"[<b>{sb.total_score:.1f}/10</b>] {sb.risk_emoji} {sb.risk_label}\n"
-        f"  TF: {sb.interval} | CPR: {sb.cpr_type}\n"
+        f"  TF: {sb.interval} | Setup: Qualified\n"
         f"  🎯 Entry  <code>{sb.entry_price:.6g}</code>\n"
         f"  🟢 Target <code>{sb.tp_price:.6g}</code> ({chg_sign}{chg:.1f}%)\n"
         f"  🔴 Stop   <code>{sb.sl_price:.6g}</code> ({'+' if sb.direction=='short' else '-'}{sb.sl_pct:.2f}%)\n"
@@ -248,6 +248,7 @@ def send_alert(signals, scan_time, acct=200.0):
     hdr = f"🔔 <b>VARAM-DYNAMICS</b> — {n} signal{'s' if n>1 else ''}\n🕐 {scan_time}\n\n"
     txt = hdr + "\n\n".join(_card(s,acct) for s in sbs)
     txt += "\n\n" + "━"*32 + "\nTap below to log your trades 👇"
+    txt += "\n⚠️ Educational only · not financial advice · high-risk · DYOR"
     r   = send_message(txt, markup=alert_kb())
     mid = r["result"]["message_id"] if r and r.get("ok") else None
 
