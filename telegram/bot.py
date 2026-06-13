@@ -29,6 +29,15 @@ ALERTED_TTL_DAYS = 35      # remember an alerted signal candle for this long
 MAX_ALERTED      = 2000    # hard cap on remembered signal IDs (file size guard)
 MAX_BATCHES      = 12       # how many recent alert messages stay button-tappable
 
+# ── Lifecycle labels (Sprint A — label-only; NEVER suppresses an alert) ──────
+CONTINUATION_WINDOW_H = 12     # within this since last alert ⇒ same opportunity
+SCORE_UP_UPGRADE      = 1.0    # score jump (on /10) that earns the 🟣 label
+RR_UP_UPGRADE         = 0.50   # R:R jump that earns the 🟣 label
+_RISK_RANK = {"🔴": 1, "🟠": 2, "🟡": 3, "🟢": 4}   # higher = safer; a rise = upgrade
+# NOTE: the approved material-change thresholds (entry/target/stop ≥0.5%, R:R
+# ≥0.20) are intentionally NOT coded yet — they only gate the deferred
+# immaterial-suppression behaviour (a later sprint), not label selection here.
+
 
 # ── Core API ──────────────────────────────────────────────────────────────
 
@@ -166,6 +175,39 @@ def _prune_batches(batches: dict) -> dict:
     return dict(newest)
 
 
+# ── Lifecycle classification (Sprint A; label-only, pure, no I/O) ────────────
+
+def _risk_rank(emoji: str) -> int:
+    return _RISK_RANK.get(emoji, 0)
+
+def _classify_lifecycle(prev: dict | None, *, score, rr, risk_emoji, now) -> tuple:
+    """Pick the lifecycle marker for a signal that has ALREADY passed the
+    exact-candle dedup gate. Returns (marker, lifecycle_label).
+
+    Label-only: NEVER suppresses — every fresh (new-candle) signal still sends.
+      • no baseline / unparseable / stale (> window) → 🆕 new  (reset baseline)
+      • score/R:R jump or improved (safer) risk tier  → 🟣 upgraded
+      • otherwise                                     → 🔄 continuing
+    """
+    if not prev or not prev.get("last_alerted_at"):
+        return "🆕", "new"
+    try:
+        last = datetime.fromisoformat(prev["last_alerted_at"])
+    except Exception:
+        return "🆕", "new"
+    if last.tzinfo is None:
+        last = last.replace(tzinfo=timezone.utc)
+    if (now - last) > timedelta(hours=CONTINUATION_WINDOW_H):
+        return "🆕", "new"            # stale ⇒ treat as a fresh opportunity
+    p_score, p_rr, p_risk = prev.get("score"), prev.get("rr"), prev.get("risk_emoji")
+    upgraded = (
+        (p_score is not None and (score - p_score) >= SCORE_UP_UPGRADE)
+        or (p_rr is not None and (rr - p_rr) >= RR_UP_UPGRADE)
+        or (bool(p_risk) and _risk_rank(risk_emoji) > _risk_rank(p_risk))
+    )
+    return ("🟣", "upgraded") if upgraded else ("🔄", "continuing")
+
+
 # ── Trade log ─────────────────────────────────────────────────────────────
 
 FIELDS = ["timestamp","symbol","direction","entry_price","exit_price",
@@ -200,10 +242,11 @@ def _card(sb, acct, marker="🆕"):
     chg  = abs(sb.tp_price-sb.entry_price)/sb.entry_price*100
     chg_sign = "-" if sb.direction=="short" else "+"
     lead = f"{marker} " if marker else ""
+    suffix = {"🔄": " — updated levels", "🟣": " — stronger setup"}.get(marker, "")
     return (
         f"{'━'*32}\n"
         f"{lead}<b>{de} {sb.symbol} {sb.direction.upper()}</b>  "
-        f"[<b>{sb.total_score:.1f}/10</b>] {sb.risk_emoji} {sb.risk_label}\n"
+        f"[<b>{sb.total_score:.1f}/10</b>] {sb.risk_emoji} {sb.risk_label}{suffix}\n"
         f"  TF: {sb.interval} | Setup: Qualified\n"
         f"  🎯 Entry  <code>{sb.entry_price:.6g}</code>\n"
         f"  🟢 Target <code>{sb.tp_price:.6g}</code> ({chg_sign}{chg:.1f}%)\n"
@@ -244,10 +287,23 @@ def send_alert(signals, scan_time, acct=200.0):
 
     sbs  = [s   for s, _ in fresh]
     sigs = [sig for _, sig in fresh]
+    now_iso = now.isoformat()
+
+    # ── Sprint A: classify each fresh signal's lifecycle marker BEFORE render.
+    # Label-only — nothing is suppressed here; every signal that passed the
+    # exact-candle dedup gate above still sends. Marker just relabels it. ──
+    calls = st.get("calls", {})
+    classified = []                       # [(sb, sig, key, marker, label)]
+    for s, sig in fresh:
+        key = f"{sig['symbol']}|{sig['direction']}|{sig['interval']}"
+        marker, label = _classify_lifecycle(
+            calls.get(key), score=sig["score"], rr=sig["rr"],
+            risk_emoji=s.risk_emoji, now=now)
+        classified.append((s, sig, key, marker, label))
 
     n   = len(sbs)
     hdr = f"🔔 <b>VARAM-DYNAMICS</b> — {n} signal{'s' if n>1 else ''}\n🕐 {scan_time}\n\n"
-    txt = hdr + "\n\n".join(_card(s,acct) for s in sbs)
+    txt = hdr + "\n\n".join(_card(s, acct, marker=mk) for s, _, _, mk, _ in classified)
     txt += "\n\n" + "━"*32 + "\nTap below to log your trades 👇"
     txt += "\n⚠️ Educational only · not financial advice · high-risk · DYOR"
     r   = send_message(txt, markup=alert_kb())
@@ -264,28 +320,31 @@ def send_alert(signals, scan_time, acct=200.0):
         batches[str(mid)] = {"time": now.isoformat(), "sigs": sigs}
         st["batches"] = _prune_batches(batches)
 
-    # ── Phase 4.3B: additive lifecycle record per (symbol|direction|interval).
-    # Display-only foundation; does NOT affect suppression/volume. Every alert
-    # sent here is a 'new' call for now (4.3C+ will add continuing/upgraded).
-    now_iso = now.isoformat()
-    calls = st.get("calls", {})
-    for sig in sigs:
-        key = f"{sig['symbol']}|{sig['direction']}|{sig['interval']}"
+    # ── Lifecycle baseline per (symbol|direction|interval), updated after every
+    # SENT alert: first_seen is reset on a 🆕 (brand-new OR stale>window) so it
+    # marks the start of the CURRENT active lifecycle, but preserved across
+    # 🔄/🟣 continuations; levels/score/R:R/risk/label refresh so the NEXT candle
+    # classifies against what the user last saw. Additive fields (rr, risk_emoji,
+    # alert_count); `calls` is never read by the webhook.
+    for s, sig, key, marker, label in classified:
         prev = calls.get(key) or {}
         calls[key] = {
             "symbol":          sig["symbol"],
             "direction":       sig["direction"],
             "interval":        sig["interval"],
-            "first_seen":      prev.get("first_seen") or now_iso,
+            "first_seen":      now_iso if label == "new" else (prev.get("first_seen") or now_iso),
             "last_seen":       now_iso,
             "last_bar_time":   sig["bar_time"],
             "entry":           sig["entry"],
             "target":          sig["tp"],
             "stop":            sig["sl"],
             "score":           sig["score"],
+            "rr":              sig["rr"],
+            "risk_emoji":      s.risk_emoji,
             "status":          "active",
-            "lifecycle_label": "new",
+            "lifecycle_label": label,
             "last_alerted_at": now_iso,
+            "alert_count":     (prev.get("alert_count") or 0) + 1,
         }
     st["calls"] = calls
 
