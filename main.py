@@ -42,26 +42,79 @@ EXIT_STYLE_MEANING = {
 }
 
 
-def _format_close(c: dict) -> str:
-    """Build a layman-friendly Telegram line for one closed paper trade.
-    Display only — uses values already computed by the tracker."""
-    style   = c.get("exit_style", "")
-    label   = EXIT_STYLE_LABELS.get(style, style)
-    meaning = EXIT_STYLE_MEANING.get(style, "")
-    won     = c.get("result") == "win"
-    emoji   = "✅" if won else "❌"
-    verdict = "Win" if won else "Loss"
-    lines = [
-        f"{emoji} <b>{c.get('symbol','')} {str(c.get('direction','')).upper()}</b> — {verdict}",
-        f"   Exit method: {label}",
-        f"   Result: {c.get('pnl_pct',0.0):+.2f}%",
-    ]
-    entry, exitp = c.get("entry_price"), c.get("exit_price")
-    if entry is not None and exitp is not None:
-        lines.append(f"   Entry {entry:.6g} → Exit {exitp:.6g}")
-    if meaning:
-        lines.append(f"   Meaning: {meaning}")
-    return "\n".join(lines)
+# Short, generic method labels for the grouped paper-trade update (display only).
+EXIT_STYLE_SHORT = {"fixed_pct": "Fixed %", "cpr_target": "Target", "trailing": "Trailing"}
+_STYLE_ORDER = ["fixed_pct", "cpr_target", "trailing"]   # stable display order
+
+def _verdict(result: str) -> tuple[str, str]:
+    if result == "win":
+        return "✅", "Win"
+    if result == "loss":
+        return "❌", "Loss"
+    return "↔️", "Breakeven"
+
+
+def _group_closed(closed: list[dict]) -> list[str]:
+    """Group closed paper records by (symbol, direction, entry_price) and render
+    one clean block each. Display only — reads the records, never mutates them."""
+    groups: dict = {}
+    order: list = []
+    for c in closed:
+        key = (c.get("symbol", ""), str(c.get("direction", "")), c.get("entry_price"))
+        if key not in groups:
+            groups[key] = []
+            order.append(key)
+        groups[key].append(c)
+
+    blocks = []
+    for key in order:
+        sym, direction, entry = key
+        recs = groups[key]
+        # stable method order
+        recs = sorted(recs, key=lambda r: _STYLE_ORDER.index(r.get("exit_style"))
+                      if r.get("exit_style") in _STYLE_ORDER else 99)
+        head = f"<b>{sym} {direction.upper()}</b>"
+        entry_s = f"{entry:.6g}" if entry is not None else "?"
+
+        if len(recs) == 1:                                   # single method
+            r = recs[0]
+            emoji, verdict = _verdict(r.get("result"))
+            label = EXIT_STYLE_SHORT.get(r.get("exit_style"), r.get("exit_style", ""))
+            lines = [f"{emoji} {head} — {verdict}"]
+            exitp = r.get("exit_price")
+            lines.append(f"   Entry {entry_s} → Exit {exitp:.6g}" if exitp is not None
+                         else f"   Entry {entry_s}")
+            lines.append(f"   Result: {r.get('pnl_pct', 0.0):+.2f}%")
+            lines.append(f"   Method: {label}")
+            blocks.append("\n".join(lines))
+            continue
+
+        pnls = [r.get("pnl_pct", 0.0) for r in recs]
+        if len(set(pnls)) == 1:                              # uniform: all pnl identical
+            r0 = recs[0]
+            emoji, verdict = _verdict(r0.get("result"))
+            methods = ", ".join(EXIT_STYLE_SHORT.get(r.get("exit_style"), "?") for r in recs)
+            lines = [f"{emoji} {head} — {verdict}"]
+            exitp = r0.get("exit_price")
+            lines.append(f"   Entry {entry_s} → Exit {exitp:.6g}" if exitp is not None
+                         else f"   Entry {entry_s}")
+            lines.append(f"   Result: {pnls[0]:+.2f}%")
+            lines.append(f"   Methods checked: {methods}")
+            blocks.append("\n".join(lines))
+        else:                                                # mixed: pnl differ
+            lines = [f"⚖️ {head} — Mixed result", f"   Entry {entry_s}"]
+            for r in recs:
+                label = EXIT_STYLE_SHORT.get(r.get("exit_style"), "?")
+                lines.append(f"   {label}: {r.get('pnl_pct', 0.0):+.2f}%")
+            blocks.append("\n".join(lines))
+    return blocks
+
+
+def _paper_update_message(closed: list[dict]) -> str:
+    """Full grouped Paper Trade Update text (header + blocks + footer)."""
+    return ("📋 <b>Paper Trade Update</b> (auto-simulated)\n\n"
+            + "\n\n".join(_group_closed(closed))
+            + "\n\nPaper updates are auto-simulated tracking results, not manual trades.")
 
 
 def _prepare(df):
@@ -149,10 +202,7 @@ def run_scan():
     if cur_px:
         closed = update_positions(cur_px)
         if closed:
-            msgs = ["📋 <b>Paper Trade Update</b> (auto-simulated by the bot)\n"]
-            for c in closed:
-                msgs.append(_format_close(c))
-            tg.send_message("\n\n".join(msgs))
+            tg.send_message(_paper_update_message(closed))
 
     print(f"\nScan complete — {ist_now()}")
 
