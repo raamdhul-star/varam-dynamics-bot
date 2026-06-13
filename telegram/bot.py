@@ -288,7 +288,9 @@ def _card(sb, acct, marker="🆕"):
         f"  TFs: {tfs}"
     )
 
-def send_alert(signals, scan_time, acct=200.0):
+_CATEGORY_TITLE = {"crypto": "📊 Crypto Signals", "rwa_perp": "🏦 RWA / Perp Signals"}
+
+def send_alert(signals, scan_time, acct=200.0, category=None):
     if not signals:
         send_message(f"🔍 <b>VARAM-DYNAMICS</b>\n🕐 {scan_time}\nNo signals.")
         return None
@@ -345,8 +347,9 @@ def send_alert(signals, scan_time, acct=200.0):
     # the same no-message outcome as the all-deduped path above. ──
     mid = None
     if to_send:
-        n   = len(to_send)
-        hdr = f"🔔 <b>VARAM-DYNAMICS</b> — {n} signal{'s' if n>1 else ''}\n🕐 {scan_time}\n\n"
+        n     = len(to_send)
+        title = _CATEGORY_TITLE.get(category, "🔔 VARAM-DYNAMICS")
+        hdr = f"<b>{title}</b> — {n} signal{'s' if n>1 else ''}\n🕐 {scan_time}\n\n"
         txt = hdr + "\n\n".join(_card(s, acct, marker=mk) for s, _, _, mk, _, _ in to_send)
         txt += "\n\n" + "━"*32 + "\nTap below to log your trades 👇"
         txt += "\n⚠️ Educational only · not financial advice · high-risk · DYOR"

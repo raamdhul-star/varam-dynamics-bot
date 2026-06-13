@@ -14,6 +14,7 @@ from datetime import datetime, timezone, timedelta
 sys.path.insert(0, os.path.dirname(__file__))
 
 from scanner.assets   import get_assets, calc_leverage, liquidity_score
+from scanner.asset_classes import classify
 from scanner.fetcher  import fetch_all, SCAN_INTERVALS, LOWER_TF_INTERVALS
 from scanner.cpr_engine import attach_cpr, detect_signals, get_latest_signal
 from scanner.scorer   import score_signal
@@ -21,7 +22,26 @@ from paper.tracker    import (open_position, update_positions,
                                get_open_positions, get_performance_summary)
 import telegram.bot as tg
 
-ACCOUNT_SIZE = float(os.environ.get("ACCOUNT_SIZE", "200"))
+ACCOUNT_SIZE     = float(os.environ.get("ACCOUNT_SIZE", "200"))
+MAX_PER_CATEGORY = 10    # Sprint C: per-category alert ceiling (NOT a quota — no padding)
+
+
+def _split_by_category(ranked_sigs, cap: int = MAX_PER_CATEGORY):
+    """Split score-RANKED signals into (crypto_top, rwa_top, uncategorized_syms).
+    Each category is capped at `cap`; input order (score) is preserved; nothing
+    is padded. Uncategorized symbols are collected for reporting, never bucketed."""
+    crypto_top, rwa_top, uncategorized = [], [], []
+    for sig in ranked_sigs:
+        cls = classify(sig.symbol)
+        if cls == "crypto":
+            if len(crypto_top) < cap:
+                crypto_top.append(sig)
+        elif cls == "rwa_perp":
+            if len(rwa_top) < cap:
+                rwa_top.append(sig)
+        else:
+            uncategorized.append(sig.symbol)
+    return crypto_top, rwa_top, uncategorized
 
 
 def ist_now():
@@ -192,11 +212,30 @@ def run_scan():
             seen_assets[sig.symbol] = sig
     all_sigs = list(seen_assets.values())
     all_sigs.sort(key=lambda x: x.total_score, reverse=True)
-    top = all_sigs[:5]
-    print(f"\nSending top {len(top)} signals to Telegram...")
 
-    tg.send_alert(top, ist_now(), ACCOUNT_SIZE)
-    for sb in top:
+    # ── Sprint C: split the score-ranked signals by reviewed asset class and
+    # cap each category independently (ceiling, not quota — no padding).
+    # Uncategorized symbols are EXCLUDED from alerts and reported for review. ──
+    crypto_top, rwa_top, uncategorized = _split_by_category(all_sigs)
+    if uncategorized:
+        print(f"[scan] UNCATEGORIZED qualified symbols (excluded from alerts — "
+              f"please classify in scanner/asset_classes.py): "
+              f"{', '.join(sorted(set(uncategorized)))}")
+
+    # Two INDEPENDENT Telegram messages: each gets its own message_id → its own
+    # batches[mid] → independent Select/Skip/Confirm. An empty category sends
+    # nothing. If BOTH are empty, fall back to the existing 'No signals' heartbeat.
+    if crypto_top:
+        tg.send_alert(crypto_top, ist_now(), ACCOUNT_SIZE, category="crypto")
+    if rwa_top:
+        tg.send_alert(rwa_top, ist_now(), ACCOUNT_SIZE, category="rwa_perp")
+    if not crypto_top and not rwa_top:
+        tg.send_alert([], ist_now(), ACCOUNT_SIZE)
+
+    selected = crypto_top + rwa_top
+    print(f"\nSent {len(crypto_top)} crypto + {len(rwa_top)} rwa/perp signals "
+          f"to Telegram ({len(set(uncategorized))} uncategorized excluded).")
+    for sb in selected:
         open_position(sb)
 
     if cur_px:
