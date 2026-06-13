@@ -29,14 +29,16 @@ ALERTED_TTL_DAYS = 35      # remember an alerted signal candle for this long
 MAX_ALERTED      = 2000    # hard cap on remembered signal IDs (file size guard)
 MAX_BATCHES      = 12       # how many recent alert messages stay button-tappable
 
-# ── Lifecycle labels (Sprint A — label-only; NEVER suppresses an alert) ──────
-CONTINUATION_WINDOW_H = 12     # within this since last alert ⇒ same opportunity
-SCORE_UP_UPGRADE      = 1.0    # score jump (on /10) that earns the 🟣 label
-RR_UP_UPGRADE         = 0.50   # R:R jump that earns the 🟣 label
+# ── Lifecycle labels & volume control (Sprint A labels + A2 suppression) ─────
+CONTINUATION_WINDOW_H = 12      # within this since last alert ⇒ same opportunity
+SCORE_UP_UPGRADE      = 1.0     # score jump (on /10) that earns the 🟣 label
+RR_UP_UPGRADE         = 0.50    # R:R jump that earns the 🟣 label
 _RISK_RANK = {"🔴": 1, "🟠": 2, "🟡": 3, "🟢": 4}   # higher = safer; a rise = upgrade
-# NOTE: the approved material-change thresholds (entry/target/stop ≥0.5%, R:R
-# ≥0.20) are intentionally NOT coded yet — they only gate the deferred
-# immaterial-suppression behaviour (a later sprint), not label selection here.
+# Sprint A2 — a 🔄 continuing call is RESENT only if any metric moved at/above
+# these vs the last-sent baseline; otherwise it is suppressed (no Telegram msg).
+LEVEL_MOVE_PCT        = 0.005   # entry/target/stop relative move (0.5%)
+RR_DELTA_MATERIAL     = 0.20    # R:R absolute change
+SCORE_DELTA_MATERIAL  = 0.5     # score absolute change
 
 
 # ── Core API ──────────────────────────────────────────────────────────────
@@ -180,32 +182,61 @@ def _prune_batches(batches: dict) -> dict:
 def _risk_rank(emoji: str) -> int:
     return _RISK_RANK.get(emoji, 0)
 
-def _classify_lifecycle(prev: dict | None, *, score, rr, risk_emoji, now) -> tuple:
-    """Pick the lifecycle marker for a signal that has ALREADY passed the
-    exact-candle dedup gate. Returns (marker, lifecycle_label).
+def _is_material(prev: dict, *, score, rr, entry, target, stop) -> bool:
+    """True if any tracked metric moved at/above its threshold vs the baseline.
+    FAIL-OPEN: a missing / zero / unparseable baseline field returns True (send),
+    so an incomplete baseline never causes us to hide a call."""
+    try:
+        for cur, base in ((entry, prev.get("entry")),
+                          (target, prev.get("target")),
+                          (stop, prev.get("stop"))):
+            if base in (None, 0) or cur is None:
+                return True
+            if abs(float(cur) - float(base)) / abs(float(base)) >= LEVEL_MOVE_PCT:
+                return True
+        p_rr, p_score = prev.get("rr"), prev.get("score")
+        if p_rr is None or p_score is None:
+            return True
+        if abs(float(rr) - float(p_rr)) >= RR_DELTA_MATERIAL:
+            return True
+        if abs(float(score) - float(p_score)) >= SCORE_DELTA_MATERIAL:
+            return True
+    except (TypeError, ValueError):
+        return True                  # unparseable ⇒ fail-open (send)
+    return False
 
-    Label-only: NEVER suppresses — every fresh (new-candle) signal still sends.
-      • no baseline / unparseable / stale (> window) → 🆕 new  (reset baseline)
-      • score/R:R jump or improved (safer) risk tier  → 🟣 upgraded
-      • otherwise                                     → 🔄 continuing
+def _classify_lifecycle(prev: dict | None, *, score, rr, risk_emoji,
+                        entry, target, stop, now) -> tuple:
+    """Classify a signal that has ALREADY passed the exact-candle dedup gate.
+    Returns (marker, lifecycle_label, send).
+
+      • no baseline / unparseable / stale (> window) → 🆕 new       (send)
+      • score/R:R jump or improved (safer) risk tier  → 🟣 upgraded  (send)
+      • 🔄 continuing & materially changed            → 🔄          (send)
+      • 🔄 continuing & immaterial (Sprint A2)         → 🔄          (SUPPRESS)
+
+    Only an immaterial 🔄 returns send=False. 🆕 and 🟣 are never suppressed.
     """
     if not prev or not prev.get("last_alerted_at"):
-        return "🆕", "new"
+        return "🆕", "new", True
     try:
         last = datetime.fromisoformat(prev["last_alerted_at"])
     except Exception:
-        return "🆕", "new"
+        return "🆕", "new", True
     if last.tzinfo is None:
         last = last.replace(tzinfo=timezone.utc)
     if (now - last) > timedelta(hours=CONTINUATION_WINDOW_H):
-        return "🆕", "new"            # stale ⇒ treat as a fresh opportunity
+        return "🆕", "new", True       # stale ⇒ treat as a fresh opportunity
     p_score, p_rr, p_risk = prev.get("score"), prev.get("rr"), prev.get("risk_emoji")
     upgraded = (
         (p_score is not None and (score - p_score) >= SCORE_UP_UPGRADE)
         or (p_rr is not None and (rr - p_rr) >= RR_UP_UPGRADE)
         or (bool(p_risk) and _risk_rank(risk_emoji) > _risk_rank(p_risk))
     )
-    return ("🟣", "upgraded") if upgraded else ("🔄", "continuing")
+    if upgraded:
+        return "🟣", "upgraded", True
+    send = _is_material(prev, score=score, rr=rr, entry=entry, target=target, stop=stop)
+    return "🔄", "continuing", send
 
 
 # ── Trade log ─────────────────────────────────────────────────────────────
@@ -285,49 +316,64 @@ def send_alert(signals, scan_time, acct=200.0):
         print("[tg] No new signals to alert (all already sent)")
         return None
 
-    sbs  = [s   for s, _ in fresh]
     sigs = [sig for _, sig in fresh]
     now_iso = now.isoformat()
 
-    # ── Sprint A: classify each fresh signal's lifecycle marker BEFORE render.
-    # Label-only — nothing is suppressed here; every signal that passed the
-    # exact-candle dedup gate above still sends. Marker just relabels it. ──
+    # ── Sprint A: classify lifecycle marker.  Sprint A2: decide send vs suppress.
+    # `send` is False ONLY for an immaterial 🔄 continuing call; 🆕 and 🟣 always
+    # send. Classification runs AFTER the exact-candle dedup gate above. ──
     calls = st.get("calls", {})
-    classified = []                       # [(sb, sig, key, marker, label)]
+    classified = []                       # [(sb, sig, key, marker, label, send)]
     for s, sig in fresh:
         key = f"{sig['symbol']}|{sig['direction']}|{sig['interval']}"
-        marker, label = _classify_lifecycle(
-            calls.get(key), score=sig["score"], rr=sig["rr"],
-            risk_emoji=s.risk_emoji, now=now)
-        classified.append((s, sig, key, marker, label))
+        marker, label, send = _classify_lifecycle(
+            calls.get(key), score=sig["score"], rr=sig["rr"], risk_emoji=s.risk_emoji,
+            entry=sig["entry"], target=sig["tp"], stop=sig["sl"], now=now)
+        classified.append((s, sig, key, marker, label, send))
 
-    n   = len(sbs)
-    hdr = f"🔔 <b>VARAM-DYNAMICS</b> — {n} signal{'s' if n>1 else ''}\n🕐 {scan_time}\n\n"
-    txt = hdr + "\n\n".join(_card(s, acct, marker=mk) for s, _, _, mk, _ in classified)
-    txt += "\n\n" + "━"*32 + "\nTap below to log your trades 👇"
-    txt += "\n⚠️ Educational only · not financial advice · high-risk · DYOR"
-    r   = send_message(txt, markup=alert_kb())
-    mid = r["result"]["message_id"] if r and r.get("ok") else None
+    to_send = [c for c in classified if c[5]]
 
-    # ── Remember these candles so we never alert the same one twice ──
+    # ── Record EVERY deduped candle in `alerted` (sent AND suppressed) so the
+    # per-candle send/suppress decision is stable and the same candle is never
+    # re-evaluated. `alerted` population is unchanged from before A2. ──
     for sig in sigs:
         alerted[_signal_id(sig)] = now.isoformat()
     st["alerted"] = _prune_alerted(alerted, now)
 
-    # ── Snapshot this batch so ITS buttons resolve to THESE prices ──
-    if mid is not None:
-        batches = st.get("batches", {})
-        batches[str(mid)] = {"time": now.isoformat(), "sigs": sigs}
-        st["batches"] = _prune_batches(batches)
+    # ── Build & send the message from the SENT cards only. If every fresh
+    # signal was suppressed, emit no Telegram message and create no batch —
+    # the same no-message outcome as the all-deduped path above. ──
+    mid = None
+    if to_send:
+        n   = len(to_send)
+        hdr = f"🔔 <b>VARAM-DYNAMICS</b> — {n} signal{'s' if n>1 else ''}\n🕐 {scan_time}\n\n"
+        txt = hdr + "\n\n".join(_card(s, acct, marker=mk) for s, _, _, mk, _, _ in to_send)
+        txt += "\n\n" + "━"*32 + "\nTap below to log your trades 👇"
+        txt += "\n⚠️ Educational only · not financial advice · high-risk · DYOR"
+        r   = send_message(txt, markup=alert_kb())
+        mid = r["result"]["message_id"] if r and r.get("ok") else None
 
-    # ── Lifecycle baseline per (symbol|direction|interval), updated after every
-    # SENT alert: first_seen is reset on a 🆕 (brand-new OR stale>window) so it
-    # marks the start of the CURRENT active lifecycle, but preserved across
-    # 🔄/🟣 continuations; levels/score/R:R/risk/label refresh so the NEXT candle
-    # classifies against what the user last saw. Additive fields (rr, risk_emoji,
-    # alert_count); `calls` is never read by the webhook.
-    for s, sig, key, marker, label in classified:
+    # ── Snapshot ONLY the sent cards so ITS buttons resolve to what was shown. ──
+    if mid is not None:
+        sent_sigs = [sig for _, sig, _, _, _, _ in to_send]
+        batches = st.get("batches", {})
+        batches[str(mid)] = {"time": now.isoformat(), "sigs": sent_sigs}
+        st["batches"] = _prune_batches(batches)
+        st["sigs"] = sent_sigs   # latest visible batch (typed-command fallback flow)
+
+    # ── Lifecycle baseline per (symbol|direction|interval):
+    #   • SENT (🆕/🟣/material 🔄) → full refresh; first_seen resets on 🆕, else
+    #     preserved; levels/score/R:R/risk/label refresh; alert_count += 1.
+    #   • SUPPRESSED (immaterial 🔄) → bump last_seen ONLY; entry/target/stop/
+    #     score/rr/risk/last_alerted_at/alert_count/first_seen/label untouched,
+    #     so the next candle still compares against the last-SENT baseline.
+    for s, sig, key, marker, label, send in classified:
         prev = calls.get(key) or {}
+        if not send:
+            if prev:
+                prev["last_seen"] = now_iso
+                calls[key] = prev
+            continue
         calls[key] = {
             "symbol":          sig["symbol"],
             "direction":       sig["direction"],
@@ -348,7 +394,6 @@ def send_alert(signals, scan_time, acct=200.0):
         }
     st["calls"] = calls
 
-    st["sigs"] = sigs    # latest batch (used by typed-command fallback flow)
     _sv(st)
     return mid
 
