@@ -191,7 +191,7 @@ def _stats():
 
 # ── Alert sending ─────────────────────────────────────────────────────────
 
-def _card(sb, acct):
+def _card(sb, acct, marker="🆕"):
     from scanner.assets import calc_leverage
     de   = "📈" if sb.direction=="long" else "📉"
     levi = calc_leverage(sb.entry_price, sb.sl_price, acct, 0.07, sb.symbol)
@@ -199,9 +199,10 @@ def _card(sb, acct):
     cap  = " ⚠️HL max" if levi.get("capped") else ""
     chg  = abs(sb.tp_price-sb.entry_price)/sb.entry_price*100
     chg_sign = "-" if sb.direction=="short" else "+"
+    lead = f"{marker} " if marker else ""
     return (
         f"{'━'*32}\n"
-        f"<b>{de} {sb.symbol} {sb.direction.upper()}</b>  "
+        f"{lead}<b>{de} {sb.symbol} {sb.direction.upper()}</b>  "
         f"[<b>{sb.total_score:.1f}/10</b>] {sb.risk_emoji} {sb.risk_label}\n"
         f"  TF: {sb.interval} | Setup: Qualified\n"
         f"  🎯 Entry  <code>{sb.entry_price:.6g}</code>\n"
@@ -262,6 +263,31 @@ def send_alert(signals, scan_time, acct=200.0):
         batches = st.get("batches", {})
         batches[str(mid)] = {"time": now.isoformat(), "sigs": sigs}
         st["batches"] = _prune_batches(batches)
+
+    # ── Phase 4.3B: additive lifecycle record per (symbol|direction|interval).
+    # Display-only foundation; does NOT affect suppression/volume. Every alert
+    # sent here is a 'new' call for now (4.3C+ will add continuing/upgraded).
+    now_iso = now.isoformat()
+    calls = st.get("calls", {})
+    for sig in sigs:
+        key = f"{sig['symbol']}|{sig['direction']}|{sig['interval']}"
+        prev = calls.get(key) or {}
+        calls[key] = {
+            "symbol":          sig["symbol"],
+            "direction":       sig["direction"],
+            "interval":        sig["interval"],
+            "first_seen":      prev.get("first_seen") or now_iso,
+            "last_seen":       now_iso,
+            "last_bar_time":   sig["bar_time"],
+            "entry":           sig["entry"],
+            "target":          sig["tp"],
+            "stop":            sig["sl"],
+            "score":           sig["score"],
+            "status":          "active",
+            "lifecycle_label": "new",
+            "last_alerted_at": now_iso,
+        }
+    st["calls"] = calls
 
     st["sigs"] = sigs    # latest batch (used by typed-command fallback flow)
     _sv(st)
