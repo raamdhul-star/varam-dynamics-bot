@@ -306,7 +306,8 @@ def send_alert(signals, scan_time, acct=200.0, category=None):
                "score":s.total_score, "entry":s.entry_price,
                "sl":s.sl_price, "tp":s.tp_price,
                "sl_pct":s.sl_pct, "rr":s.rr_ratio,
-               "bar_time":str(s.bar_time)}
+               "bar_time":str(s.bar_time),
+               "source":"hyperliquid"}   # D4B: platform tag (additive; prepares D4C)
         if _signal_id(sig) in alerted:
             print(f"[tg] SKIP duplicate alert — {_signal_id(sig)}")
             continue

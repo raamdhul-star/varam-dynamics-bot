@@ -306,8 +306,18 @@ def _skip_text(batch: dict | None) -> str:
 def _close_key(user_id) -> str:
     return f"close:{user_id}"
 
+# ── Platform/source tag (D4B; display-only, backward-compatible) ─────────────
+def _trade_source(trade_or_sig) -> str:
+    """source of a trade record or batch sig; missing ⇒ 'hyperliquid' (old data)."""
+    return (trade_or_sig or {}).get("source") or "hyperliquid"
+
+def _platform_label(source: str) -> str:
+    return {"hyperliquid": "Hyperliquid", "aster": "Aster"}.get(source or "hyperliquid",
+                                                                "Hyperliquid")
+
 def _mytrades_kb(opens: list) -> dict:
-    return _kb([[{"text": f"Close {t.get('symbol')} {t.get('direction', '').upper()}",
+    return _kb([[{"text": f"Close {t.get('symbol')} {t.get('direction', '').upper()} "
+                          f"· {_platform_label(_trade_source(t))}",
                   "callback_data": f"CLOSE:{i}"}] for i, t in enumerate(opens)])
 
 def _px_kb() -> dict:
@@ -355,7 +365,8 @@ def _close_summary(c: dict, is_admin: bool = False) -> str:
     emoji = "✅" if c["result"] == "win" else "❌" if c["result"] == "loss" else "↔️"
     saved = ("📝 Saved to your closed trades. Run /sync_history to file permanent history."
              if is_admin else "📝 Saved to your closed trades.")
-    return (f"{emoji} <b>{c['symbol']} {c['direction'].upper()} — closed</b>\n"
+    return (f"{emoji} <b>{c['symbol']} {c['direction'].upper()} — closed</b> "
+            f"· {_platform_label(_trade_source(c))}\n"
             f"Entry {float(c['entry_price']):.6g} → Exit {float(c['exit_price']):.6g}\n"
             f"Result: <b>{c['pnl_pct']:+.2f}%</b>  (${c['pnl_usd']:+.2f})  ·  {c['result']}\n"
             f"Method: {c.get('close_reason')}\n"
@@ -637,7 +648,8 @@ def _route(update: dict) -> str:
                 arrow = "📈" if t.get("direction") == "long" else "📉"
                 lines.append(f"{i + 1}. {arrow} {t.get('symbol')} "
                              f"{str(t.get('direction', '')).upper()} "
-                             f"@ {float(t.get('entry_price') or 0):.6g}")
+                             f"@ {float(t.get('entry_price') or 0):.6g} "
+                             f"· {_platform_label(_trade_source(t))}")
             _tg("sendMessage", {"chat_id": chat_id, "text": "\n".join(lines),
                                 "parse_mode": "HTML", "reply_markup": _mytrades_kb(opens)})
             return "mytrades"
@@ -1004,6 +1016,7 @@ def _route(update: dict) -> str:
                     "trade_id":           f"{user_id}:{mid}:{c['symbol']}",
                     "user_id":            user_id,          # identity = numeric id
                     "username":           uname,            # display only
+                    "source":             _trade_source(c),  # D4B: 'hyperliquid' here
                     "symbol":             c["symbol"],
                     "direction":          c["direction"],
                     "entry_price":        c.get("entry"),
@@ -1053,7 +1066,8 @@ def _route(update: dict) -> str:
                            {"trade_id": tr["trade_id"], "awaiting_price": False}, SESSION_TTL):
                 _edit("⚠️ Temporarily unavailable, please try again.")
                 return "kv_unavailable"
-            _edit(f"Close <b>{tr['symbol']} {tr['direction'].upper()}</b> — choose exit price:",
+            _edit(f"Close <b>{tr['symbol']} {tr['direction'].upper()}</b> "
+                  f"· {_platform_label(_trade_source(tr))} — choose exit price:",
                   _px_kb())
             return "close_selected"
 
