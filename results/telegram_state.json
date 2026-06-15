@@ -2,81 +2,29 @@
   "offset": 262981543,
   "sigs": [
     {
-      "symbol": "XRP",
+      "symbol": "ICP",
+      "direction": "short",
+      "interval": "1h",
+      "score": 7.4,
+      "entry": 2.4731,
+      "sl": 2.53445,
+      "tp": 2.3504,
+      "sl_pct": 2.481,
+      "rr": 2.0,
+      "bar_time": "2026-06-15 18:00:00+00:00",
+      "source": "hyperliquid"
+    },
+    {
+      "symbol": "ENA",
       "direction": "long",
       "interval": "4h",
       "score": 7.29,
-      "entry": 1.2315,
-      "sl": 1.204725,
-      "tp": 1.28505,
-      "sl_pct": 2.174,
+      "entry": 0.089691,
+      "sl": 0.08525957,
+      "tp": 0.09855386,
+      "sl_pct": 4.941,
       "rr": 2.0,
-      "bar_time": "2026-06-15 08:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "kPEPE",
-      "direction": "long",
-      "interval": "1h",
-      "score": 7.08,
-      "entry": 0.003044,
-      "sl": 0.00299375,
-      "tp": 0.0031445,
-      "sl_pct": 1.651,
-      "rr": 2.0,
-      "bar_time": "2026-06-15 15:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "LTC",
-      "direction": "long",
-      "interval": "4h",
-      "score": 6.99,
-      "entry": 45.847,
-      "sl": 44.97453571,
-      "tp": 47.59192858,
-      "sl_pct": 1.903,
-      "rr": 2.0,
-      "bar_time": "2026-06-15 08:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "LINK",
-      "direction": "long",
-      "interval": "4h",
-      "score": 6.99,
-      "entry": 8.3143,
-      "sl": 8.131375,
-      "tp": 8.68015,
-      "sl_pct": 2.2,
-      "rr": 2.0,
-      "bar_time": "2026-06-15 08:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "DOT",
-      "direction": "long",
-      "interval": "1h",
-      "score": 6.97,
-      "entry": 1.0432,
-      "sl": 1.02716071,
-      "tp": 1.07527858,
-      "sl_pct": 1.538,
-      "rr": 2.0,
-      "bar_time": "2026-06-15 15:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "MORPHO",
-      "direction": "long",
-      "interval": "4h",
-      "score": 6.89,
-      "entry": 2.0252,
-      "sl": 1.96559644,
-      "tp": 2.14440712,
-      "sl_pct": 2.943,
-      "rr": 2.0,
-      "bar_time": "2026-06-15 00:00:00+00:00",
+      "bar_time": "2026-06-15 12:00:00+00:00",
       "source": "hyperliquid"
     }
   ],
@@ -264,9 +212,42 @@
     "LTC_long_4h_2026-06-15 08:00:00+00:00": "2026-06-15T19:00:43.033546+00:00",
     "LINK_long_4h_2026-06-15 08:00:00+00:00": "2026-06-15T19:00:43.033546+00:00",
     "DOT_long_1h_2026-06-15 15:00:00+00:00": "2026-06-15T19:00:43.033546+00:00",
-    "MORPHO_long_4h_2026-06-15 00:00:00+00:00": "2026-06-15T19:00:43.033546+00:00"
+    "MORPHO_long_4h_2026-06-15 00:00:00+00:00": "2026-06-15T19:00:43.033546+00:00",
+    "ICP_short_1h_2026-06-15 18:00:00+00:00": "2026-06-15T21:43:08.395343+00:00",
+    "ENA_long_4h_2026-06-15 12:00:00+00:00": "2026-06-15T21:43:08.395343+00:00"
   },
   "batches": {
+    "418": {
+      "time": "2026-06-15T21:43:08.395343+00:00",
+      "sigs": [
+        {
+          "symbol": "ICP",
+          "direction": "short",
+          "interval": "1h",
+          "score": 7.4,
+          "entry": 2.4731,
+          "sl": 2.53445,
+          "tp": 2.3504,
+          "sl_pct": 2.481,
+          "rr": 2.0,
+          "bar_time": "2026-06-15 18:00:00+00:00",
+          "source": "hyperliquid"
+        },
+        {
+          "symbol": "ENA",
+          "direction": "long",
+          "interval": "4h",
+          "score": 7.29,
+          "entry": 0.089691,
+          "sl": 0.08525957,
+          "tp": 0.09855386,
+          "sl_pct": 4.941,
+          "rr": 2.0,
+          "bar_time": "2026-06-15 12:00:00+00:00",
+          "source": "hyperliquid"
+        }
+      ]
+    },
     "414": {
       "time": "2026-06-15T19:00:43.033546+00:00",
       "sigs": [
@@ -841,23 +822,6 @@
           "sl_pct": 1.831,
           "rr": 2.0,
           "bar_time": "2026-06-13 20:00:00+00:00"
-        }
-      ]
-    },
-    "374": {
-      "time": "2026-06-14T07:12:56.577650+00:00",
-      "sigs": [
-        {
-          "symbol": "WLFI",
-          "direction": "long",
-          "interval": "1h",
-          "score": 7.28,
-          "entry": 0.05872,
-          "sl": 0.05803944,
-          "tp": 0.06008112,
-          "sl_pct": 1.159,
-          "rr": 2.0,
-          "bar_time": "2026-06-14 06:00:00+00:00"
         }
       ]
     }
@@ -1818,19 +1782,19 @@
       "symbol": "ENA",
       "direction": "long",
       "interval": "4h",
-      "first_seen": "2026-06-15T02:55:15.492925+00:00",
-      "last_seen": "2026-06-15T02:55:15.492925+00:00",
-      "last_bar_time": "2026-06-14 20:00:00+00:00",
-      "entry": 0.084109,
-      "target": 0.09281458,
-      "stop": 0.07975621,
-      "score": 7.49,
+      "first_seen": "2026-06-15T21:43:08.395343+00:00",
+      "last_seen": "2026-06-15T21:43:08.395343+00:00",
+      "last_bar_time": "2026-06-15 12:00:00+00:00",
+      "entry": 0.089691,
+      "target": 0.09855386,
+      "stop": 0.08525957,
+      "score": 7.29,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-06-15T02:55:15.492925+00:00",
-      "alert_count": 1
+      "last_alerted_at": "2026-06-15T21:43:08.395343+00:00",
+      "alert_count": 2
     },
     "SUI|long|4h": {
       "symbol": "SUI",
@@ -2046,6 +2010,24 @@
       "status": "active",
       "lifecycle_label": "new",
       "last_alerted_at": "2026-06-15T19:00:43.033546+00:00",
+      "alert_count": 1
+    },
+    "ICP|short|1h": {
+      "symbol": "ICP",
+      "direction": "short",
+      "interval": "1h",
+      "first_seen": "2026-06-15T21:43:08.395343+00:00",
+      "last_seen": "2026-06-15T21:43:08.395343+00:00",
+      "last_bar_time": "2026-06-15 18:00:00+00:00",
+      "entry": 2.4731,
+      "target": 2.3504,
+      "stop": 2.53445,
+      "score": 7.4,
+      "rr": 2.0,
+      "risk_emoji": "\ud83d\udfe1",
+      "status": "active",
+      "lifecycle_label": "new",
+      "last_alerted_at": "2026-06-15T21:43:08.395343+00:00",
       "alert_count": 1
     }
   }
