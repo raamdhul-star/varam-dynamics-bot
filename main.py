@@ -25,6 +25,21 @@ import telegram.bot as tg
 ACCOUNT_SIZE     = float(os.environ.get("ACCOUNT_SIZE", "200"))
 MAX_PER_CATEGORY = 10    # Sprint C: per-category alert ceiling (NOT a quota — no padding)
 
+# Sprint H1: one informational message when a scan runs but sends no alert
+# (no qualified signals, or all signals A2-suppressed, or all uncategorized).
+# Plain text only — no buttons/markup/batches/trade flow.
+HL_NO_ALERT_MSG = (
+    "🔍 <b>Hyperliquid Signal Check</b>\n\n"
+    "No qualified Hyperliquid signals this run.\n\n"
+    "ℹ️ Hyperliquid scan completed · no trade alert generated\n"
+    "⚠️ Educational only · not financial advice · high-risk · DYOR")
+
+
+def _hl_no_alert_due(sent_any: bool, had_data: bool) -> bool:
+    """Send the no-alert message only when the scan had data but no real alert
+    went out. A total fetch outage (had_data False) is NOT 'no signal'."""
+    return had_data and not sent_any
+
 
 def _split_by_category(ranked_sigs, cap: int = MAX_PER_CATEGORY):
     """Split score-RANKED signals into (crypto_top, rwa_top, uncategorized_syms).
@@ -224,13 +239,22 @@ def run_scan():
 
     # Two INDEPENDENT Telegram messages: each gets its own message_id → its own
     # batches[mid] → independent Select/Skip/Confirm. An empty category sends
-    # nothing. If BOTH are empty, fall back to the existing 'No signals' heartbeat.
+    # nothing. send_alert returns the message_id on a real send, or None when
+    # nothing went out (no fresh signals OR all A2-suppressed).
+    sent_any = False
     if crypto_top:
-        tg.send_alert(crypto_top, ist_now(), ACCOUNT_SIZE, category="crypto")
+        sent_any |= tg.send_alert(crypto_top, ist_now(), ACCOUNT_SIZE,
+                                  category="crypto") is not None
     if rwa_top:
-        tg.send_alert(rwa_top, ist_now(), ACCOUNT_SIZE, category="rwa_perp")
-    if not crypto_top and not rwa_top:
-        tg.send_alert([], ist_now(), ACCOUNT_SIZE)
+        sent_any |= tg.send_alert(rwa_top, ist_now(), ACCOUNT_SIZE,
+                                  category="rwa_perp") is not None
+
+    # Sprint H1: one Hyperliquid no-alert message when the scan ran (had data)
+    # but no real alert was sent — covers no-qualified, all-A2-suppressed, and
+    # all-uncategorized. Skipped on a fetch outage (had_data False ≠ no signal).
+    had_data = any(data.get(s) for s in symbols)
+    if _hl_no_alert_due(sent_any, had_data):
+        tg.send_message(HL_NO_ALERT_MSG)
 
     selected = crypto_top + rwa_top
     print(f"\nSent {len(crypto_top)} crypto + {len(rwa_top)} rwa/perp signals "
