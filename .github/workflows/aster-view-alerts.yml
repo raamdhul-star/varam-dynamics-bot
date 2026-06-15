@@ -1,0 +1,74 @@
+name: Varam-Dynamics Aster View Alerts
+# Automated, VIEW-ONLY Aster signal alerts — SEPARATE from the Hyperliquid scanner.
+# Gated OFF by default: the tool sends only when the Repository Variable
+# ASTER_ALERTS_ENABLED == 'true' AND --send is passed. If the variable is unset/false
+# the tool refuses and exits cleanly (nothing sent, nothing written).
+# View-only: no Select/Skip/Confirm buttons, no batches, no Upstash/trade/CSV writes,
+# no paper tracking. Does NOT touch the Hyperliquid scanner/monitor or their state.
+
+on:
+  schedule:
+    - cron: '15 * * * *'      # hourly at :15 (scanner runs :00, monitor :30 — no overlap)
+  workflow_dispatch: {}          # allow manual trigger
+
+concurrency:
+  group: varam-dynamics-aster-view
+  cancel-in-progress: false
+
+jobs:
+  aster-view:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    permissions:
+      contents: write            # only to persist results/aster_view_state.json
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Aster view-only sender (gated)
+        env:
+          TELEGRAM_BOT_TOKEN:   ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID:     ${{ secrets.TELEGRAM_CHAT_ID }}
+          # Non-sensitive Repository Variable. Sends ONLY when exactly 'true'.
+          ASTER_ALERTS_ENABLED: ${{ vars.ASTER_ALERTS_ENABLED }}
+        run: python tools/aster_alert_send.py --send
+
+      - name: Commit Aster view state (only that file, if changed)
+        run: |
+          git config user.name  "varam-dynamics-bot"
+          git config user.email "varam-dynamics-bot@users.noreply.github.com"
+          # Stage ONLY the Aster state file — never `git add results/`, so we never
+          # touch scanner/monitor state files.
+          if [ -f results/aster_view_state.json ]; then
+            git add results/aster_view_state.json
+          fi
+          if git diff --staged --quiet; then
+            echo "No Aster view-state changes to commit"
+          else
+            git commit -m "aster-view: $(date -u +%FT%TZ)"
+            # Retry pull-rebase + push to survive races with scanner/monitor pushes.
+            n=0
+            until [ "$n" -ge 3 ]; do
+              if git pull --rebase origin main && git push; then
+                echo "Push succeeded on attempt $((n + 1))"
+                exit 0
+              fi
+              git rebase --abort 2>/dev/null || true
+              n=$((n + 1))
+              echo "Push attempt $n failed; retrying in 5s..."
+              sleep 5
+            done
+            echo "ERROR: all 3 push attempts failed"
+            exit 1
+          fi

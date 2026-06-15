@@ -58,8 +58,15 @@ RWA_MIN_SCORE       = 6.0           # RWA/Perp tool-level display floor (scorer 
 
 TITLES = {"crypto": "🌐 Aster Crypto Signals", "rwa_perp": "🏦 Aster RWA / Perp Signals"}
 VIEW_ONLY_FOOTER = "ℹ️ View-only Aster signal · manual logging not enabled yet"
+NO_SIGNAL_FOOTER = "ℹ️ View-only Aster scan · manual logging not enabled yet"
 DISCLAIMER       = "⚠️ Educational only · not financial advice · high-risk · DYOR"
 THIN_WARN        = "⚠️ Thin market / low volume — use extra caution"
+
+# Single no-signal message for the WHOLE run (sent once, only in gated-send mode
+# when BOTH categories have no sendable signals). No buttons / batches / writes.
+NO_SIGNAL_MSG = (f"🔍 <b>Aster View-Only Check</b>\n\n"
+                 f"No qualified Aster signals this run.\n\n"
+                 f"{NO_SIGNAL_FOOTER}\n{DISCLAIMER}")
 
 
 # ── source-namespaced keys (isolated; never collide with Hyperliquid) ────────
@@ -220,11 +227,20 @@ def run(send_enabled: bool, get, sender, state: dict, now: datetime,
                       f"to_send={len(to_send)}")
         if to_send:
             messages.append((cat, build_message(cat, to_send, scan_time)))
+    no_signal = not messages
+    if no_signal:
+        report.append("  no sendable signals this run → "
+                      + ("send 1 no-signal message" if send_enabled
+                         else "would send 1 no-signal message (gated)"))
     sent = 0
     if send_enabled:
-        for _cat, msg in messages:
-            sender(msg)                          # NO markup → no buttons
-            sent += 1
+        if no_signal:
+            sender(NO_SIGNAL_MSG)                # single no-signal msg; NO markup
+            sent = 1
+        else:
+            for _cat, msg in messages:
+                sender(msg)                      # NO markup → no buttons
+                sent += 1
     return messages, new_state, sent, report
 
 
@@ -260,17 +276,27 @@ def main(argv: list) -> int:
     messages, new_state, sent, report = run(
         send_enabled, aster._http_get, _bot_send_message, state, now, _ist_now())
 
+    verb = "sent" if send_enabled else "would send"
     print("=" * 64)
     print("ASTER VIEW-ONLY ALERTS — " + ("LIVE SEND" if send_enabled else "DRY-RUN"))
     print("=" * 64)
     print("\n".join(report))
-    for cat, msg in messages:
-        print(f"\n----- would send: {cat} -----\n{msg}")
-    if send_enabled:
-        save_state(new_state)
-        print(f"\nSENT {sent} Aster view-only message(s); Aster state persisted.")
+    if messages:
+        for cat, msg in messages:
+            print(f"\n----- {verb}: {cat} -----\n{msg}")
     else:
-        print(f"\nDRY-RUN: {len(messages)} message(s) built, 0 sent, no state written.")
+        print(f"\n----- {verb}: no-signal -----\n{NO_SIGNAL_MSG}")
+    if send_enabled:
+        # Persist Aster dedup/lifecycle state ONLY when it actually changed, so a
+        # no-signal / no-change run produces nothing for the workflow to commit.
+        if new_state != state:
+            save_state(new_state)
+            print(f"\nSENT {sent} message(s); Aster state persisted (changed).")
+        else:
+            print(f"\nSENT {sent} message(s); no lifecycle change, state not written.")
+    else:
+        kind = f"{len(messages)} signal message(s)" if messages else "1 no-signal message"
+        print(f"\nDRY-RUN: would send {kind}; 0 sent, no state written.")
     return 0
 
 
@@ -336,7 +362,30 @@ def _selftest() -> int:
     # 12. empty category → no message
     em, _, _, _ = run(False, None, stub_sender, {"alerted": {}, "calls": {}}, now, "t",
                       gather_fn=lambda g: {"crypto": [], "rwa_perp": []})
-    chk("empty categories → zero messages", em == [])
+    chk("empty categories → zero signal messages", em == [])
+
+    # no-signal message: dry-run sends nothing; gated send sends exactly ONE
+    none_gather = lambda g: {"crypto": [], "rwa_perp": []}
+    sent_calls.clear()
+    run(False, None, stub_sender, {"alerted": {}, "calls": {}}, now, "t", gather_fn=none_gather)
+    chk("no signals + dry-run → nothing sent", len(sent_calls) == 0)
+    sent_calls.clear()
+    _m, _s, nsent, _r = run(True, None, stub_sender, {"alerted": {}, "calls": {}}, now, "t",
+                            gather_fn=none_gather)
+    chk("no signals + gated send → exactly ONE no-signal message",
+        nsent == 1 and len(sent_calls) == 1
+        and sent_calls[0][0] == NO_SIGNAL_MSG)
+    chk("no-signal message: no markup/buttons",
+        sent_calls[0][1] == () and sent_calls[0][2].get("markup") is None)
+    chk("no-signal text: no per-category titles, has scan footer",
+        "Aster Crypto Signals" not in NO_SIGNAL_MSG
+        and "Aster RWA / Perp Signals" not in NO_SIGNAL_MSG
+        and NO_SIGNAL_FOOTER in NO_SIGNAL_MSG and "No qualified Aster signals" in NO_SIGNAL_MSG)
+    # when signals DO exist, the no-signal message must NOT be sent
+    sent_calls.clear()
+    run(True, None, stub_sender, {"alerted": {}, "calls": {}}, now, "t", gather_fn=fake_gather)
+    chk("signals present → no-signal message NOT sent",
+        all(t != NO_SIGNAL_MSG for t, _a, _k in sent_calls) and len(sent_calls) == 2)
 
     # 15. A2 suppression against the ISOLATED Aster state
     base = [_cand("BTCUSDT", "crypto", 8.4, 500_000_000, bar="C1")]
