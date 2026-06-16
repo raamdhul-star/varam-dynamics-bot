@@ -14,7 +14,8 @@
     "aster|NVDAUSDT|short|4h|2026-06-16 12:00:00+00:00": "2026-06-16T17:20:10.300637+00:00",
     "aster|MSTRUSDT|short|1h|2026-06-16 14:00:00+00:00": "2026-06-16T17:20:10.300637+00:00",
     "aster|AAPLUSDT|long|4h|2026-06-16 12:00:00+00:00": "2026-06-16T17:20:10.300637+00:00",
-    "aster|XAUUSDT|short|1h|2026-06-16 13:00:00+00:00": "2026-06-16T17:20:10.300637+00:00"
+    "aster|XAUUSDT|short|1h|2026-06-16 13:00:00+00:00": "2026-06-16T17:20:10.300637+00:00",
+    "aster|ANTHROPICUSDT|short|1h|2026-06-16 17:00:00+00:00": "2026-06-16T21:18:12.001711+00:00"
   },
   "calls": {
     "aster|ETHUSDT|long|4h": {
@@ -285,6 +286,24 @@
       "status": "active",
       "lifecycle_label": "new",
       "last_alerted_at": "2026-06-16T17:20:10.300637+00:00",
+      "alert_count": 1
+    },
+    "aster|ANTHROPICUSDT|short|1h": {
+      "symbol": "ANTHROPICUSDT",
+      "direction": "short",
+      "interval": "1h",
+      "first_seen": "2026-06-16T21:18:12.001711+00:00",
+      "last_seen": "2026-06-16T21:18:12.001711+00:00",
+      "last_bar_time": "2026-06-16 17:00:00+00:00",
+      "entry": 1740.53,
+      "target": 1701.87928572,
+      "stop": 1759.85535714,
+      "score": 6.48,
+      "rr": 2.0,
+      "risk_emoji": "\ud83d\udfe1",
+      "status": "active",
+      "lifecycle_label": "new",
+      "last_alerted_at": "2026-06-16T21:18:12.001711+00:00",
       "alert_count": 1
     }
   }
