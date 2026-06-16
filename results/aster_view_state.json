@@ -7,7 +7,8 @@
     "aster|SPCXUSDT|long|4h|2026-06-15 12:00:00+00:00": "2026-06-15T21:20:04.228289+00:00",
     "aster|NVDAUSDT|long|4h|2026-06-15 12:00:00+00:00": "2026-06-15T21:20:04.228289+00:00",
     "aster|XAUUSDT|long|4h|2026-06-15 12:00:00+00:00": "2026-06-15T21:20:04.228289+00:00",
-    "aster|HYPEUSDT|short|1h|2026-06-15 22:00:00+00:00": "2026-06-16T00:00:57.862937+00:00"
+    "aster|HYPEUSDT|short|1h|2026-06-15 22:00:00+00:00": "2026-06-16T00:00:57.862937+00:00",
+    "aster|SPXUSDT|long|1h|2026-06-16 02:00:00+00:00": "2026-06-16T05:29:45.856234+00:00"
   },
   "calls": {
     "aster|ETHUSDT|long|4h": {
@@ -152,6 +153,24 @@
       "status": "active",
       "lifecycle_label": "new",
       "last_alerted_at": "2026-06-16T00:00:57.862937+00:00",
+      "alert_count": 1
+    },
+    "aster|SPXUSDT|long|1h": {
+      "symbol": "SPXUSDT",
+      "direction": "long",
+      "interval": "1h",
+      "first_seen": "2026-06-16T05:29:45.856234+00:00",
+      "last_seen": "2026-06-16T05:29:45.856234+00:00",
+      "last_bar_time": "2026-06-16 02:00:00+00:00",
+      "entry": 0.3811,
+      "target": 0.39571428,
+      "stop": 0.37379286,
+      "score": 7.08,
+      "rr": 2.0,
+      "risk_emoji": "\ud83d\udfe1",
+      "status": "active",
+      "lifecycle_label": "new",
+      "last_alerted_at": "2026-06-16T05:29:45.856234+00:00",
       "alert_count": 1
     }
   }
