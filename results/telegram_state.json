@@ -2,55 +2,29 @@
   "offset": 262981543,
   "sigs": [
     {
-      "symbol": "ETH",
-      "direction": "short",
-      "interval": "4h",
-      "score": 7.97,
-      "entry": 1697.2,
-      "sl": 1745.65,
-      "tp": 1600.3,
-      "sl_pct": 2.855,
-      "rr": 2.0,
-      "bar_time": "2026-06-19 00:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "ADA",
+      "symbol": "kPEPE",
       "direction": "short",
       "interval": "1h",
-      "score": 7.38,
-      "entry": 0.16192,
-      "sl": 0.16476894,
-      "tp": 0.15622212,
-      "sl_pct": 1.759,
+      "score": 6.78,
+      "entry": 0.002783,
+      "sl": 0.002828,
+      "tp": 0.002693,
+      "sl_pct": 1.617,
       "rr": 2.0,
-      "bar_time": "2026-06-19 03:00:00+00:00",
+      "bar_time": "2026-06-19 07:00:00+00:00",
       "source": "hyperliquid"
     },
     {
       "symbol": "CHIP",
       "direction": "short",
-      "interval": "1h",
-      "score": 7.08,
-      "entry": 0.035708,
-      "sl": 0.03754014,
-      "tp": 0.03204372,
-      "sl_pct": 5.131,
+      "interval": "4h",
+      "score": 6.59,
+      "entry": 0.034703,
+      "sl": 0.03737644,
+      "tp": 0.02935612,
+      "sl_pct": 7.704,
       "rr": 2.0,
       "bar_time": "2026-06-19 04:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "ASTER",
-      "direction": "short",
-      "interval": "1h",
-      "score": 6.88,
-      "entry": 0.63152,
-      "sl": 0.64674929,
-      "tp": 0.60106142,
-      "sl_pct": 2.412,
-      "rr": 2.0,
-      "bar_time": "2026-06-19 03:00:00+00:00",
       "source": "hyperliquid"
     }
   ],
@@ -325,9 +299,42 @@
     "ETH_short_4h_2026-06-19 00:00:00+00:00": "2026-06-19T06:05:18.898177+00:00",
     "ADA_short_1h_2026-06-19 03:00:00+00:00": "2026-06-19T06:05:18.898177+00:00",
     "CHIP_short_1h_2026-06-19 04:00:00+00:00": "2026-06-19T06:05:18.898177+00:00",
-    "ASTER_short_1h_2026-06-19 03:00:00+00:00": "2026-06-19T06:05:18.898177+00:00"
+    "ASTER_short_1h_2026-06-19 03:00:00+00:00": "2026-06-19T06:05:18.898177+00:00",
+    "kPEPE_short_1h_2026-06-19 07:00:00+00:00": "2026-06-19T11:11:27.617114+00:00",
+    "CHIP_short_4h_2026-06-19 04:00:00+00:00": "2026-06-19T11:11:27.617114+00:00"
   },
   "batches": {
+    "487": {
+      "time": "2026-06-19T11:11:27.617114+00:00",
+      "sigs": [
+        {
+          "symbol": "kPEPE",
+          "direction": "short",
+          "interval": "1h",
+          "score": 6.78,
+          "entry": 0.002783,
+          "sl": 0.002828,
+          "tp": 0.002693,
+          "sl_pct": 1.617,
+          "rr": 2.0,
+          "bar_time": "2026-06-19 07:00:00+00:00",
+          "source": "hyperliquid"
+        },
+        {
+          "symbol": "CHIP",
+          "direction": "short",
+          "interval": "4h",
+          "score": 6.59,
+          "entry": 0.034703,
+          "sl": 0.03737644,
+          "tp": 0.02935612,
+          "sl_pct": 7.704,
+          "rr": 2.0,
+          "bar_time": "2026-06-19 04:00:00+00:00",
+          "source": "hyperliquid"
+        }
+      ]
+    },
     "484": {
       "time": "2026-06-19T06:05:18.898177+00:00",
       "sigs": [
@@ -938,63 +945,6 @@
           "sl_pct": 4.598,
           "rr": 2.0,
           "bar_time": "2026-06-17 19:00:00+00:00",
-          "source": "hyperliquid"
-        }
-      ]
-    },
-    "452": {
-      "time": "2026-06-17T19:17:41.044978+00:00",
-      "sigs": [
-        {
-          "symbol": "FET",
-          "direction": "short",
-          "interval": "1h",
-          "score": 7.7,
-          "entry": 0.20757,
-          "sl": 0.21200036,
-          "tp": 0.19870928,
-          "sl_pct": 2.134,
-          "rr": 2.0,
-          "bar_time": "2026-06-17 18:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "NEAR",
-          "direction": "short",
-          "interval": "1h",
-          "score": 7.68,
-          "entry": 2.3102,
-          "sl": 2.377775,
-          "tp": 2.17505,
-          "sl_pct": 2.925,
-          "rr": 2.0,
-          "bar_time": "2026-06-17 18:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "ETHFI",
-          "direction": "long",
-          "interval": "4h",
-          "score": 7.47,
-          "entry": 0.3666,
-          "sl": 0.34930179,
-          "tp": 0.40119642,
-          "sl_pct": 4.719,
-          "rr": 2.0,
-          "bar_time": "2026-06-17 12:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "ARB",
-          "direction": "long",
-          "interval": "4h",
-          "score": 7.19,
-          "entry": 0.08868,
-          "sl": 0.08510356,
-          "tp": 0.09583288,
-          "sl_pct": 4.033,
-          "rr": 2.0,
-          "bar_time": "2026-06-17 00:00:00+00:00",
           "source": "hyperliquid"
         }
       ]
@@ -1779,19 +1729,19 @@
       "symbol": "kPEPE",
       "direction": "short",
       "interval": "1h",
-      "first_seen": "2026-06-18T17:52:58.815922+00:00",
-      "last_seen": "2026-06-18T17:52:58.815922+00:00",
-      "last_bar_time": "2026-06-18 15:00:00+00:00",
-      "entry": 0.002778,
-      "target": 0.00266272,
-      "stop": 0.00283564,
-      "score": 7.18,
+      "first_seen": "2026-06-19T11:11:27.617114+00:00",
+      "last_seen": "2026-06-19T11:11:27.617114+00:00",
+      "last_bar_time": "2026-06-19 07:00:00+00:00",
+      "entry": 0.002783,
+      "target": 0.002693,
+      "stop": 0.002828,
+      "score": 6.78,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-06-18T17:52:58.815922+00:00",
-      "alert_count": 2
+      "last_alerted_at": "2026-06-19T11:11:27.617114+00:00",
+      "alert_count": 3
     },
     "SPX|short|1h": {
       "symbol": "SPX",
@@ -3123,6 +3073,24 @@
       "status": "active",
       "lifecycle_label": "new",
       "last_alerted_at": "2026-06-19T06:05:18.898177+00:00",
+      "alert_count": 1
+    },
+    "CHIP|short|4h": {
+      "symbol": "CHIP",
+      "direction": "short",
+      "interval": "4h",
+      "first_seen": "2026-06-19T11:11:27.617114+00:00",
+      "last_seen": "2026-06-19T11:11:27.617114+00:00",
+      "last_bar_time": "2026-06-19 04:00:00+00:00",
+      "entry": 0.034703,
+      "target": 0.02935612,
+      "stop": 0.03737644,
+      "score": 6.59,
+      "rr": 2.0,
+      "risk_emoji": "\ud83d\udfe1",
+      "status": "active",
+      "lifecycle_label": "new",
+      "last_alerted_at": "2026-06-19T11:11:27.617114+00:00",
       "alert_count": 1
     }
   }
