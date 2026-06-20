@@ -57,7 +57,9 @@
     "aster|OPENAIUSDT|short|1h|2026-06-18 19:00:00+00:00": "2026-06-18T21:27:45.205864+00:00",
     "aster|ASTERUSDT|short|1h|2026-06-19 03:00:00+00:00": "2026-06-19T05:22:40.606219+00:00",
     "aster|XAUUSDT|short|1h|2026-06-19 13:00:00+00:00": "2026-06-19T14:20:37.201968+00:00",
-    "aster|SOLUSDT|short|1h|2026-06-19 16:00:00+00:00": "2026-06-19T17:26:17.850851+00:00"
+    "aster|SOLUSDT|short|1h|2026-06-19 16:00:00+00:00": "2026-06-19T17:26:17.850851+00:00",
+    "aster|ASTERUSDT|long|1h|2026-06-20 07:00:00+00:00": "2026-06-20T09:36:54.293888+00:00",
+    "aster|ANTHROPICUSDT|short|1h|2026-06-20 05:00:00+00:00": "2026-06-20T09:36:54.293888+00:00"
   },
   "calls": {
     "aster|ETHUSDT|long|4h": {
@@ -334,19 +336,19 @@
       "symbol": "ANTHROPICUSDT",
       "direction": "short",
       "interval": "1h",
-      "first_seen": "2026-06-16T21:18:12.001711+00:00",
-      "last_seen": "2026-06-16T21:18:12.001711+00:00",
-      "last_bar_time": "2026-06-16 17:00:00+00:00",
-      "entry": 1740.53,
-      "target": 1701.87928572,
-      "stop": 1759.85535714,
+      "first_seen": "2026-06-20T09:36:54.293888+00:00",
+      "last_seen": "2026-06-20T09:36:54.293888+00:00",
+      "last_bar_time": "2026-06-20 05:00:00+00:00",
+      "entry": 1716.04,
+      "target": 1687.06642858,
+      "stop": 1730.52678571,
       "score": 6.48,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-06-16T21:18:12.001711+00:00",
-      "alert_count": 1
+      "last_alerted_at": "2026-06-20T09:36:54.293888+00:00",
+      "alert_count": 2
     },
     "aster|BTCUSDT|short|1h": {
       "symbol": "BTCUSDT",
@@ -388,19 +390,19 @@
       "symbol": "ASTERUSDT",
       "direction": "long",
       "interval": "1h",
-      "first_seen": "2026-06-17T13:59:03.478146+00:00",
-      "last_seen": "2026-06-17T13:59:03.478146+00:00",
-      "last_bar_time": "2026-06-17 11:00:00+00:00",
-      "entry": 0.6696,
-      "target": 0.68952858,
-      "stop": 0.65963571,
-      "score": 7.08,
+      "first_seen": "2026-06-20T09:36:54.293888+00:00",
+      "last_seen": "2026-06-20T09:36:54.293888+00:00",
+      "last_bar_time": "2026-06-20 07:00:00+00:00",
+      "entry": 0.655,
+      "target": 0.67518572,
+      "stop": 0.64490714,
+      "score": 7.68,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-06-17T13:59:03.478146+00:00",
-      "alert_count": 1
+      "last_alerted_at": "2026-06-20T09:36:54.293888+00:00",
+      "alert_count": 2
     },
     "aster|BTCUSDT|long|1h": {
       "symbol": "BTCUSDT",
