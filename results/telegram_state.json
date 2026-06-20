@@ -2,68 +2,16 @@
   "offset": 262981543,
   "sigs": [
     {
-      "symbol": "HYPE",
-      "direction": "long",
-      "interval": "1h",
-      "score": 7.9,
-      "entry": 70.734,
-      "sl": 69.24792856,
-      "tp": 73.70614288,
-      "sl_pct": 2.101,
-      "rr": 2.0,
-      "bar_time": "2026-06-20 14:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "ZEC",
-      "direction": "short",
-      "interval": "1h",
-      "score": 7.6,
-      "entry": 467.47,
-      "sl": 476.65642857,
-      "tp": 449.09714286,
-      "sl_pct": 1.965,
-      "rr": 2.0,
-      "bar_time": "2026-06-20 13:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "BTC",
+      "symbol": "SPX",
       "direction": "long",
       "interval": "1h",
       "score": 7.58,
-      "entry": 63930.0,
-      "sl": 63483.85714286,
-      "tp": 64822.28571428,
-      "sl_pct": 0.698,
+      "entry": 0.37398,
+      "sl": 0.36499179,
+      "tp": 0.39195642,
+      "sl_pct": 2.403,
       "rr": 2.0,
-      "bar_time": "2026-06-20 14:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "ETH",
-      "direction": "long",
-      "interval": "1h",
-      "score": 7.28,
-      "entry": 1733.1,
-      "sl": 1718.28214285,
-      "tp": 1762.7357143,
-      "sl_pct": 0.855,
-      "rr": 2.0,
-      "bar_time": "2026-06-20 14:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "TAO",
-      "direction": "short",
-      "interval": "1h",
-      "score": 6.58,
-      "entry": 229.37,
-      "sl": 233.23357144,
-      "tp": 221.64285712,
-      "sl_pct": 1.684,
-      "rr": 2.0,
-      "bar_time": "2026-06-20 13:00:00+00:00",
+      "bar_time": "2026-06-20 16:00:00+00:00",
       "source": "hyperliquid"
     }
   ],
@@ -363,9 +311,28 @@
     "ZEC_short_1h_2026-06-20 13:00:00+00:00": "2026-06-20T15:27:50.755804+00:00",
     "BTC_long_1h_2026-06-20 14:00:00+00:00": "2026-06-20T15:27:50.755804+00:00",
     "ETH_long_1h_2026-06-20 14:00:00+00:00": "2026-06-20T15:27:50.755804+00:00",
-    "TAO_short_1h_2026-06-20 13:00:00+00:00": "2026-06-20T15:27:50.755804+00:00"
+    "TAO_short_1h_2026-06-20 13:00:00+00:00": "2026-06-20T15:27:50.755804+00:00",
+    "SPX_long_1h_2026-06-20 16:00:00+00:00": "2026-06-20T17:12:50.592215+00:00"
   },
   "batches": {
+    "520": {
+      "time": "2026-06-20T17:12:50.592215+00:00",
+      "sigs": [
+        {
+          "symbol": "SPX",
+          "direction": "long",
+          "interval": "1h",
+          "score": 7.58,
+          "entry": 0.37398,
+          "sl": 0.36499179,
+          "tp": 0.39195642,
+          "sl_pct": 2.403,
+          "rr": 2.0,
+          "bar_time": "2026-06-20 16:00:00+00:00",
+          "source": "hyperliquid"
+        }
+      ]
+    },
     "516": {
       "time": "2026-06-20T15:27:50.755804+00:00",
       "sigs": [
@@ -794,37 +761,6 @@
           "sl_pct": 2.412,
           "rr": 2.0,
           "bar_time": "2026-06-19 03:00:00+00:00",
-          "source": "hyperliquid"
-        }
-      ]
-    },
-    "481": {
-      "time": "2026-06-19T00:18:49.870891+00:00",
-      "sigs": [
-        {
-          "symbol": "ENA",
-          "direction": "long",
-          "interval": "1h",
-          "score": 7.18,
-          "entry": 0.095578,
-          "sl": 0.09157546,
-          "tp": 0.10358308,
-          "sl_pct": 4.188,
-          "rr": 2.0,
-          "bar_time": "2026-06-18 23:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "FET",
-          "direction": "long",
-          "interval": "1h",
-          "score": 6.58,
-          "entry": 0.19783,
-          "sl": 0.19323894,
-          "tp": 0.20701212,
-          "sl_pct": 2.321,
-          "rr": 2.0,
-          "bar_time": "2026-06-18 23:00:00+00:00",
           "source": "hyperliquid"
         }
       ]
@@ -3115,6 +3051,24 @@
       "status": "active",
       "lifecycle_label": "new",
       "last_alerted_at": "2026-06-20T15:27:50.755804+00:00",
+      "alert_count": 1
+    },
+    "SPX|long|1h": {
+      "symbol": "SPX",
+      "direction": "long",
+      "interval": "1h",
+      "first_seen": "2026-06-20T17:12:50.592215+00:00",
+      "last_seen": "2026-06-20T17:12:50.592215+00:00",
+      "last_bar_time": "2026-06-20 16:00:00+00:00",
+      "entry": 0.37398,
+      "target": 0.39195642,
+      "stop": 0.36499179,
+      "score": 7.58,
+      "rr": 2.0,
+      "risk_emoji": "\ud83d\udfe1",
+      "status": "active",
+      "lifecycle_label": "new",
+      "last_alerted_at": "2026-06-20T17:12:50.592215+00:00",
       "alert_count": 1
     }
   }
