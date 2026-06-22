@@ -69,7 +69,10 @@
     "aster|BTCUSDT|short|1h|2026-06-21 11:00:00+00:00": "2026-06-21T13:17:41.074635+00:00",
     "aster|ANTHROPICUSDT|short|4h|2026-06-21 12:00:00+00:00": "2026-06-21T16:08:13.005861+00:00",
     "aster|SPXUSDT|long|1h|2026-06-21 19:00:00+00:00": "2026-06-21T20:00:26.332443+00:00",
-    "aster|SPCXUSDT|short|1h|2026-06-21 22:00:00+00:00": "2026-06-21T23:43:21.945259+00:00"
+    "aster|SPCXUSDT|short|1h|2026-06-21 22:00:00+00:00": "2026-06-21T23:43:21.945259+00:00",
+    "aster|BTCUSDT|long|1h|2026-06-22 11:00:00+00:00": "2026-06-22T12:24:57.293732+00:00",
+    "aster|SOLUSDT|long|1h|2026-06-22 11:00:00+00:00": "2026-06-22T12:24:57.293732+00:00",
+    "aster|SPCXUSDT|short|4h|2026-06-22 08:00:00+00:00": "2026-06-22T12:24:57.293732+00:00"
   },
   "calls": {
     "aster|ETHUSDT|long|4h": {
@@ -418,19 +421,19 @@
       "symbol": "BTCUSDT",
       "direction": "long",
       "interval": "1h",
-      "first_seen": "2026-06-20T16:47:44.008966+00:00",
-      "last_seen": "2026-06-20T16:47:44.008966+00:00",
-      "last_bar_time": "2026-06-20 14:00:00+00:00",
-      "entry": 63930.5,
-      "target": 64821.05,
-      "stop": 63485.225,
-      "score": 7.58,
+      "first_seen": "2026-06-22T12:24:57.293732+00:00",
+      "last_seen": "2026-06-22T12:24:57.293732+00:00",
+      "last_bar_time": "2026-06-22 11:00:00+00:00",
+      "entry": 64628.1,
+      "target": 65968.30714288,
+      "stop": 63957.99642856,
+      "score": 7.08,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-06-20T16:47:44.008966+00:00",
-      "alert_count": 2
+      "last_alerted_at": "2026-06-22T12:24:57.293732+00:00",
+      "alert_count": 3
     },
     "aster|SPCXUSDT|short|1h": {
       "symbol": "SPCXUSDT",
@@ -826,6 +829,42 @@
       "status": "active",
       "lifecycle_label": "new",
       "last_alerted_at": "2026-06-21T16:08:13.005861+00:00",
+      "alert_count": 1
+    },
+    "aster|SOLUSDT|long|1h": {
+      "symbol": "SOLUSDT",
+      "direction": "long",
+      "interval": "1h",
+      "first_seen": "2026-06-22T12:24:57.293732+00:00",
+      "last_seen": "2026-06-22T12:24:57.293732+00:00",
+      "last_bar_time": "2026-06-22 11:00:00+00:00",
+      "entry": 74.14,
+      "target": 76.36428572,
+      "stop": 73.02785714,
+      "score": 7.08,
+      "rr": 2.0,
+      "risk_emoji": "\ud83d\udfe1",
+      "status": "active",
+      "lifecycle_label": "new",
+      "last_alerted_at": "2026-06-22T12:24:57.293732+00:00",
+      "alert_count": 1
+    },
+    "aster|SPCXUSDT|short|4h": {
+      "symbol": "SPCXUSDT",
+      "direction": "short",
+      "interval": "4h",
+      "first_seen": "2026-06-22T12:24:57.293732+00:00",
+      "last_seen": "2026-06-22T12:24:57.293732+00:00",
+      "last_bar_time": "2026-06-22 08:00:00+00:00",
+      "entry": 176.41,
+      "target": 169.42,
+      "stop": 179.905,
+      "score": 6.89,
+      "rr": 2.0,
+      "risk_emoji": "\ud83d\udfe1",
+      "status": "active",
+      "lifecycle_label": "new",
+      "last_alerted_at": "2026-06-22T12:24:57.293732+00:00",
       "alert_count": 1
     }
   }
