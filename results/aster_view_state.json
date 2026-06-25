@@ -126,7 +126,9 @@
     "aster|SPXUSDT|short|1h|2026-06-24 17:00:00+00:00": "2026-06-24T21:43:04.444895+00:00",
     "aster|SPXUSDT|long|1h|2026-06-24 22:00:00+00:00": "2026-06-24T23:21:07.341732+00:00",
     "aster|ASTERUSDT|short|4h|2026-06-24 12:00:00+00:00": "2026-06-25T04:21:57.805337+00:00",
-    "aster|ANTHROPICUSDT|long|1h|2026-06-25 00:00:00+00:00": "2026-06-25T04:21:57.805337+00:00"
+    "aster|ANTHROPICUSDT|long|1h|2026-06-25 00:00:00+00:00": "2026-06-25T04:21:57.805337+00:00",
+    "aster|SPXUSDT|short|1h|2026-06-25 10:00:00+00:00": "2026-06-25T11:49:17.836767+00:00",
+    "aster|ANTHROPICUSDT|long|1h|2026-06-25 10:00:00+00:00": "2026-06-25T11:49:17.836767+00:00"
   },
   "calls": {
     "aster|ETHUSDT|long|4h": {
@@ -187,19 +189,19 @@
       "symbol": "SPXUSDT",
       "direction": "short",
       "interval": "1h",
-      "first_seen": "2026-06-24T14:52:33.878411+00:00",
-      "last_seen": "2026-06-24T21:43:04.444895+00:00",
-      "last_bar_time": "2026-06-24 17:00:00+00:00",
-      "entry": 0.3175,
-      "target": 0.30267142,
-      "stop": 0.32491429,
-      "score": 6.28,
+      "first_seen": "2026-06-25T11:49:17.836767+00:00",
+      "last_seen": "2026-06-25T11:49:17.836767+00:00",
+      "last_bar_time": "2026-06-25 10:00:00+00:00",
+      "entry": 0.3381,
+      "target": 0.33422142,
+      "stop": 0.34003929,
+      "score": 7.08,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
-      "lifecycle_label": "continuing",
-      "last_alerted_at": "2026-06-24T21:43:04.444895+00:00",
-      "alert_count": 5
+      "lifecycle_label": "new",
+      "last_alerted_at": "2026-06-25T11:49:17.836767+00:00",
+      "alert_count": 6
     },
     "aster|SPCXUSDT|long|4h": {
       "symbol": "SPCXUSDT",
@@ -1124,18 +1126,18 @@
       "direction": "long",
       "interval": "1h",
       "first_seen": "2026-06-25T04:21:57.805337+00:00",
-      "last_seen": "2026-06-25T04:21:57.805337+00:00",
-      "last_bar_time": "2026-06-25 00:00:00+00:00",
-      "entry": 1630.4,
-      "target": 1668.27714288,
-      "stop": 1611.46142856,
-      "score": 6.78,
+      "last_seen": "2026-06-25T11:49:17.836767+00:00",
+      "last_bar_time": "2026-06-25 10:00:00+00:00",
+      "entry": 1671.19,
+      "target": 1705.42,
+      "stop": 1654.075,
+      "score": 6.18,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
-      "lifecycle_label": "new",
-      "last_alerted_at": "2026-06-25T04:21:57.805337+00:00",
-      "alert_count": 2
+      "lifecycle_label": "continuing",
+      "last_alerted_at": "2026-06-25T11:49:17.836767+00:00",
+      "alert_count": 3
     }
   }
 }
