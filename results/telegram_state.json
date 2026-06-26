@@ -2,94 +2,29 @@
   "offset": 262981543,
   "sigs": [
     {
-      "symbol": "AAVE",
+      "symbol": "TIA",
       "direction": "long",
       "interval": "1h",
-      "score": 7.98,
-      "entry": 83.419,
-      "sl": 79.45267856,
-      "tp": 91.35164288,
-      "sl_pct": 4.755,
+      "score": 7.88,
+      "entry": 0.35788,
+      "sl": 0.34756214,
+      "tp": 0.37851572,
+      "sl_pct": 2.883,
       "rr": 2.0,
-      "bar_time": "2026-06-26 03:00:00+00:00",
+      "bar_time": "2026-06-26 06:00:00+00:00",
       "source": "hyperliquid"
     },
     {
-      "symbol": "JTO",
-      "direction": "long",
-      "interval": "1h",
-      "score": 7.8,
-      "entry": 0.71851,
-      "sl": 0.68477179,
-      "tp": 0.78598642,
-      "sl_pct": 4.696,
-      "rr": 2.0,
-      "bar_time": "2026-06-26 01:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "XPL",
-      "direction": "long",
-      "interval": "1h",
-      "score": 7.6,
-      "entry": 0.10225,
-      "sl": 0.09522239,
-      "tp": 0.11630522,
-      "sl_pct": 6.873,
-      "rr": 2.0,
-      "bar_time": "2026-06-26 03:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "SOL",
-      "direction": "long",
-      "interval": "1h",
-      "score": 7.28,
-      "entry": 68.19,
-      "sl": 66.26892856,
-      "tp": 72.03214288,
-      "sl_pct": 2.817,
-      "rr": 2.0,
-      "bar_time": "2026-06-26 03:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "ENA",
-      "direction": "short",
-      "interval": "1h",
-      "score": 7.08,
-      "entry": 0.079958,
-      "sl": 0.08294921,
-      "tp": 0.07397558,
-      "sl_pct": 3.741,
-      "rr": 2.0,
-      "bar_time": "2026-06-26 02:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "PENGU",
+      "symbol": "TRUMP",
       "direction": "long",
       "interval": "1h",
       "score": 6.78,
-      "entry": 0.005883,
-      "sl": 0.00568875,
-      "tp": 0.0062715,
-      "sl_pct": 3.302,
+      "entry": 1.6826,
+      "sl": 1.64754286,
+      "tp": 1.75271428,
+      "sl_pct": 2.084,
       "rr": 2.0,
-      "bar_time": "2026-06-26 03:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "PAXG",
-      "direction": "long",
-      "interval": "4h",
-      "score": 6.69,
-      "entry": 4038.2,
-      "sl": 3971.61071429,
-      "tp": 4171.37857142,
-      "sl_pct": 1.649,
-      "rr": 2.0,
-      "bar_time": "2026-06-25 12:00:00+00:00",
+      "bar_time": "2026-06-26 06:00:00+00:00",
       "source": "hyperliquid"
     }
   ],
@@ -550,9 +485,42 @@
     "SOL_long_1h_2026-06-26 03:00:00+00:00": "2026-06-26T05:02:07.548346+00:00",
     "ENA_short_1h_2026-06-26 02:00:00+00:00": "2026-06-26T05:02:07.548346+00:00",
     "PENGU_long_1h_2026-06-26 03:00:00+00:00": "2026-06-26T05:02:07.548346+00:00",
-    "PAXG_long_4h_2026-06-25 12:00:00+00:00": "2026-06-26T05:02:07.548346+00:00"
+    "PAXG_long_4h_2026-06-25 12:00:00+00:00": "2026-06-26T05:02:07.548346+00:00",
+    "TIA_long_1h_2026-06-26 06:00:00+00:00": "2026-06-26T08:31:25.891214+00:00",
+    "TRUMP_long_1h_2026-06-26 06:00:00+00:00": "2026-06-26T08:31:25.891214+00:00"
   },
   "batches": {
+    "651": {
+      "time": "2026-06-26T08:31:25.891214+00:00",
+      "sigs": [
+        {
+          "symbol": "TIA",
+          "direction": "long",
+          "interval": "1h",
+          "score": 7.88,
+          "entry": 0.35788,
+          "sl": 0.34756214,
+          "tp": 0.37851572,
+          "sl_pct": 2.883,
+          "rr": 2.0,
+          "bar_time": "2026-06-26 06:00:00+00:00",
+          "source": "hyperliquid"
+        },
+        {
+          "symbol": "TRUMP",
+          "direction": "long",
+          "interval": "1h",
+          "score": 6.78,
+          "entry": 1.6826,
+          "sl": 1.64754286,
+          "tp": 1.75271428,
+          "sl_pct": 2.084,
+          "rr": 2.0,
+          "bar_time": "2026-06-26 06:00:00+00:00",
+          "source": "hyperliquid"
+        }
+      ]
+    },
     "648": {
       "time": "2026-06-26T05:02:07.548346+00:00",
       "sigs": [
@@ -1163,24 +1131,6 @@
           "sl_pct": 4.726,
           "rr": 2.0,
           "bar_time": "2026-06-24 20:00:00+00:00",
-          "source": "hyperliquid"
-        }
-      ]
-    },
-    "616": {
-      "time": "2026-06-24T22:06:23.763105+00:00",
-      "sigs": [
-        {
-          "symbol": "ICP",
-          "direction": "short",
-          "interval": "4h",
-          "score": 7.12,
-          "entry": 2.1285,
-          "sl": 2.20465714,
-          "tp": 1.97618572,
-          "sl_pct": 3.578,
-          "rr": 2.0,
-          "bar_time": "2026-06-24 12:00:00+00:00",
           "source": "hyperliquid"
         }
       ]
@@ -4443,6 +4393,42 @@
       "status": "active",
       "lifecycle_label": "new",
       "last_alerted_at": "2026-06-26T05:02:07.548346+00:00",
+      "alert_count": 1
+    },
+    "TIA|long|1h": {
+      "symbol": "TIA",
+      "direction": "long",
+      "interval": "1h",
+      "first_seen": "2026-06-26T08:31:25.891214+00:00",
+      "last_seen": "2026-06-26T08:31:25.891214+00:00",
+      "last_bar_time": "2026-06-26 06:00:00+00:00",
+      "entry": 0.35788,
+      "target": 0.37851572,
+      "stop": 0.34756214,
+      "score": 7.88,
+      "rr": 2.0,
+      "risk_emoji": "\ud83d\udfe1",
+      "status": "active",
+      "lifecycle_label": "new",
+      "last_alerted_at": "2026-06-26T08:31:25.891214+00:00",
+      "alert_count": 1
+    },
+    "TRUMP|long|1h": {
+      "symbol": "TRUMP",
+      "direction": "long",
+      "interval": "1h",
+      "first_seen": "2026-06-26T08:31:25.891214+00:00",
+      "last_seen": "2026-06-26T08:31:25.891214+00:00",
+      "last_bar_time": "2026-06-26 06:00:00+00:00",
+      "entry": 1.6826,
+      "target": 1.75271428,
+      "stop": 1.64754286,
+      "score": 6.78,
+      "rr": 2.0,
+      "risk_emoji": "\ud83d\udfe1",
+      "status": "active",
+      "lifecycle_label": "new",
+      "last_alerted_at": "2026-06-26T08:31:25.891214+00:00",
       "alert_count": 1
     }
   }
