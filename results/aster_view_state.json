@@ -167,7 +167,8 @@
     "aster|BTCUSDT|short|1h|2026-06-27 19:00:00+00:00": "2026-06-27T20:19:13.300348+00:00",
     "aster|SPXUSDT|short|1h|2026-06-27 19:00:00+00:00": "2026-06-27T20:19:13.300348+00:00",
     "aster|SOLUSDT|short|1h|2026-06-27 21:00:00+00:00": "2026-06-27T22:15:06.412778+00:00",
-    "aster|SPXUSDT|long|4h|2026-06-27 12:00:00+00:00": "2026-06-27T22:15:06.412778+00:00"
+    "aster|SPXUSDT|long|4h|2026-06-27 12:00:00+00:00": "2026-06-27T22:15:06.412778+00:00",
+    "aster|SPXUSDT|long|1h|2026-06-27 22:00:00+00:00": "2026-06-27T23:17:56.437210+00:00"
   },
   "calls": {
     "aster|ETHUSDT|long|4h": {
@@ -319,18 +320,18 @@
       "direction": "long",
       "interval": "1h",
       "first_seen": "2026-06-27T14:54:36.119979+00:00",
-      "last_seen": "2026-06-27T16:18:43.867872+00:00",
-      "last_bar_time": "2026-06-27 14:00:00+00:00",
-      "entry": 0.3372,
-      "target": 0.34095,
-      "stop": 0.335325,
+      "last_seen": "2026-06-27T23:17:56.437210+00:00",
+      "last_bar_time": "2026-06-27 22:00:00+00:00",
+      "entry": 0.3476,
+      "target": 0.35889288,
+      "stop": 0.34195356,
       "score": 7.47,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
-      "lifecycle_label": "upgraded",
-      "last_alerted_at": "2026-06-27T16:18:43.867872+00:00",
-      "alert_count": 12
+      "lifecycle_label": "continuing",
+      "last_alerted_at": "2026-06-27T23:17:56.437210+00:00",
+      "alert_count": 13
     },
     "aster|OPENAIUSDT|long|1h": {
       "symbol": "OPENAIUSDT",
