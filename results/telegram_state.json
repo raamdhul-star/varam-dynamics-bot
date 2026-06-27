@@ -2,14 +2,14 @@
   "offset": 262981543,
   "sigs": [
     {
-      "symbol": "SOL",
+      "symbol": "SUI",
       "direction": "short",
       "interval": "1h",
       "score": 6.78,
-      "entry": 70.933,
-      "sl": 71.73657144,
-      "tp": 69.32585712,
-      "sl_pct": 1.133,
+      "entry": 0.68416,
+      "sl": 0.69518394,
+      "tp": 0.66211212,
+      "sl_pct": 1.611,
       "rr": 2.0,
       "bar_time": "2026-06-27 21:00:00+00:00",
       "source": "hyperliquid"
@@ -516,9 +516,28 @@
     "TRUMP_short_4h_2026-06-27 16:00:00+00:00": "2026-06-27T20:06:45.451991+00:00",
     "BTC_short_1h_2026-06-27 19:00:00+00:00": "2026-06-27T20:06:45.451991+00:00",
     "PUMP_long_1h_2026-06-27 20:00:00+00:00": "2026-06-27T21:51:18.962547+00:00",
-    "SOL_short_1h_2026-06-27 21:00:00+00:00": "2026-06-27T22:49:43.044477+00:00"
+    "SOL_short_1h_2026-06-27 21:00:00+00:00": "2026-06-27T22:49:43.044477+00:00",
+    "SUI_short_1h_2026-06-27 21:00:00+00:00": "2026-06-27T23:49:34.592044+00:00"
   },
   "batches": {
+    "702": {
+      "time": "2026-06-27T23:49:34.592044+00:00",
+      "sigs": [
+        {
+          "symbol": "SUI",
+          "direction": "short",
+          "interval": "1h",
+          "score": 6.78,
+          "entry": 0.68416,
+          "sl": 0.69518394,
+          "tp": 0.66211212,
+          "sl_pct": 1.611,
+          "rr": 2.0,
+          "bar_time": "2026-06-27 21:00:00+00:00",
+          "source": "hyperliquid"
+        }
+      ]
+    },
     "700": {
       "time": "2026-06-27T22:49:43.044477+00:00",
       "sigs": [
@@ -898,63 +917,6 @@
           "source": "hyperliquid"
         }
       ]
-    },
-    "662": {
-      "time": "2026-06-26T18:21:18.488157+00:00",
-      "sigs": [
-        {
-          "symbol": "JUP",
-          "direction": "long",
-          "interval": "1h",
-          "score": 7.38,
-          "entry": 0.23208,
-          "sl": 0.22370464,
-          "tp": 0.24883072,
-          "sl_pct": 3.609,
-          "rr": 2.0,
-          "bar_time": "2026-06-26 17:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "HYPE",
-          "direction": "long",
-          "interval": "4h",
-          "score": 7.22,
-          "entry": 64.824,
-          "sl": 60.567,
-          "tp": 73.338,
-          "sl_pct": 6.567,
-          "rr": 2.0,
-          "bar_time": "2026-06-26 12:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "WIF",
-          "direction": "long",
-          "interval": "1h",
-          "score": 7.17,
-          "entry": 0.14803,
-          "sl": 0.14376571,
-          "tp": 0.15655858,
-          "sl_pct": 2.881,
-          "rr": 2.0,
-          "bar_time": "2026-06-26 15:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "ONDO",
-          "direction": "long",
-          "interval": "1h",
-          "score": 7.08,
-          "entry": 0.31512,
-          "sl": 0.30696,
-          "tp": 0.33144,
-          "sl_pct": 2.589,
-          "rr": 2.0,
-          "bar_time": "2026-06-26 15:00:00+00:00",
-          "source": "hyperliquid"
-        }
-      ]
     }
   },
   "calls": {
@@ -1160,19 +1122,19 @@
       "symbol": "SUI",
       "direction": "short",
       "interval": "1h",
-      "first_seen": "2026-06-21T17:15:27.174822+00:00",
-      "last_seen": "2026-06-21T17:15:27.174822+00:00",
-      "last_bar_time": "2026-06-21 16:00:00+00:00",
-      "entry": 0.7092,
-      "target": 0.69270642,
-      "stop": 0.71744679,
-      "score": 6.28,
+      "first_seen": "2026-06-27T23:49:34.592044+00:00",
+      "last_seen": "2026-06-27T23:49:34.592044+00:00",
+      "last_bar_time": "2026-06-27 21:00:00+00:00",
+      "entry": 0.68416,
+      "target": 0.66211212,
+      "stop": 0.69518394,
+      "score": 6.78,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-06-21T17:15:27.174822+00:00",
-      "alert_count": 4
+      "last_alerted_at": "2026-06-27T23:49:34.592044+00:00",
+      "alert_count": 5
     },
     "ONDO|short|1w": {
       "symbol": "ONDO",
