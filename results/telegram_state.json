@@ -2,81 +2,16 @@
   "offset": 262981543,
   "sigs": [
     {
-      "symbol": "DOT",
-      "direction": "short",
-      "interval": "1h",
-      "score": 8.28,
-      "entry": 0.82767,
-      "sl": 0.8358375,
-      "tp": 0.811335,
-      "sl_pct": 0.987,
-      "rr": 2.0,
-      "bar_time": "2026-06-27 19:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "ETH",
-      "direction": "short",
-      "interval": "1h",
-      "score": 7.58,
-      "entry": 1577.5,
-      "sl": 1590.74285714,
-      "tp": 1551.01428572,
-      "sl_pct": 0.839,
-      "rr": 2.0,
-      "bar_time": "2026-06-27 19:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "HYPE",
-      "direction": "short",
-      "interval": "1h",
-      "score": 7.38,
-      "entry": 62.169,
-      "sl": 63.288,
-      "tp": 59.931,
-      "sl_pct": 1.8,
-      "rr": 2.0,
-      "bar_time": "2026-06-27 19:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "WLD",
-      "direction": "short",
-      "interval": "1h",
-      "score": 7.38,
-      "entry": 0.44822,
-      "sl": 0.4596125,
-      "tp": 0.425435,
-      "sl_pct": 2.542,
-      "rr": 2.0,
-      "bar_time": "2026-06-27 19:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "TRUMP",
-      "direction": "short",
-      "interval": "4h",
-      "score": 7.19,
-      "entry": 1.6653,
-      "sl": 1.73781429,
-      "tp": 1.52027142,
-      "sl_pct": 4.354,
-      "rr": 2.0,
-      "bar_time": "2026-06-27 16:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "BTC",
-      "direction": "short",
+      "symbol": "PUMP",
+      "direction": "long",
       "interval": "1h",
       "score": 7.08,
-      "entry": 60145.0,
-      "sl": 60544.64285714,
-      "tp": 59345.71428572,
-      "sl_pct": 0.664,
+      "entry": 0.001403,
+      "sl": 0.001358,
+      "tp": 0.001493,
+      "sl_pct": 3.207,
       "rr": 2.0,
-      "bar_time": "2026-06-27 19:00:00+00:00",
+      "bar_time": "2026-06-27 20:00:00+00:00",
       "source": "hyperliquid"
     }
   ],
@@ -579,9 +514,28 @@
     "HYPE_short_1h_2026-06-27 19:00:00+00:00": "2026-06-27T20:06:45.451991+00:00",
     "WLD_short_1h_2026-06-27 19:00:00+00:00": "2026-06-27T20:06:45.451991+00:00",
     "TRUMP_short_4h_2026-06-27 16:00:00+00:00": "2026-06-27T20:06:45.451991+00:00",
-    "BTC_short_1h_2026-06-27 19:00:00+00:00": "2026-06-27T20:06:45.451991+00:00"
+    "BTC_short_1h_2026-06-27 19:00:00+00:00": "2026-06-27T20:06:45.451991+00:00",
+    "PUMP_long_1h_2026-06-27 20:00:00+00:00": "2026-06-27T21:51:18.962547+00:00"
   },
   "batches": {
+    "697": {
+      "time": "2026-06-27T21:51:18.962547+00:00",
+      "sigs": [
+        {
+          "symbol": "PUMP",
+          "direction": "long",
+          "interval": "1h",
+          "score": 7.08,
+          "entry": 0.001403,
+          "sl": 0.001358,
+          "tp": 0.001493,
+          "sl_pct": 3.207,
+          "rr": 2.0,
+          "bar_time": "2026-06-27 20:00:00+00:00",
+          "source": "hyperliquid"
+        }
+      ]
+    },
     "693": {
       "time": "2026-06-27T20:06:45.451991+00:00",
       "sigs": [
@@ -1114,37 +1068,6 @@
           "sl_pct": 2.414,
           "rr": 2.0,
           "bar_time": "2026-06-26 13:00:00+00:00",
-          "source": "hyperliquid"
-        }
-      ]
-    },
-    "656": {
-      "time": "2026-06-26T13:54:33.998783+00:00",
-      "sigs": [
-        {
-          "symbol": "ENA",
-          "direction": "short",
-          "interval": "1h",
-          "score": 7.2,
-          "entry": 0.077992,
-          "sl": 0.08015382,
-          "tp": 0.07366836,
-          "sl_pct": 2.772,
-          "rr": 2.0,
-          "bar_time": "2026-06-26 11:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "SUI",
-          "direction": "short",
-          "interval": "4h",
-          "score": 6.79,
-          "entry": 0.67586,
-          "sl": 0.71062679,
-          "tp": 0.60632642,
-          "sl_pct": 5.144,
-          "rr": 2.0,
-          "bar_time": "2026-06-26 08:00:00+00:00",
           "source": "hyperliquid"
         }
       ]
@@ -3495,19 +3418,19 @@
       "symbol": "PUMP",
       "direction": "long",
       "interval": "1h",
-      "first_seen": "2026-06-26T20:26:11.822567+00:00",
-      "last_seen": "2026-06-26T20:26:11.822567+00:00",
-      "last_bar_time": "2026-06-26 19:00:00+00:00",
-      "entry": 0.001312,
-      "target": 0.00139512,
-      "stop": 0.00127044,
-      "score": 7.38,
+      "first_seen": "2026-06-27T21:51:18.962547+00:00",
+      "last_seen": "2026-06-27T21:51:18.962547+00:00",
+      "last_bar_time": "2026-06-27 20:00:00+00:00",
+      "entry": 0.001403,
+      "target": 0.001493,
+      "stop": 0.001358,
+      "score": 7.08,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-06-26T20:26:11.822567+00:00",
-      "alert_count": 2
+      "last_alerted_at": "2026-06-27T21:51:18.962547+00:00",
+      "alert_count": 3
     },
     "APT|long|1h": {
       "symbol": "APT",
