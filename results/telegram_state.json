@@ -2,16 +2,16 @@
   "offset": 262981543,
   "sigs": [
     {
-      "symbol": "PUMP",
-      "direction": "long",
+      "symbol": "SOL",
+      "direction": "short",
       "interval": "1h",
-      "score": 7.08,
-      "entry": 0.001403,
-      "sl": 0.001358,
-      "tp": 0.001493,
-      "sl_pct": 3.207,
+      "score": 6.78,
+      "entry": 70.933,
+      "sl": 71.73657144,
+      "tp": 69.32585712,
+      "sl_pct": 1.133,
       "rr": 2.0,
-      "bar_time": "2026-06-27 20:00:00+00:00",
+      "bar_time": "2026-06-27 21:00:00+00:00",
       "source": "hyperliquid"
     }
   ],
@@ -515,9 +515,28 @@
     "WLD_short_1h_2026-06-27 19:00:00+00:00": "2026-06-27T20:06:45.451991+00:00",
     "TRUMP_short_4h_2026-06-27 16:00:00+00:00": "2026-06-27T20:06:45.451991+00:00",
     "BTC_short_1h_2026-06-27 19:00:00+00:00": "2026-06-27T20:06:45.451991+00:00",
-    "PUMP_long_1h_2026-06-27 20:00:00+00:00": "2026-06-27T21:51:18.962547+00:00"
+    "PUMP_long_1h_2026-06-27 20:00:00+00:00": "2026-06-27T21:51:18.962547+00:00",
+    "SOL_short_1h_2026-06-27 21:00:00+00:00": "2026-06-27T22:49:43.044477+00:00"
   },
   "batches": {
+    "700": {
+      "time": "2026-06-27T22:49:43.044477+00:00",
+      "sigs": [
+        {
+          "symbol": "SOL",
+          "direction": "short",
+          "interval": "1h",
+          "score": 6.78,
+          "entry": 70.933,
+          "sl": 71.73657144,
+          "tp": 69.32585712,
+          "sl_pct": 1.133,
+          "rr": 2.0,
+          "bar_time": "2026-06-27 21:00:00+00:00",
+          "source": "hyperliquid"
+        }
+      ]
+    },
     "697": {
       "time": "2026-06-27T21:51:18.962547+00:00",
       "sigs": [
@@ -933,141 +952,6 @@
           "sl_pct": 2.589,
           "rr": 2.0,
           "bar_time": "2026-06-26 15:00:00+00:00",
-          "source": "hyperliquid"
-        }
-      ]
-    },
-    "659": {
-      "time": "2026-06-26T16:05:58.917113+00:00",
-      "sigs": [
-        {
-          "symbol": "UNI",
-          "direction": "long",
-          "interval": "1h",
-          "score": 8.99,
-          "entry": 2.9398,
-          "sl": 2.85946429,
-          "tp": 3.10047142,
-          "sl_pct": 2.733,
-          "rr": 2.0,
-          "bar_time": "2026-06-26 15:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "HYPE",
-          "direction": "long",
-          "interval": "1h",
-          "score": 8.69,
-          "entry": 63.742,
-          "sl": 61.48610714,
-          "tp": 68.25378572,
-          "sl_pct": 3.539,
-          "rr": 2.0,
-          "bar_time": "2026-06-26 13:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "AAVE",
-          "direction": "long",
-          "interval": "1h",
-          "score": 8.18,
-          "entry": 92.997,
-          "sl": 89.39721429,
-          "tp": 100.19657142,
-          "sl_pct": 3.871,
-          "rr": 2.0,
-          "bar_time": "2026-06-26 15:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "AVAX",
-          "direction": "long",
-          "interval": "1h",
-          "score": 7.98,
-          "entry": 6.369,
-          "sl": 6.19467856,
-          "tp": 6.71764288,
-          "sl_pct": 2.737,
-          "rr": 2.0,
-          "bar_time": "2026-06-26 15:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "BTC",
-          "direction": "long",
-          "interval": "1h",
-          "score": 7.97,
-          "entry": 60143.0,
-          "sl": 59020.03571429,
-          "tp": 62388.92857142,
-          "sl_pct": 1.867,
-          "rr": 2.0,
-          "bar_time": "2026-06-26 13:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "TIA",
-          "direction": "long",
-          "interval": "1h",
-          "score": 7.88,
-          "entry": 0.36785,
-          "sl": 0.35522214,
-          "tp": 0.39310572,
-          "sl_pct": 3.433,
-          "rr": 2.0,
-          "bar_time": "2026-06-26 15:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "SOL",
-          "direction": "long",
-          "interval": "4h",
-          "score": 7.57,
-          "entry": 72.046,
-          "sl": 68.15564286,
-          "tp": 79.82671428,
-          "sl_pct": 5.4,
-          "rr": 2.0,
-          "bar_time": "2026-06-26 12:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "ETH",
-          "direction": "long",
-          "interval": "1h",
-          "score": 7.28,
-          "entry": 1568.1,
-          "sl": 1533.27857144,
-          "tp": 1637.74285712,
-          "sl_pct": 2.221,
-          "rr": 2.0,
-          "bar_time": "2026-06-26 13:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "ZEC",
-          "direction": "long",
-          "interval": "1h",
-          "score": 7.28,
-          "entry": 408.51,
-          "sl": 394.87178571,
-          "tp": 435.78642858,
-          "sl_pct": 3.339,
-          "rr": 2.0,
-          "bar_time": "2026-06-26 13:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "DOT",
-          "direction": "long",
-          "interval": "1h",
-          "score": 7.17,
-          "entry": 0.85001,
-          "sl": 0.82948894,
-          "tp": 0.89105212,
-          "sl_pct": 2.414,
-          "rr": 2.0,
-          "bar_time": "2026-06-26 13:00:00+00:00",
           "source": "hyperliquid"
         }
       ]
@@ -1834,19 +1718,19 @@
       "symbol": "SOL",
       "direction": "short",
       "interval": "1h",
-      "first_seen": "2026-06-22T23:58:48.005622+00:00",
-      "last_seen": "2026-06-22T23:58:48.005622+00:00",
-      "last_bar_time": "2026-06-22 22:00:00+00:00",
-      "entry": 72.066,
-      "target": 69.69985712,
-      "stop": 73.24907144,
-      "score": 8.27,
+      "first_seen": "2026-06-27T22:49:43.044477+00:00",
+      "last_seen": "2026-06-27T22:49:43.044477+00:00",
+      "last_bar_time": "2026-06-27 21:00:00+00:00",
+      "entry": 70.933,
+      "target": 69.32585712,
+      "stop": 71.73657144,
+      "score": 6.78,
       "rr": 2.0,
-      "risk_emoji": "\ud83d\udfe2",
+      "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-06-22T23:58:48.005622+00:00",
-      "alert_count": 5
+      "last_alerted_at": "2026-06-27T22:49:43.044477+00:00",
+      "alert_count": 6
     },
     "kPEPE|short|1h": {
       "symbol": "kPEPE",
