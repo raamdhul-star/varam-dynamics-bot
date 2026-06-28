@@ -2,68 +2,16 @@
   "offset": 262981543,
   "sigs": [
     {
-      "symbol": "DOT",
-      "direction": "short",
-      "interval": "4h",
-      "score": 7.5,
-      "entry": 0.82767,
-      "sl": 0.86265429,
-      "tp": 0.75770142,
-      "sl_pct": 4.227,
-      "rr": 2.0,
-      "bar_time": "2026-06-27 16:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "JTO",
+      "symbol": "ZEC",
       "direction": "short",
       "interval": "1h",
-      "score": 7.08,
-      "entry": 0.80195,
-      "sl": 0.82656714,
-      "tp": 0.75271572,
-      "sl_pct": 3.07,
+      "score": 8.1,
+      "entry": 386.87,
+      "sl": 394.6325,
+      "tp": 371.345,
+      "sl_pct": 2.006,
       "rr": 2.0,
-      "bar_time": "2026-06-28 02:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "ZRO",
-      "direction": "short",
-      "interval": "1h",
-      "score": 6.58,
-      "entry": 0.76204,
-      "sl": 0.77637144,
-      "tp": 0.73337712,
-      "sl_pct": 1.881,
-      "rr": 2.0,
-      "bar_time": "2026-06-28 05:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "BCH",
-      "direction": "short",
-      "interval": "1h",
-      "score": 6.48,
-      "entry": 195.2,
-      "sl": 197.47571429,
-      "tp": 190.64857142,
-      "sl_pct": 1.166,
-      "rr": 2.0,
-      "bar_time": "2026-06-28 02:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "CHIP",
-      "direction": "long",
-      "interval": "1h",
-      "score": 6.28,
-      "entry": 0.030605,
-      "sl": 0.0296524,
-      "tp": 0.0325102,
-      "sl_pct": 3.113,
-      "rr": 2.0,
-      "bar_time": "2026-06-28 02:00:00+00:00",
+      "bar_time": "2026-06-28 06:00:00+00:00",
       "source": "hyperliquid"
     }
   ],
@@ -575,9 +523,28 @@
     "JTO_short_1h_2026-06-28 02:00:00+00:00": "2026-06-28T06:19:06.654804+00:00",
     "ZRO_short_1h_2026-06-28 05:00:00+00:00": "2026-06-28T06:19:06.654804+00:00",
     "BCH_short_1h_2026-06-28 02:00:00+00:00": "2026-06-28T06:19:06.654804+00:00",
-    "CHIP_long_1h_2026-06-28 02:00:00+00:00": "2026-06-28T06:19:06.654804+00:00"
+    "CHIP_long_1h_2026-06-28 02:00:00+00:00": "2026-06-28T06:19:06.654804+00:00",
+    "ZEC_short_1h_2026-06-28 06:00:00+00:00": "2026-06-28T09:50:59.994108+00:00"
   },
   "batches": {
+    "709": {
+      "time": "2026-06-28T09:50:59.994108+00:00",
+      "sigs": [
+        {
+          "symbol": "ZEC",
+          "direction": "short",
+          "interval": "1h",
+          "score": 8.1,
+          "entry": 386.87,
+          "sl": 394.6325,
+          "tp": 371.345,
+          "sl_pct": 2.006,
+          "rr": 2.0,
+          "bar_time": "2026-06-28 06:00:00+00:00",
+          "source": "hyperliquid"
+        }
+      ]
+    },
     "706": {
       "time": "2026-06-28T06:19:06.654804+00:00",
       "sigs": [
@@ -944,63 +911,6 @@
           "source": "hyperliquid"
         }
       ]
-    },
-    "672": {
-      "time": "2026-06-27T01:51:37.183436+00:00",
-      "sigs": [
-        {
-          "symbol": "AAVE",
-          "direction": "long",
-          "interval": "1d",
-          "score": 7.61,
-          "entry": 95.142,
-          "sl": 85.50235714,
-          "tp": 114.42128572,
-          "sl_pct": 10.132,
-          "rr": 2.0,
-          "bar_time": "2026-06-26 00:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "SEI",
-          "direction": "short",
-          "interval": "1d",
-          "score": 6.81,
-          "entry": 0.053167,
-          "sl": 0.05828125,
-          "tp": 0.0429385,
-          "sl_pct": 9.619,
-          "rr": 2.0,
-          "bar_time": "2026-06-26 00:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "JUP",
-          "direction": "long",
-          "interval": "1h",
-          "score": 6.78,
-          "entry": 0.2294,
-          "sl": 0.22110394,
-          "tp": 0.24599212,
-          "sl_pct": 3.616,
-          "rr": 2.0,
-          "bar_time": "2026-06-26 21:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "AVAX",
-          "direction": "long",
-          "interval": "1d",
-          "score": 6.71,
-          "entry": 6.6291,
-          "sl": 5.94198214,
-          "tp": 8.00333572,
-          "sl_pct": 10.365,
-          "rr": 2.0,
-          "bar_time": "2026-06-26 00:00:00+00:00",
-          "source": "hyperliquid"
-        }
-      ]
     }
   },
   "calls": {
@@ -1098,19 +1008,19 @@
       "symbol": "ZEC",
       "direction": "short",
       "interval": "1h",
-      "first_seen": "2026-06-24T16:11:22.167653+00:00",
-      "last_seen": "2026-06-24T16:11:22.167653+00:00",
-      "last_bar_time": "2026-06-24 15:00:00+00:00",
-      "entry": 406.16,
-      "target": 383.20571428,
-      "stop": 417.63714286,
-      "score": 8.59,
+      "first_seen": "2026-06-28T09:50:59.994108+00:00",
+      "last_seen": "2026-06-28T09:50:59.994108+00:00",
+      "last_bar_time": "2026-06-28 06:00:00+00:00",
+      "entry": 386.87,
+      "target": 371.345,
+      "stop": 394.6325,
+      "score": 8.1,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe2",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-06-24T16:11:22.167653+00:00",
-      "alert_count": 5
+      "last_alerted_at": "2026-06-28T09:50:59.994108+00:00",
+      "alert_count": 6
     },
     "XRP|short|1h": {
       "symbol": "XRP",
