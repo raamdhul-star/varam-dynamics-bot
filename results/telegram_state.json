@@ -2,55 +2,16 @@
   "offset": 262981543,
   "sigs": [
     {
-      "symbol": "TAO",
+      "symbol": "ENA",
       "direction": "short",
-      "interval": "1h",
-      "score": 7.08,
-      "entry": 204.3,
-      "sl": 207.26142856,
-      "tp": 198.37714288,
-      "sl_pct": 1.45,
+      "interval": "4h",
+      "score": 7.22,
+      "entry": 0.075291,
+      "sl": 0.07819393,
+      "tp": 0.06948514,
+      "sl_pct": 3.856,
       "rr": 2.0,
-      "bar_time": "2026-06-28 19:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "SPX",
-      "direction": "short",
-      "interval": "1h",
-      "score": 7.08,
-      "entry": 0.33515,
-      "sl": 0.34216356,
-      "tp": 0.32112288,
-      "sl_pct": 2.093,
-      "rr": 2.0,
-      "bar_time": "2026-06-28 19:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "BTC",
-      "direction": "short",
-      "interval": "1h",
-      "score": 6.78,
-      "entry": 59450.0,
-      "sl": 59893.25,
-      "tp": 58563.5,
-      "sl_pct": 0.746,
-      "rr": 2.0,
-      "bar_time": "2026-06-28 19:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "BNB",
-      "direction": "short",
-      "interval": "1h",
-      "score": 6.78,
-      "entry": 548.28,
-      "sl": 552.49392856,
-      "tp": 539.85214288,
-      "sl_pct": 0.769,
-      "rr": 2.0,
-      "bar_time": "2026-06-28 19:00:00+00:00",
+      "bar_time": "2026-06-28 16:00:00+00:00",
       "source": "hyperliquid"
     }
   ],
@@ -574,9 +535,28 @@
     "TAO_short_1h_2026-06-28 19:00:00+00:00": "2026-06-28T20:13:54.888051+00:00",
     "SPX_short_1h_2026-06-28 19:00:00+00:00": "2026-06-28T20:13:54.888051+00:00",
     "BTC_short_1h_2026-06-28 19:00:00+00:00": "2026-06-28T20:13:54.888051+00:00",
-    "BNB_short_1h_2026-06-28 19:00:00+00:00": "2026-06-28T20:13:54.888051+00:00"
+    "BNB_short_1h_2026-06-28 19:00:00+00:00": "2026-06-28T20:13:54.888051+00:00",
+    "ENA_short_4h_2026-06-28 16:00:00+00:00": "2026-06-28T21:51:40.398763+00:00"
   },
   "batches": {
+    "724": {
+      "time": "2026-06-28T21:51:40.398763+00:00",
+      "sigs": [
+        {
+          "symbol": "ENA",
+          "direction": "short",
+          "interval": "4h",
+          "score": 7.22,
+          "entry": 0.075291,
+          "sl": 0.07819393,
+          "tp": 0.06948514,
+          "sl_pct": 3.856,
+          "rr": 2.0,
+          "bar_time": "2026-06-28 16:00:00+00:00",
+          "source": "hyperliquid"
+        }
+      ]
+    },
     "722": {
       "time": "2026-06-28T20:13:54.888051+00:00",
       "sigs": [
@@ -888,24 +868,6 @@
           "sl_pct": 1.133,
           "rr": 2.0,
           "bar_time": "2026-06-27 21:00:00+00:00",
-          "source": "hyperliquid"
-        }
-      ]
-    },
-    "697": {
-      "time": "2026-06-27T21:51:18.962547+00:00",
-      "sigs": [
-        {
-          "symbol": "PUMP",
-          "direction": "long",
-          "interval": "1h",
-          "score": 7.08,
-          "entry": 0.001403,
-          "sl": 0.001358,
-          "tp": 0.001493,
-          "sl_pct": 3.207,
-          "rr": 2.0,
-          "bar_time": "2026-06-27 20:00:00+00:00",
           "source": "hyperliquid"
         }
       ]
@@ -4402,6 +4364,24 @@
       "status": "active",
       "lifecycle_label": "new",
       "last_alerted_at": "2026-06-28T06:19:06.654804+00:00",
+      "alert_count": 1
+    },
+    "ENA|short|4h": {
+      "symbol": "ENA",
+      "direction": "short",
+      "interval": "4h",
+      "first_seen": "2026-06-28T21:51:40.398763+00:00",
+      "last_seen": "2026-06-28T21:51:40.398763+00:00",
+      "last_bar_time": "2026-06-28 16:00:00+00:00",
+      "entry": 0.075291,
+      "target": 0.06948514,
+      "stop": 0.07819393,
+      "score": 7.22,
+      "rr": 2.0,
+      "risk_emoji": "\ud83d\udfe1",
+      "status": "active",
+      "lifecycle_label": "new",
+      "last_alerted_at": "2026-06-28T21:51:40.398763+00:00",
       "alert_count": 1
     }
   }
