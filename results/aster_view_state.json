@@ -205,7 +205,9 @@
     "aster|ASTERUSDT|long|1h|2026-06-30 13:00:00+00:00": "2026-06-30T15:40:44.902239+00:00",
     "aster|TSLAUSDT|long|1h|2026-06-30 13:00:00+00:00": "2026-06-30T15:40:44.902239+00:00",
     "aster|SPCXUSDT|long|1h|2026-06-30 13:00:00+00:00": "2026-06-30T15:40:44.902239+00:00",
-    "aster|SPXUSDT|short|1h|2026-06-30 13:00:00+00:00": "2026-06-30T15:40:44.902239+00:00"
+    "aster|SPXUSDT|short|1h|2026-06-30 13:00:00+00:00": "2026-06-30T15:40:44.902239+00:00",
+    "aster|MSTRUSDT|short|1h|2026-06-30 17:00:00+00:00": "2026-06-30T18:11:39.226105+00:00",
+    "aster|SPXUSDT|short|1h|2026-06-30 16:00:00+00:00": "2026-06-30T18:11:39.226105+00:00"
   },
   "calls": {
     "aster|ETHUSDT|long|4h": {
@@ -267,18 +269,18 @@
       "direction": "short",
       "interval": "1h",
       "first_seen": "2026-06-30T15:40:44.902239+00:00",
-      "last_seen": "2026-06-30T15:40:44.902239+00:00",
-      "last_bar_time": "2026-06-30 13:00:00+00:00",
-      "entry": 0.3436,
-      "target": 0.3382,
-      "stop": 0.3463,
-      "score": 6.58,
+      "last_seen": "2026-06-30T18:11:39.226105+00:00",
+      "last_bar_time": "2026-06-30 16:00:00+00:00",
+      "entry": 0.3355,
+      "target": 0.3271,
+      "stop": 0.3397,
+      "score": 6.78,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
-      "lifecycle_label": "new",
-      "last_alerted_at": "2026-06-30T15:40:44.902239+00:00",
-      "alert_count": 11
+      "lifecycle_label": "continuing",
+      "last_alerted_at": "2026-06-30T18:11:39.226105+00:00",
+      "alert_count": 12
     },
     "aster|SPCXUSDT|long|4h": {
       "symbol": "SPCXUSDT",
@@ -428,19 +430,19 @@
       "symbol": "MSTRUSDT",
       "direction": "short",
       "interval": "1h",
-      "first_seen": "2026-06-28T15:40:42.748541+00:00",
-      "last_seen": "2026-06-28T23:17:05.892220+00:00",
-      "last_bar_time": "2026-06-28 22:00:00+00:00",
-      "entry": 80.55,
-      "target": 78.81857142,
-      "stop": 81.41571429,
-      "score": 7.08,
+      "first_seen": "2026-06-30T18:11:39.226105+00:00",
+      "last_seen": "2026-06-30T18:11:39.226105+00:00",
+      "last_bar_time": "2026-06-30 17:00:00+00:00",
+      "entry": 85.3,
+      "target": 79.40285712,
+      "stop": 88.24857144,
+      "score": 6.78,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
-      "lifecycle_label": "continuing",
-      "last_alerted_at": "2026-06-28T23:17:05.892220+00:00",
-      "alert_count": 10
+      "lifecycle_label": "new",
+      "last_alerted_at": "2026-06-30T18:11:39.226105+00:00",
+      "alert_count": 11
     },
     "aster|AAPLUSDT|long|4h": {
       "symbol": "AAPLUSDT",
