@@ -2,55 +2,29 @@
   "offset": 262981543,
   "sigs": [
     {
-      "symbol": "AAVE",
+      "symbol": "PENGU",
       "direction": "short",
       "interval": "1h",
-      "score": 7.18,
-      "entry": 87.192,
-      "sl": 88.74064285,
-      "tp": 84.0947143,
-      "sl_pct": 1.776,
+      "score": 6.58,
+      "entry": 0.006672,
+      "sl": 0.00683229,
+      "tp": 0.00635142,
+      "sl_pct": 2.402,
       "rr": 2.0,
-      "bar_time": "2026-07-04 06:00:00+00:00",
+      "bar_time": "2026-07-04 09:00:00+00:00",
       "source": "hyperliquid"
     },
     {
-      "symbol": "ETHFI",
-      "direction": "long",
-      "interval": "4h",
-      "score": 6.59,
-      "entry": 0.37562,
-      "sl": 0.36011644,
-      "tp": 0.40662712,
-      "sl_pct": 4.127,
-      "rr": 2.0,
-      "bar_time": "2026-07-03 20:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "WIF",
-      "direction": "long",
-      "interval": "1d",
-      "score": 6.31,
-      "entry": 0.18264,
-      "sl": 0.16013786,
-      "tp": 0.22764428,
-      "sl_pct": 12.32,
-      "rr": 2.0,
-      "bar_time": "2026-07-03 00:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "ASTER",
+      "symbol": "CRV",
       "direction": "short",
       "interval": "1h",
-      "score": 6.18,
-      "entry": 0.64562,
-      "sl": 0.65152035,
-      "tp": 0.6338193,
-      "sl_pct": 0.914,
+      "score": 6.58,
+      "entry": 0.20473,
+      "sl": 0.20820036,
+      "tp": 0.19778928,
+      "sl_pct": 1.695,
       "rr": 2.0,
-      "bar_time": "2026-07-04 04:00:00+00:00",
+      "bar_time": "2026-07-04 09:00:00+00:00",
       "source": "hyperliquid"
     }
   ],
@@ -745,9 +719,42 @@
     "AAVE_short_1h_2026-07-04 06:00:00+00:00": "2026-07-04T08:17:51.421374+00:00",
     "ETHFI_long_4h_2026-07-03 20:00:00+00:00": "2026-07-04T08:17:51.421374+00:00",
     "WIF_long_1d_2026-07-03 00:00:00+00:00": "2026-07-04T08:17:51.421374+00:00",
-    "ASTER_short_1h_2026-07-04 04:00:00+00:00": "2026-07-04T08:17:51.421374+00:00"
+    "ASTER_short_1h_2026-07-04 04:00:00+00:00": "2026-07-04T08:17:51.421374+00:00",
+    "PENGU_short_1h_2026-07-04 09:00:00+00:00": "2026-07-04T10:47:02.937169+00:00",
+    "CRV_short_1h_2026-07-04 09:00:00+00:00": "2026-07-04T10:47:02.937169+00:00"
   },
   "batches": {
+    "870": {
+      "time": "2026-07-04T10:47:02.937169+00:00",
+      "sigs": [
+        {
+          "symbol": "PENGU",
+          "direction": "short",
+          "interval": "1h",
+          "score": 6.58,
+          "entry": 0.006672,
+          "sl": 0.00683229,
+          "tp": 0.00635142,
+          "sl_pct": 2.402,
+          "rr": 2.0,
+          "bar_time": "2026-07-04 09:00:00+00:00",
+          "source": "hyperliquid"
+        },
+        {
+          "symbol": "CRV",
+          "direction": "short",
+          "interval": "1h",
+          "score": 6.58,
+          "entry": 0.20473,
+          "sl": 0.20820036,
+          "tp": 0.19778928,
+          "sl_pct": 1.695,
+          "rr": 2.0,
+          "bar_time": "2026-07-04 09:00:00+00:00",
+          "source": "hyperliquid"
+        }
+      ]
+    },
     "867": {
       "time": "2026-07-04T08:17:51.421374+00:00",
       "sigs": [
@@ -1241,37 +1248,6 @@
           "sl_pct": 1.288,
           "rr": 2.0,
           "bar_time": "2026-07-03 10:00:00+00:00",
-          "source": "hyperliquid"
-        }
-      ]
-    },
-    "836": {
-      "time": "2026-07-03T08:43:23.309389+00:00",
-      "sigs": [
-        {
-          "symbol": "XPL",
-          "direction": "long",
-          "interval": "1h",
-          "score": 8.0,
-          "entry": 0.10005,
-          "sl": 0.09724104,
-          "tp": 0.10566792,
-          "sl_pct": 2.808,
-          "rr": 2.0,
-          "bar_time": "2026-07-03 07:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "AVAX",
-          "direction": "long",
-          "interval": "1h",
-          "score": 6.18,
-          "entry": 6.8479,
-          "sl": 6.78128929,
-          "tp": 6.98112142,
-          "sl_pct": 0.973,
-          "rr": 2.0,
-          "bar_time": "2026-07-03 05:00:00+00:00",
           "source": "hyperliquid"
         }
       ]
@@ -2740,19 +2716,19 @@
       "symbol": "CRV",
       "direction": "short",
       "interval": "1h",
-      "first_seen": "2026-06-17T02:12:19.714176+00:00",
-      "last_seen": "2026-06-17T02:12:19.714176+00:00",
-      "last_bar_time": "2026-06-16 23:00:00+00:00",
-      "entry": 0.23895,
-      "target": 0.22678072,
-      "stop": 0.24503464,
-      "score": 6.88,
+      "first_seen": "2026-07-04T10:47:02.937169+00:00",
+      "last_seen": "2026-07-04T10:47:02.937169+00:00",
+      "last_bar_time": "2026-07-04 09:00:00+00:00",
+      "entry": 0.20473,
+      "target": 0.19778928,
+      "stop": 0.20820036,
+      "score": 6.58,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-06-17T02:12:19.714176+00:00",
-      "alert_count": 1
+      "last_alerted_at": "2026-07-04T10:47:02.937169+00:00",
+      "alert_count": 2
     },
     "BCH|short|4h": {
       "symbol": "BCH",
@@ -3136,19 +3112,19 @@
       "symbol": "PENGU",
       "direction": "short",
       "interval": "1h",
-      "first_seen": "2026-07-02T15:59:34.935430+00:00",
-      "last_seen": "2026-07-02T15:59:34.935430+00:00",
-      "last_bar_time": "2026-07-02 14:00:00+00:00",
-      "entry": 0.006284,
-      "target": 0.00597672,
-      "stop": 0.00643764,
-      "score": 7.08,
+      "first_seen": "2026-07-04T10:47:02.937169+00:00",
+      "last_seen": "2026-07-04T10:47:02.937169+00:00",
+      "last_bar_time": "2026-07-04 09:00:00+00:00",
+      "entry": 0.006672,
+      "target": 0.00635142,
+      "stop": 0.00683229,
+      "score": 6.58,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-07-02T15:59:34.935430+00:00",
-      "alert_count": 4
+      "last_alerted_at": "2026-07-04T10:47:02.937169+00:00",
+      "alert_count": 5
     },
     "JTO|long|1w": {
       "symbol": "JTO",
