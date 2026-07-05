@@ -2,16 +2,29 @@
   "offset": 262981543,
   "sigs": [
     {
-      "symbol": "PENDLE",
-      "direction": "long",
+      "symbol": "GRASS",
+      "direction": "short",
       "interval": "4h",
-      "score": 6.39,
-      "entry": 1.4859,
-      "sl": 1.42905,
-      "tp": 1.5996,
-      "sl_pct": 3.826,
+      "score": 7.27,
+      "entry": 0.53457,
+      "sl": 0.57826393,
+      "tp": 0.44718214,
+      "sl_pct": 8.174,
       "rr": 2.0,
-      "bar_time": "2026-07-04 12:00:00+00:00",
+      "bar_time": "2026-07-04 20:00:00+00:00",
+      "source": "hyperliquid"
+    },
+    {
+      "symbol": "TAO",
+      "direction": "short",
+      "interval": "1h",
+      "score": 6.28,
+      "entry": 214.85,
+      "sl": 217.86285714,
+      "tp": 208.82428572,
+      "sl_pct": 1.402,
+      "rr": 2.0,
+      "bar_time": "2026-07-05 00:00:00+00:00",
       "source": "hyperliquid"
     }
   ],
@@ -727,9 +740,42 @@
     "SPX_short_1h_2026-07-04 18:00:00+00:00": "2026-07-04T20:03:11.777661+00:00",
     "XRP_long_4h_2026-07-04 12:00:00+00:00": "2026-07-04T20:03:11.777661+00:00",
     "HYPE_short_1h_2026-07-04 18:00:00+00:00": "2026-07-04T20:03:11.777661+00:00",
-    "PENDLE_long_4h_2026-07-04 12:00:00+00:00": "2026-07-04T22:44:43.508722+00:00"
+    "PENDLE_long_4h_2026-07-04 12:00:00+00:00": "2026-07-04T22:44:43.508722+00:00",
+    "GRASS_short_4h_2026-07-04 20:00:00+00:00": "2026-07-05T01:31:08.723094+00:00",
+    "TAO_short_1h_2026-07-05 00:00:00+00:00": "2026-07-05T01:31:08.723094+00:00"
   },
   "batches": {
+    "897": {
+      "time": "2026-07-05T01:31:08.723094+00:00",
+      "sigs": [
+        {
+          "symbol": "GRASS",
+          "direction": "short",
+          "interval": "4h",
+          "score": 7.27,
+          "entry": 0.53457,
+          "sl": 0.57826393,
+          "tp": 0.44718214,
+          "sl_pct": 8.174,
+          "rr": 2.0,
+          "bar_time": "2026-07-04 20:00:00+00:00",
+          "source": "hyperliquid"
+        },
+        {
+          "symbol": "TAO",
+          "direction": "short",
+          "interval": "1h",
+          "score": 6.28,
+          "entry": 214.85,
+          "sl": 217.86285714,
+          "tp": 208.82428572,
+          "sl_pct": 1.402,
+          "rr": 2.0,
+          "bar_time": "2026-07-05 00:00:00+00:00",
+          "source": "hyperliquid"
+        }
+      ]
+    },
     "892": {
       "time": "2026-07-04T22:44:43.508722+00:00",
       "sigs": [
@@ -1171,24 +1217,6 @@
           "sl_pct": 0.8,
           "rr": 2.0,
           "bar_time": "2026-07-04 00:00:00+00:00",
-          "source": "hyperliquid"
-        }
-      ]
-    },
-    "857": {
-      "time": "2026-07-03T22:51:08.252422+00:00",
-      "sigs": [
-        {
-          "symbol": "kSHIB",
-          "direction": "long",
-          "interval": "1h",
-          "score": 6.48,
-          "entry": 0.004431,
-          "sl": 0.00438429,
-          "tp": 0.00452442,
-          "sl_pct": 1.054,
-          "rr": 2.0,
-          "bar_time": "2026-07-03 20:00:00+00:00",
           "source": "hyperliquid"
         }
       ]
@@ -3359,19 +3387,19 @@
       "symbol": "TAO",
       "direction": "short",
       "interval": "1h",
-      "first_seen": "2026-06-30T21:22:09.800297+00:00",
-      "last_seen": "2026-06-30T21:22:09.800297+00:00",
-      "last_bar_time": "2026-06-30 20:00:00+00:00",
-      "entry": 201.34,
-      "target": 195.19642858,
-      "stop": 204.41178571,
-      "score": 6.58,
+      "first_seen": "2026-07-05T01:31:08.723094+00:00",
+      "last_seen": "2026-07-05T01:31:08.723094+00:00",
+      "last_bar_time": "2026-07-05 00:00:00+00:00",
+      "entry": 214.85,
+      "target": 208.82428572,
+      "stop": 217.86285714,
+      "score": 6.28,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-06-30T21:22:09.800297+00:00",
-      "alert_count": 5
+      "last_alerted_at": "2026-07-05T01:31:08.723094+00:00",
+      "alert_count": 6
     },
     "AAVE|short|1h": {
       "symbol": "AAVE",
@@ -5261,6 +5289,24 @@
       "status": "active",
       "lifecycle_label": "new",
       "last_alerted_at": "2026-07-04T15:53:31.626736+00:00",
+      "alert_count": 1
+    },
+    "GRASS|short|4h": {
+      "symbol": "GRASS",
+      "direction": "short",
+      "interval": "4h",
+      "first_seen": "2026-07-05T01:31:08.723094+00:00",
+      "last_seen": "2026-07-05T01:31:08.723094+00:00",
+      "last_bar_time": "2026-07-04 20:00:00+00:00",
+      "entry": 0.53457,
+      "target": 0.44718214,
+      "stop": 0.57826393,
+      "score": 7.27,
+      "rr": 2.0,
+      "risk_emoji": "\ud83d\udfe1",
+      "status": "active",
+      "lifecycle_label": "new",
+      "last_alerted_at": "2026-07-05T01:31:08.723094+00:00",
       "alert_count": 1
     }
   }
