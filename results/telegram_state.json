@@ -2,55 +2,29 @@
   "offset": 262981543,
   "sigs": [
     {
-      "symbol": "MORPHO",
-      "direction": "long",
-      "interval": "1d",
-      "score": 7.03,
-      "entry": 2.011,
-      "sl": 1.78986786,
-      "tp": 2.45326428,
-      "sl_pct": 10.996,
-      "rr": 2.0,
-      "bar_time": "2026-07-06 00:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "LTC",
-      "direction": "short",
-      "interval": "4h",
-      "score": 6.59,
-      "entry": 44.816,
-      "sl": 45.94207144,
-      "tp": 42.56385712,
-      "sl_pct": 2.513,
-      "rr": 2.0,
-      "bar_time": "2026-07-06 20:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "VIRTUAL",
-      "direction": "short",
-      "interval": "1d",
-      "score": 6.11,
-      "entry": 0.55034,
-      "sl": 0.60430036,
-      "tp": 0.44241928,
-      "sl_pct": 9.805,
-      "rr": 2.0,
-      "bar_time": "2026-07-06 00:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "LDO",
+      "symbol": "CHIP",
       "direction": "long",
       "interval": "4h",
-      "score": 5.99,
-      "entry": 0.28698,
-      "sl": 0.27560679,
-      "tp": 0.30972642,
-      "sl_pct": 3.963,
+      "score": 6.29,
+      "entry": 0.035564,
+      "sl": 0.033497,
+      "tp": 0.039698,
+      "sl_pct": 5.812,
       "rr": 2.0,
       "bar_time": "2026-07-07 04:00:00+00:00",
+      "source": "hyperliquid"
+    },
+    {
+      "symbol": "kPEPE",
+      "direction": "long",
+      "interval": "1h",
+      "score": 6.08,
+      "entry": 0.002706,
+      "sl": 0.00265875,
+      "tp": 0.0028005,
+      "sl_pct": 1.746,
+      "rr": 2.0,
+      "bar_time": "2026-07-07 09:00:00+00:00",
       "source": "hyperliquid"
     }
   ],
@@ -848,9 +822,42 @@
     "MORPHO_long_1d_2026-07-06 00:00:00+00:00": "2026-07-07T09:00:44.559904+00:00",
     "LTC_short_4h_2026-07-06 20:00:00+00:00": "2026-07-07T09:00:44.559904+00:00",
     "VIRTUAL_short_1d_2026-07-06 00:00:00+00:00": "2026-07-07T09:00:44.559904+00:00",
-    "LDO_long_4h_2026-07-07 04:00:00+00:00": "2026-07-07T09:00:44.559904+00:00"
+    "LDO_long_4h_2026-07-07 04:00:00+00:00": "2026-07-07T09:00:44.559904+00:00",
+    "CHIP_long_4h_2026-07-07 04:00:00+00:00": "2026-07-07T11:47:31.309293+00:00",
+    "kPEPE_long_1h_2026-07-07 09:00:00+00:00": "2026-07-07T11:47:31.309293+00:00"
   },
   "batches": {
+    "959": {
+      "time": "2026-07-07T11:47:31.309293+00:00",
+      "sigs": [
+        {
+          "symbol": "CHIP",
+          "direction": "long",
+          "interval": "4h",
+          "score": 6.29,
+          "entry": 0.035564,
+          "sl": 0.033497,
+          "tp": 0.039698,
+          "sl_pct": 5.812,
+          "rr": 2.0,
+          "bar_time": "2026-07-07 04:00:00+00:00",
+          "source": "hyperliquid"
+        },
+        {
+          "symbol": "kPEPE",
+          "direction": "long",
+          "interval": "1h",
+          "score": 6.08,
+          "entry": 0.002706,
+          "sl": 0.00265875,
+          "tp": 0.0028005,
+          "sl_pct": 1.746,
+          "rr": 2.0,
+          "bar_time": "2026-07-07 09:00:00+00:00",
+          "source": "hyperliquid"
+        }
+      ]
+    },
     "958": {
       "time": "2026-07-07T09:00:44.559904+00:00",
       "sigs": [
@@ -1529,37 +1536,6 @@
           "source": "hyperliquid"
         }
       ]
-    },
-    "926": {
-      "time": "2026-07-05T23:53:16.387123+00:00",
-      "sigs": [
-        {
-          "symbol": "AVAX",
-          "direction": "long",
-          "interval": "1h",
-          "score": 6.28,
-          "entry": 6.9565,
-          "sl": 6.88633214,
-          "tp": 7.09683572,
-          "sl_pct": 1.009,
-          "rr": 2.0,
-          "bar_time": "2026-07-05 21:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "PENGU",
-          "direction": "long",
-          "interval": "1h",
-          "score": 6.28,
-          "entry": 0.006749,
-          "sl": 0.006644,
-          "tp": 0.006959,
-          "sl_pct": 1.556,
-          "rr": 2.0,
-          "bar_time": "2026-07-05 21:00:00+00:00",
-          "source": "hyperliquid"
-        }
-      ]
     }
   },
   "calls": {
@@ -1603,19 +1579,19 @@
       "symbol": "kPEPE",
       "direction": "long",
       "interval": "1h",
-      "first_seen": "2026-07-06T22:54:56.151541+00:00",
-      "last_seen": "2026-07-06T22:54:56.151541+00:00",
-      "last_bar_time": "2026-07-06 21:00:00+00:00",
-      "entry": 0.002777,
-      "target": 0.00289528,
-      "stop": 0.00271786,
-      "score": 7.68,
+      "first_seen": "2026-07-07T11:47:31.309293+00:00",
+      "last_seen": "2026-07-07T11:47:31.309293+00:00",
+      "last_bar_time": "2026-07-07 09:00:00+00:00",
+      "entry": 0.002706,
+      "target": 0.0028005,
+      "stop": 0.00265875,
+      "score": 6.08,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-07-06T22:54:56.151541+00:00",
-      "alert_count": 5
+      "last_alerted_at": "2026-07-07T11:47:31.309293+00:00",
+      "alert_count": 6
     },
     "ZRO|long|1h": {
       "symbol": "ZRO",
@@ -5743,19 +5719,19 @@
       "symbol": "CHIP",
       "direction": "long",
       "interval": "4h",
-      "first_seen": "2026-07-06T22:54:56.151541+00:00",
-      "last_seen": "2026-07-06T22:54:56.151541+00:00",
-      "last_bar_time": "2026-07-06 12:00:00+00:00",
-      "entry": 0.032684,
-      "target": 0.03606888,
-      "stop": 0.03099156,
-      "score": 6.89,
+      "first_seen": "2026-07-07T11:47:31.309293+00:00",
+      "last_seen": "2026-07-07T11:47:31.309293+00:00",
+      "last_bar_time": "2026-07-07 04:00:00+00:00",
+      "entry": 0.035564,
+      "target": 0.039698,
+      "stop": 0.033497,
+      "score": 6.29,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-07-06T22:54:56.151541+00:00",
-      "alert_count": 1
+      "last_alerted_at": "2026-07-07T11:47:31.309293+00:00",
+      "alert_count": 2
     },
     "MORPHO|long|1d": {
       "symbol": "MORPHO",
