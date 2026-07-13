@@ -2,16 +2,68 @@
   "offset": 262981543,
   "sigs": [
     {
-      "symbol": "LINK",
-      "direction": "short",
+      "symbol": "BTC",
+      "direction": "long",
       "interval": "1h",
-      "score": 6.18,
-      "entry": 8.0427,
-      "sl": 8.10875357,
-      "tp": 7.91059286,
-      "sl_pct": 0.821,
+      "score": 7.28,
+      "entry": 64058.0,
+      "sl": 63706.67857144,
+      "tp": 64760.64285712,
+      "sl_pct": 0.548,
       "rr": 2.0,
-      "bar_time": "2026-07-12 21:00:00+00:00",
+      "bar_time": "2026-07-13 00:00:00+00:00",
+      "source": "hyperliquid"
+    },
+    {
+      "symbol": "NEAR",
+      "direction": "long",
+      "interval": "1h",
+      "score": 7.08,
+      "entry": 1.9129,
+      "sl": 1.88033929,
+      "tp": 1.97802142,
+      "sl_pct": 1.702,
+      "rr": 2.0,
+      "bar_time": "2026-07-13 00:00:00+00:00",
+      "source": "hyperliquid"
+    },
+    {
+      "symbol": "LIT",
+      "direction": "long",
+      "interval": "1h",
+      "score": 6.58,
+      "entry": 2.6652,
+      "sl": 2.59148571,
+      "tp": 2.81262858,
+      "sl_pct": 2.766,
+      "rr": 2.0,
+      "bar_time": "2026-07-13 00:00:00+00:00",
+      "source": "hyperliquid"
+    },
+    {
+      "symbol": "DOGE",
+      "direction": "short",
+      "interval": "4h",
+      "score": 6.19,
+      "entry": 0.072691,
+      "sl": 0.07393161,
+      "tp": 0.07020978,
+      "sl_pct": 1.707,
+      "rr": 2.0,
+      "bar_time": "2026-07-12 20:00:00+00:00",
+      "source": "hyperliquid"
+    },
+    {
+      "symbol": "XPL",
+      "direction": "short",
+      "interval": "4h",
+      "score": 5.99,
+      "entry": 0.08889,
+      "sl": 0.09286329,
+      "tp": 0.08094342,
+      "sl_pct": 4.47,
+      "rr": 2.0,
+      "bar_time": "2026-07-12 20:00:00+00:00",
       "source": "hyperliquid"
     }
   ],
@@ -20,8 +72,6 @@
   "setup": null,
   "trades": {},
   "alerted": {
-    "ZEC_long_1h_2026-06-07 22:00:00+00:00": "2026-06-08T00:08:50.914721+00:00",
-    "BTC_long_1h_2026-06-07 22:00:00+00:00": "2026-06-08T00:08:50.914721+00:00",
     "JTO_long_1d_2026-06-07 00:00:00+00:00": "2026-06-08T10:11:40.320257+00:00",
     "LINK_long_1h_2026-06-08 14:00:00+00:00": "2026-06-08T17:42:53.445899+00:00",
     "VVV_long_4h_2026-06-08 12:00:00+00:00": "2026-06-08T21:32:23.523271+00:00",
@@ -953,9 +1003,84 @@
     "HYPE_long_1h_2026-07-12 16:00:00+00:00": "2026-07-12T17:47:00.075508+00:00",
     "DOT_short_1h_2026-07-12 17:00:00+00:00": "2026-07-12T18:44:46.479741+00:00",
     "ENA_long_1h_2026-07-12 19:00:00+00:00": "2026-07-12T20:39:08.387833+00:00",
-    "LINK_short_1h_2026-07-12 21:00:00+00:00": "2026-07-12T22:35:28.984895+00:00"
+    "LINK_short_1h_2026-07-12 21:00:00+00:00": "2026-07-12T22:35:28.984895+00:00",
+    "BTC_long_1h_2026-07-13 00:00:00+00:00": "2026-07-13T01:18:33.463472+00:00",
+    "NEAR_long_1h_2026-07-13 00:00:00+00:00": "2026-07-13T01:18:33.463472+00:00",
+    "LIT_long_1h_2026-07-13 00:00:00+00:00": "2026-07-13T01:18:33.463472+00:00",
+    "DOGE_short_4h_2026-07-12 20:00:00+00:00": "2026-07-13T01:18:33.463472+00:00",
+    "XPL_short_4h_2026-07-12 20:00:00+00:00": "2026-07-13T01:18:33.463472+00:00"
   },
   "batches": {
+    "1139": {
+      "time": "2026-07-13T01:18:33.463472+00:00",
+      "sigs": [
+        {
+          "symbol": "BTC",
+          "direction": "long",
+          "interval": "1h",
+          "score": 7.28,
+          "entry": 64058.0,
+          "sl": 63706.67857144,
+          "tp": 64760.64285712,
+          "sl_pct": 0.548,
+          "rr": 2.0,
+          "bar_time": "2026-07-13 00:00:00+00:00",
+          "source": "hyperliquid"
+        },
+        {
+          "symbol": "NEAR",
+          "direction": "long",
+          "interval": "1h",
+          "score": 7.08,
+          "entry": 1.9129,
+          "sl": 1.88033929,
+          "tp": 1.97802142,
+          "sl_pct": 1.702,
+          "rr": 2.0,
+          "bar_time": "2026-07-13 00:00:00+00:00",
+          "source": "hyperliquid"
+        },
+        {
+          "symbol": "LIT",
+          "direction": "long",
+          "interval": "1h",
+          "score": 6.58,
+          "entry": 2.6652,
+          "sl": 2.59148571,
+          "tp": 2.81262858,
+          "sl_pct": 2.766,
+          "rr": 2.0,
+          "bar_time": "2026-07-13 00:00:00+00:00",
+          "source": "hyperliquid"
+        },
+        {
+          "symbol": "DOGE",
+          "direction": "short",
+          "interval": "4h",
+          "score": 6.19,
+          "entry": 0.072691,
+          "sl": 0.07393161,
+          "tp": 0.07020978,
+          "sl_pct": 1.707,
+          "rr": 2.0,
+          "bar_time": "2026-07-12 20:00:00+00:00",
+          "source": "hyperliquid"
+        },
+        {
+          "symbol": "XPL",
+          "direction": "short",
+          "interval": "4h",
+          "score": 5.99,
+          "entry": 0.08889,
+          "sl": 0.09286329,
+          "tp": 0.08094342,
+          "sl_pct": 4.47,
+          "rr": 2.0,
+          "bar_time": "2026-07-12 20:00:00+00:00",
+          "source": "hyperliquid"
+        }
+      ]
+    },
     "1133": {
       "time": "2026-07-12T22:35:28.984895+00:00",
       "sigs": [
@@ -1374,37 +1499,6 @@
           "source": "hyperliquid"
         }
       ]
-    },
-    "1096": {
-      "time": "2026-07-11T23:40:51.007025+00:00",
-      "sigs": [
-        {
-          "symbol": "XRP",
-          "direction": "short",
-          "interval": "1h",
-          "score": 7.08,
-          "entry": 1.1088,
-          "sl": 1.11529286,
-          "tp": 1.09581428,
-          "sl_pct": 0.586,
-          "rr": 2.0,
-          "bar_time": "2026-07-11 22:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "ZEC",
-          "direction": "long",
-          "interval": "4h",
-          "score": 6.49,
-          "entry": 515.74,
-          "sl": 493.8025,
-          "tp": 559.615,
-          "sl_pct": 4.254,
-          "rr": 2.0,
-          "bar_time": "2026-07-11 16:00:00+00:00",
-          "source": "hyperliquid"
-        }
-      ]
     }
   },
   "calls": {
@@ -1737,18 +1831,18 @@
       "direction": "long",
       "interval": "1h",
       "first_seen": "2026-07-12T15:46:18.061200+00:00",
-      "last_seen": "2026-07-12T15:46:18.061200+00:00",
-      "last_bar_time": "2026-07-12 14:00:00+00:00",
-      "entry": 1.8989,
-      "target": 1.95084288,
-      "stop": 1.87292856,
-      "score": 6.48,
+      "last_seen": "2026-07-13T01:18:33.463472+00:00",
+      "last_bar_time": "2026-07-13 00:00:00+00:00",
+      "entry": 1.9129,
+      "target": 1.97802142,
+      "stop": 1.88033929,
+      "score": 7.08,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
-      "lifecycle_label": "new",
-      "last_alerted_at": "2026-07-12T15:46:18.061200+00:00",
-      "alert_count": 16
+      "lifecycle_label": "continuing",
+      "last_alerted_at": "2026-07-13T01:18:33.463472+00:00",
+      "alert_count": 17
     },
     "ETH|long|1h": {
       "symbol": "ETH",
@@ -2294,19 +2388,19 @@
       "symbol": "LIT",
       "direction": "long",
       "interval": "1h",
-      "first_seen": "2026-07-12T05:01:58.127706+00:00",
-      "last_seen": "2026-07-12T05:01:58.127706+00:00",
-      "last_bar_time": "2026-07-12 03:00:00+00:00",
-      "entry": 2.7242,
-      "target": 2.88555712,
-      "stop": 2.64352144,
-      "score": 7.38,
+      "first_seen": "2026-07-13T01:18:33.463472+00:00",
+      "last_seen": "2026-07-13T01:18:33.463472+00:00",
+      "last_bar_time": "2026-07-13 00:00:00+00:00",
+      "entry": 2.6652,
+      "target": 2.81262858,
+      "stop": 2.59148571,
+      "score": 6.58,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-07-12T05:01:58.127706+00:00",
-      "alert_count": 9
+      "last_alerted_at": "2026-07-13T01:18:33.463472+00:00",
+      "alert_count": 10
     },
     "DOGE|long|1h": {
       "symbol": "DOGE",
@@ -3681,18 +3775,18 @@
       "direction": "long",
       "interval": "1h",
       "first_seen": "2026-07-12T15:46:18.061200+00:00",
-      "last_seen": "2026-07-12T15:46:18.061200+00:00",
-      "last_bar_time": "2026-07-12 14:00:00+00:00",
-      "entry": 64202.0,
-      "target": 64853.85714288,
-      "stop": 63876.07142856,
-      "score": 6.78,
+      "last_seen": "2026-07-13T01:18:33.463472+00:00",
+      "last_bar_time": "2026-07-13 00:00:00+00:00",
+      "entry": 64058.0,
+      "target": 64760.64285712,
+      "stop": 63706.67857144,
+      "score": 7.28,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
-      "lifecycle_label": "new",
-      "last_alerted_at": "2026-07-12T15:46:18.061200+00:00",
-      "alert_count": 12
+      "lifecycle_label": "continuing",
+      "last_alerted_at": "2026-07-13T01:18:33.463472+00:00",
+      "alert_count": 13
     },
     "SPX|long|1h": {
       "symbol": "SPX",
@@ -3896,19 +3990,19 @@
       "symbol": "DOGE",
       "direction": "short",
       "interval": "4h",
-      "first_seen": "2026-07-12T01:18:10.770442+00:00",
-      "last_seen": "2026-07-12T01:18:10.770442+00:00",
-      "last_bar_time": "2026-07-11 20:00:00+00:00",
-      "entry": 0.073201,
-      "target": 0.07053336,
-      "stop": 0.07453482,
-      "score": 6.69,
+      "first_seen": "2026-07-13T01:18:33.463472+00:00",
+      "last_seen": "2026-07-13T01:18:33.463472+00:00",
+      "last_bar_time": "2026-07-12 20:00:00+00:00",
+      "entry": 0.072691,
+      "target": 0.07020978,
+      "stop": 0.07393161,
+      "score": 6.19,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-07-12T01:18:10.770442+00:00",
-      "alert_count": 4
+      "last_alerted_at": "2026-07-13T01:18:33.463472+00:00",
+      "alert_count": 5
     },
     "CRV|short|4h": {
       "symbol": "CRV",
@@ -5906,6 +6000,24 @@
       "status": "active",
       "lifecycle_label": "new",
       "last_alerted_at": "2026-07-12T09:42:26.690516+00:00",
+      "alert_count": 1
+    },
+    "XPL|short|4h": {
+      "symbol": "XPL",
+      "direction": "short",
+      "interval": "4h",
+      "first_seen": "2026-07-13T01:18:33.463472+00:00",
+      "last_seen": "2026-07-13T01:18:33.463472+00:00",
+      "last_bar_time": "2026-07-12 20:00:00+00:00",
+      "entry": 0.08889,
+      "target": 0.08094342,
+      "stop": 0.09286329,
+      "score": 5.99,
+      "rr": 2.0,
+      "risk_emoji": "\ud83d\udfe0",
+      "status": "active",
+      "lifecycle_label": "new",
+      "last_alerted_at": "2026-07-13T01:18:33.463472+00:00",
       "alert_count": 1
     }
   }
