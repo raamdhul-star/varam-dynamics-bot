@@ -412,7 +412,8 @@
     "aster|OPENAIUSDT|short|1h|2026-07-17 05:00:00+00:00": "2026-07-17T06:25:46.410233+00:00",
     "aster|ANTHROPICUSDT|short|1h|2026-07-17 05:00:00+00:00": "2026-07-17T06:25:46.410233+00:00",
     "aster|AAPLUSDT|short|1h|2026-07-17 06:00:00+00:00": "2026-07-17T09:20:11.547921+00:00",
-    "aster|OPENAIUSDT|short|1h|2026-07-17 08:00:00+00:00": "2026-07-17T09:20:11.547921+00:00"
+    "aster|OPENAIUSDT|short|1h|2026-07-17 08:00:00+00:00": "2026-07-17T09:20:11.547921+00:00",
+    "aster|ASTERUSDT|short|4h|2026-07-17 04:00:00+00:00": "2026-07-17T11:38:41.029401+00:00"
   },
   "calls": {
     "aster|ETHUSDT|long|4h": {
@@ -1283,19 +1284,19 @@
       "symbol": "ASTERUSDT",
       "direction": "short",
       "interval": "4h",
-      "first_seen": "2026-07-12T03:53:31.127139+00:00",
-      "last_seen": "2026-07-12T03:53:31.127139+00:00",
-      "last_bar_time": "2026-07-11 20:00:00+00:00",
-      "entry": 0.623,
-      "target": 0.60832142,
-      "stop": 0.63033929,
-      "score": 6.49,
+      "first_seen": "2026-07-17T11:38:41.029401+00:00",
+      "last_seen": "2026-07-17T11:38:41.029401+00:00",
+      "last_bar_time": "2026-07-17 04:00:00+00:00",
+      "entry": 0.6132,
+      "target": 0.59108572,
+      "stop": 0.62425714,
+      "score": 6.79,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-07-12T03:53:31.127139+00:00",
-      "alert_count": 4
+      "last_alerted_at": "2026-07-17T11:38:41.029401+00:00",
+      "alert_count": 5
     },
     "aster|HYPEUSDT|short|4h": {
       "symbol": "HYPEUSDT",
