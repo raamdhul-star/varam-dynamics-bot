@@ -2,40 +2,27 @@
   "offset": 262981543,
   "sigs": [
     {
-      "symbol": "VIRTUAL",
+      "symbol": "XRP",
       "direction": "long",
       "interval": "1h",
-      "score": 6.78,
-      "entry": 0.63267,
-      "sl": 0.62043106,
-      "tp": 0.65714788,
-      "sl_pct": 1.934,
+      "score": 6.28,
+      "entry": 1.0897,
+      "sl": 1.08106429,
+      "tp": 1.10697142,
+      "sl_pct": 0.792,
       "rr": 2.0,
-      "bar_time": "2026-07-18 00:00:00+00:00",
+      "bar_time": "2026-07-18 02:00:00+00:00",
       "source": "hyperliquid"
     },
     {
-      "symbol": "AVAX",
+      "symbol": "SPX",
       "direction": "long",
-      "interval": "1h",
-      "score": 5.98,
-      "entry": 6.5856,
-      "sl": 6.50814644,
-      "tp": 6.74050712,
-      "sl_pct": 1.176,
-      "rr": 2.0,
-      "bar_time": "2026-07-17 23:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "CRV",
-      "direction": "short",
-      "interval": "1h",
-      "score": 5.48,
-      "entry": 0.21592,
-      "sl": 0.21971179,
-      "tp": 0.20833642,
-      "sl_pct": 1.756,
+      "interval": "4h",
+      "score": 6.19,
+      "entry": 0.363,
+      "sl": 0.34811036,
+      "tp": 0.39277928,
+      "sl_pct": 4.102,
       "rr": 2.0,
       "bar_time": "2026-07-18 00:00:00+00:00",
       "source": "hyperliquid"
@@ -1111,9 +1098,42 @@
     "INJ_long_1d_2026-07-14 00:00:00+00:00": "2026-07-17T21:39:27.302067+00:00",
     "VIRTUAL_long_1h_2026-07-18 00:00:00+00:00": "2026-07-18T01:10:32.064484+00:00",
     "AVAX_long_1h_2026-07-17 23:00:00+00:00": "2026-07-18T01:10:32.064484+00:00",
-    "CRV_short_1h_2026-07-18 00:00:00+00:00": "2026-07-18T01:10:32.064484+00:00"
+    "CRV_short_1h_2026-07-18 00:00:00+00:00": "2026-07-18T01:10:32.064484+00:00",
+    "XRP_long_1h_2026-07-18 02:00:00+00:00": "2026-07-18T04:35:23.579058+00:00",
+    "SPX_long_4h_2026-07-18 00:00:00+00:00": "2026-07-18T04:35:23.579058+00:00"
   },
   "batches": {
+    "1316": {
+      "time": "2026-07-18T04:35:23.579058+00:00",
+      "sigs": [
+        {
+          "symbol": "XRP",
+          "direction": "long",
+          "interval": "1h",
+          "score": 6.28,
+          "entry": 1.0897,
+          "sl": 1.08106429,
+          "tp": 1.10697142,
+          "sl_pct": 0.792,
+          "rr": 2.0,
+          "bar_time": "2026-07-18 02:00:00+00:00",
+          "source": "hyperliquid"
+        },
+        {
+          "symbol": "SPX",
+          "direction": "long",
+          "interval": "4h",
+          "score": 6.19,
+          "entry": 0.363,
+          "sl": 0.34811036,
+          "tp": 0.39277928,
+          "sl_pct": 4.102,
+          "rr": 2.0,
+          "bar_time": "2026-07-18 00:00:00+00:00",
+          "source": "hyperliquid"
+        }
+      ]
+    },
     "1313": {
       "time": "2026-07-18T01:10:32.064484+00:00",
       "sigs": [
@@ -1571,63 +1591,6 @@
           "source": "hyperliquid"
         }
       ]
-    },
-    "1283": {
-      "time": "2026-07-17T04:50:27.324234+00:00",
-      "sigs": [
-        {
-          "symbol": "LIT",
-          "direction": "short",
-          "interval": "1h",
-          "score": 7.68,
-          "entry": 2.1906,
-          "sl": 2.28118929,
-          "tp": 2.00942142,
-          "sl_pct": 4.135,
-          "rr": 2.0,
-          "bar_time": "2026-07-17 01:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "HYPE",
-          "direction": "short",
-          "interval": "1h",
-          "score": 7.08,
-          "entry": 60.014,
-          "sl": 61.55975,
-          "tp": 56.9225,
-          "sl_pct": 2.576,
-          "rr": 2.0,
-          "bar_time": "2026-07-17 01:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "BTC",
-          "direction": "short",
-          "interval": "1h",
-          "score": 6.78,
-          "entry": 63539.0,
-          "sl": 64088.0,
-          "tp": 62441.0,
-          "sl_pct": 0.864,
-          "rr": 2.0,
-          "bar_time": "2026-07-17 01:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "AAVE",
-          "direction": "short",
-          "interval": "1h",
-          "score": 6.78,
-          "entry": 90.487,
-          "sl": 91.7425,
-          "tp": 87.976,
-          "sl_pct": 1.387,
-          "rr": 2.0,
-          "bar_time": "2026-07-17 01:00:00+00:00",
-          "source": "hyperliquid"
-        }
-      ]
     }
   },
   "calls": {
@@ -2049,19 +2012,19 @@
       "symbol": "XRP",
       "direction": "long",
       "interval": "1h",
-      "first_seen": "2026-07-13T16:18:01.934842+00:00",
-      "last_seen": "2026-07-13T16:18:01.934842+00:00",
-      "last_bar_time": "2026-07-13 14:00:00+00:00",
-      "entry": 1.0773,
-      "target": 1.09677858,
-      "stop": 1.06756071,
-      "score": 6.88,
+      "first_seen": "2026-07-18T04:35:23.579058+00:00",
+      "last_seen": "2026-07-18T04:35:23.579058+00:00",
+      "last_bar_time": "2026-07-18 02:00:00+00:00",
+      "entry": 1.0897,
+      "target": 1.10697142,
+      "stop": 1.08106429,
+      "score": 6.28,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-07-13T16:18:01.934842+00:00",
-      "alert_count": 12
+      "last_alerted_at": "2026-07-18T04:35:23.579058+00:00",
+      "alert_count": 13
     },
     "ZEC|short|1w": {
       "symbol": "ZEC",
@@ -3129,19 +3092,19 @@
       "symbol": "SPX",
       "direction": "long",
       "interval": "4h",
-      "first_seen": "2026-07-06T14:49:37.979989+00:00",
-      "last_seen": "2026-07-06T14:49:37.979989+00:00",
-      "last_bar_time": "2026-07-06 00:00:00+00:00",
-      "entry": 0.4036,
-      "target": 0.457255,
-      "stop": 0.3767725,
+      "first_seen": "2026-07-18T04:35:23.579058+00:00",
+      "last_seen": "2026-07-18T04:35:23.579058+00:00",
+      "last_bar_time": "2026-07-18 00:00:00+00:00",
+      "entry": 0.363,
+      "target": 0.39277928,
+      "stop": 0.34811036,
       "score": 6.19,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-07-06T14:49:37.979989+00:00",
-      "alert_count": 3
+      "last_alerted_at": "2026-07-18T04:35:23.579058+00:00",
+      "alert_count": 4
     },
     "ONDO|short|4h": {
       "symbol": "ONDO",
