@@ -452,7 +452,8 @@
     "aster|TSLAUSDT|short|4h|2026-07-20 12:00:00+00:00": "2026-07-20T16:00:27.474098+00:00",
     "aster|AAPLUSDT|short|1h|2026-07-20 13:00:00+00:00": "2026-07-20T16:00:27.474098+00:00",
     "aster|SPCXUSDT|short|4h|2026-07-20 12:00:00+00:00": "2026-07-20T18:17:19.783324+00:00",
-    "aster|MSTRUSDT|long|1h|2026-07-20 15:00:00+00:00": "2026-07-20T18:17:19.783324+00:00"
+    "aster|MSTRUSDT|long|1h|2026-07-20 15:00:00+00:00": "2026-07-20T18:17:19.783324+00:00",
+    "aster|SPCXUSDT|short|4h|2026-07-20 16:00:00+00:00": "2026-07-20T20:39:05.508779+00:00"
   },
   "calls": {
     "aster|ETHUSDT|long|4h": {
@@ -1234,18 +1235,18 @@
       "direction": "short",
       "interval": "4h",
       "first_seen": "2026-07-20T18:17:19.783324+00:00",
-      "last_seen": "2026-07-20T18:17:19.783324+00:00",
-      "last_bar_time": "2026-07-20 12:00:00+00:00",
-      "entry": 123.48,
-      "target": 118.17428572,
-      "stop": 126.13285714,
-      "score": 8.3,
+      "last_seen": "2026-07-20T20:39:05.508779+00:00",
+      "last_bar_time": "2026-07-20 16:00:00+00:00",
+      "entry": 119.95,
+      "target": 113.75928572,
+      "stop": 123.04535714,
+      "score": 8.0,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe2",
       "status": "active",
-      "lifecycle_label": "new",
-      "last_alerted_at": "2026-07-20T18:17:19.783324+00:00",
-      "alert_count": 7
+      "lifecycle_label": "continuing",
+      "last_alerted_at": "2026-07-20T20:39:05.508779+00:00",
+      "alert_count": 8
     },
     "aster|OPENAIUSDT|short|4h": {
       "symbol": "OPENAIUSDT",
