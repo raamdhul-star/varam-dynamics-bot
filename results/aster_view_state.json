@@ -471,7 +471,10 @@
     "aster|HYPEUSDT|short|1h|2026-07-21 17:00:00+00:00": "2026-07-21T18:38:52.663269+00:00",
     "aster|HYPEUSDT|short|1h|2026-07-21 19:00:00+00:00": "2026-07-21T20:34:10.305820+00:00",
     "aster|MSTRUSDT|long|1h|2026-07-21 19:00:00+00:00": "2026-07-21T20:34:10.305820+00:00",
-    "aster|SPXUSDT|short|1h|2026-07-21 22:00:00+00:00": "2026-07-21T23:10:17.706741+00:00"
+    "aster|SPXUSDT|short|1h|2026-07-21 22:00:00+00:00": "2026-07-21T23:10:17.706741+00:00",
+    "aster|XAUUSDT|long|1d|2026-07-21 00:00:00+00:00": "2026-07-22T00:03:41.841745+00:00",
+    "aster|ANTHROPICUSDT|long|1h|2026-07-21 23:00:00+00:00": "2026-07-22T00:03:41.841745+00:00",
+    "aster|QQQUSDT|long|1d|2026-07-21 00:00:00+00:00": "2026-07-22T00:03:41.841745+00:00"
   },
   "calls": {
     "aster|ETHUSDT|long|4h": {
@@ -1468,19 +1471,19 @@
       "symbol": "ANTHROPICUSDT",
       "direction": "long",
       "interval": "1h",
-      "first_seen": "2026-07-21T06:39:37.857381+00:00",
-      "last_seen": "2026-07-21T06:39:37.857381+00:00",
-      "last_bar_time": "2026-07-21 03:00:00+00:00",
-      "entry": 1450.84,
-      "target": 1481.78071428,
-      "stop": 1435.36964286,
+      "first_seen": "2026-07-22T00:03:41.841745+00:00",
+      "last_seen": "2026-07-22T00:03:41.841745+00:00",
+      "last_bar_time": "2026-07-21 23:00:00+00:00",
+      "entry": 1510.08,
+      "target": 1536.49928572,
+      "stop": 1496.87035714,
       "score": 7.08,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-07-21T06:39:37.857381+00:00",
-      "alert_count": 4
+      "last_alerted_at": "2026-07-22T00:03:41.841745+00:00",
+      "alert_count": 5
     },
     "aster|SOLUSDT|long|4h": {
       "symbol": "SOLUSDT",
@@ -1661,6 +1664,42 @@
       "lifecycle_label": "new",
       "last_alerted_at": "2026-07-21T14:18:41.692569+00:00",
       "alert_count": 2
+    },
+    "aster|XAUUSDT|long|1d": {
+      "symbol": "XAUUSDT",
+      "direction": "long",
+      "interval": "1d",
+      "first_seen": "2026-07-22T00:03:41.841745+00:00",
+      "last_seen": "2026-07-22T00:03:41.841745+00:00",
+      "last_bar_time": "2026-07-21 00:00:00+00:00",
+      "entry": 4084.63,
+      "target": 4291.42,
+      "stop": 3981.235,
+      "score": 7.6,
+      "rr": 2.0,
+      "risk_emoji": "\ud83d\udfe1",
+      "status": "active",
+      "lifecycle_label": "new",
+      "last_alerted_at": "2026-07-22T00:03:41.841745+00:00",
+      "alert_count": 1
+    },
+    "aster|QQQUSDT|long|1d": {
+      "symbol": "QQQUSDT",
+      "direction": "long",
+      "interval": "1d",
+      "first_seen": "2026-07-22T00:03:41.841745+00:00",
+      "last_seen": "2026-07-22T00:03:41.841745+00:00",
+      "last_bar_time": "2026-07-21 00:00:00+00:00",
+      "entry": 708.16,
+      "target": 740.74857142,
+      "stop": 691.86571429,
+      "score": 6.01,
+      "rr": 2.0,
+      "risk_emoji": "\ud83d\udfe1",
+      "status": "active",
+      "lifecycle_label": "new",
+      "last_alerted_at": "2026-07-22T00:03:41.841745+00:00",
+      "alert_count": 1
     }
   }
 }
