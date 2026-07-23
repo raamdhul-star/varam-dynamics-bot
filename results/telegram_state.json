@@ -2,42 +2,16 @@
   "offset": 262981543,
   "sigs": [
     {
-      "symbol": "WLD",
-      "direction": "long",
-      "interval": "4h",
-      "score": 6.89,
-      "entry": 0.39015,
-      "sl": 0.37641321,
-      "tp": 0.41762358,
-      "sl_pct": 3.521,
-      "rr": 2.0,
-      "bar_time": "2026-07-22 16:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "PENGU",
-      "direction": "long",
-      "interval": "4h",
-      "score": 6.69,
-      "entry": 0.006345,
-      "sl": 0.00617282,
-      "tp": 0.00668936,
-      "sl_pct": 2.714,
-      "rr": 2.0,
-      "bar_time": "2026-07-22 12:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "WLFI",
+      "symbol": "MORPHO",
       "direction": "short",
-      "interval": "4h",
-      "score": 6.59,
-      "entry": 0.056075,
-      "sl": 0.057158,
-      "tp": 0.053909,
-      "sl_pct": 1.931,
+      "interval": "1d",
+      "score": 6.41,
+      "entry": 1.9145,
+      "sl": 2.13834286,
+      "tp": 1.46681428,
+      "sl_pct": 11.692,
       "rr": 2.0,
-      "bar_time": "2026-07-22 16:00:00+00:00",
+      "bar_time": "2026-07-22 00:00:00+00:00",
       "source": "hyperliquid"
     }
   ],
@@ -1146,9 +1120,28 @@
     "LTC_long_1h_2026-07-22 16:00:00+00:00": "2026-07-22T20:51:44.202439+00:00",
     "WLD_long_4h_2026-07-22 16:00:00+00:00": "2026-07-22T21:55:22.173527+00:00",
     "PENGU_long_4h_2026-07-22 12:00:00+00:00": "2026-07-22T21:55:22.173527+00:00",
-    "WLFI_short_4h_2026-07-22 16:00:00+00:00": "2026-07-22T21:55:22.173527+00:00"
+    "WLFI_short_4h_2026-07-22 16:00:00+00:00": "2026-07-22T21:55:22.173527+00:00",
+    "MORPHO_short_1d_2026-07-22 00:00:00+00:00": "2026-07-23T01:21:37.683746+00:00"
   },
   "batches": {
+    "1483": {
+      "time": "2026-07-23T01:21:37.683746+00:00",
+      "sigs": [
+        {
+          "symbol": "MORPHO",
+          "direction": "short",
+          "interval": "1d",
+          "score": 6.41,
+          "entry": 1.9145,
+          "sl": 2.13834286,
+          "tp": 1.46681428,
+          "sl_pct": 11.692,
+          "rr": 2.0,
+          "bar_time": "2026-07-22 00:00:00+00:00",
+          "source": "hyperliquid"
+        }
+      ]
+    },
     "1478": {
       "time": "2026-07-22T21:55:22.173527+00:00",
       "sigs": [
@@ -1653,63 +1646,6 @@
           "sl": 340.08142856,
           "tp": 362.69714288,
           "sl_pct": 2.169,
-          "rr": 2.0,
-          "bar_time": "2026-07-21 12:00:00+00:00",
-          "source": "hyperliquid"
-        }
-      ]
-    },
-    "1452": {
-      "time": "2026-07-21T22:42:53.932615+00:00",
-      "sigs": [
-        {
-          "symbol": "LINK",
-          "direction": "short",
-          "interval": "4h",
-          "score": 6.59,
-          "entry": 8.6206,
-          "sl": 8.81273929,
-          "tp": 8.23632142,
-          "sl_pct": 2.229,
-          "rr": 2.0,
-          "bar_time": "2026-07-21 16:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "WLD",
-          "direction": "short",
-          "interval": "1h",
-          "score": 6.58,
-          "entry": 0.37763,
-          "sl": 0.38278464,
-          "tp": 0.36732072,
-          "sl_pct": 1.365,
-          "rr": 2.0,
-          "bar_time": "2026-07-21 20:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "VIRTUAL",
-          "direction": "short",
-          "interval": "1h",
-          "score": 6.28,
-          "entry": 0.65342,
-          "sl": 0.66795607,
-          "tp": 0.62434786,
-          "sl_pct": 2.225,
-          "rr": 2.0,
-          "bar_time": "2026-07-21 19:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "PAXG",
-          "direction": "long",
-          "interval": "4h",
-          "score": 6.09,
-          "entry": 4067.5,
-          "sl": 4034.41428571,
-          "tp": 4133.67142858,
-          "sl_pct": 0.813,
           "rr": 2.0,
           "bar_time": "2026-07-21 12:00:00+00:00",
           "source": "hyperliquid"
@@ -6594,6 +6530,24 @@
       "status": "active",
       "lifecycle_label": "new",
       "last_alerted_at": "2026-07-22T21:55:22.173527+00:00",
+      "alert_count": 1
+    },
+    "MORPHO|short|1d": {
+      "symbol": "MORPHO",
+      "direction": "short",
+      "interval": "1d",
+      "first_seen": "2026-07-23T01:21:37.683746+00:00",
+      "last_seen": "2026-07-23T01:21:37.683746+00:00",
+      "last_bar_time": "2026-07-22 00:00:00+00:00",
+      "entry": 1.9145,
+      "target": 1.46681428,
+      "stop": 2.13834286,
+      "score": 6.41,
+      "rr": 2.0,
+      "risk_emoji": "\ud83d\udfe1",
+      "status": "active",
+      "lifecycle_label": "new",
+      "last_alerted_at": "2026-07-23T01:21:37.683746+00:00",
       "alert_count": 1
     }
   }
