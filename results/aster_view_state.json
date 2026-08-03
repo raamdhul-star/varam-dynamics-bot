@@ -625,7 +625,8 @@
     "aster|HYPEUSDT|short|1h|2026-08-02 14:00:00+00:00": "2026-08-02T15:17:16.943997+00:00",
     "aster|HYPEUSDT|long|1h|2026-08-02 16:00:00+00:00": "2026-08-02T17:12:47.428852+00:00",
     "aster|BTCUSDT|long|1h|2026-08-02 21:00:00+00:00": "2026-08-02T22:08:03.664703+00:00",
-    "aster|SPXUSDT|long|1h|2026-08-02 21:00:00+00:00": "2026-08-02T22:08:03.664703+00:00"
+    "aster|SPXUSDT|long|1h|2026-08-02 21:00:00+00:00": "2026-08-02T22:08:03.664703+00:00",
+    "aster|OPENAIUSDT|long|1d|2026-08-02 00:00:00+00:00": "2026-08-03T00:10:03.106423+00:00"
   },
   "calls": {
     "aster|ETHUSDT|long|4h": {
@@ -2084,6 +2085,24 @@
       "status": "active",
       "lifecycle_label": "new",
       "last_alerted_at": "2026-08-01T09:18:30.991573+00:00",
+      "alert_count": 1
+    },
+    "aster|OPENAIUSDT|long|1d": {
+      "symbol": "OPENAIUSDT",
+      "direction": "long",
+      "interval": "1d",
+      "first_seen": "2026-08-03T00:10:03.106423+00:00",
+      "last_seen": "2026-08-03T00:10:03.106423+00:00",
+      "last_bar_time": "2026-08-02 00:00:00+00:00",
+      "entry": 1104.77,
+      "target": 1234.41928572,
+      "stop": 1039.94535714,
+      "score": 6.51,
+      "rr": 2.0,
+      "risk_emoji": "\ud83d\udfe1",
+      "status": "active",
+      "lifecycle_label": "new",
+      "last_alerted_at": "2026-08-03T00:10:03.106423+00:00",
       "alert_count": 1
     }
   }
