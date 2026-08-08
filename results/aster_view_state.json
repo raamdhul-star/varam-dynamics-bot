@@ -697,7 +697,9 @@
     "aster|HYPEUSDT|short|1h|2026-08-07 16:00:00+00:00": "2026-08-07T17:05:00.777839+00:00",
     "aster|ETHUSDT|short|1h|2026-08-07 16:00:00+00:00": "2026-08-07T17:05:00.777839+00:00",
     "aster|SPXUSDT|long|1h|2026-08-07 16:00:00+00:00": "2026-08-07T17:05:00.777839+00:00",
-    "aster|QQQUSDT|long|4h|2026-08-07 12:00:00+00:00": "2026-08-07T19:58:29.595496+00:00"
+    "aster|QQQUSDT|long|4h|2026-08-07 12:00:00+00:00": "2026-08-07T19:58:29.595496+00:00",
+    "aster|MSTRUSDT|long|1d|2026-08-07 00:00:00+00:00": "2026-08-08T02:19:06.189512+00:00",
+    "aster|NVDAUSDT|long|1d|2026-08-07 00:00:00+00:00": "2026-08-08T02:19:06.189512+00:00"
   },
   "calls": {
     "aster|ETHUSDT|long|4h": {
@@ -2174,6 +2176,42 @@
       "status": "active",
       "lifecycle_label": "new",
       "last_alerted_at": "2026-08-03T00:10:03.106423+00:00",
+      "alert_count": 1
+    },
+    "aster|MSTRUSDT|long|1d": {
+      "symbol": "MSTRUSDT",
+      "direction": "long",
+      "interval": "1d",
+      "first_seen": "2026-08-08T02:19:06.189512+00:00",
+      "last_seen": "2026-08-08T02:19:06.189512+00:00",
+      "last_bar_time": "2026-08-07 00:00:00+00:00",
+      "entry": 99.96,
+      "target": 113.92285712,
+      "stop": 92.97857144,
+      "score": 6.71,
+      "rr": 2.0,
+      "risk_emoji": "\ud83d\udfe1",
+      "status": "active",
+      "lifecycle_label": "new",
+      "last_alerted_at": "2026-08-08T02:19:06.189512+00:00",
+      "alert_count": 1
+    },
+    "aster|NVDAUSDT|long|1d": {
+      "symbol": "NVDAUSDT",
+      "direction": "long",
+      "interval": "1d",
+      "first_seen": "2026-08-08T02:19:06.189512+00:00",
+      "last_seen": "2026-08-08T02:19:06.189512+00:00",
+      "last_bar_time": "2026-08-07 00:00:00+00:00",
+      "entry": 223.5,
+      "target": 242.97642858,
+      "stop": 213.76178571,
+      "score": 6.51,
+      "rr": 2.0,
+      "risk_emoji": "\ud83d\udfe1",
+      "status": "active",
+      "lifecycle_label": "new",
+      "last_alerted_at": "2026-08-08T02:19:06.189512+00:00",
       "alert_count": 1
     }
   }
