@@ -2,53 +2,14 @@
   "offset": 262981543,
   "sigs": [
     {
-      "symbol": "ZRO",
-      "direction": "long",
-      "interval": "1h",
-      "score": 6.48,
-      "entry": 0.84372,
-      "sl": 0.83118964,
-      "tp": 0.86878072,
-      "sl_pct": 1.485,
-      "rr": 2.0,
-      "bar_time": "2026-08-09 00:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "BNB",
-      "direction": "long",
-      "interval": "1h",
-      "score": 6.28,
-      "entry": 603.57,
-      "sl": 599.14178571,
-      "tp": 612.42642858,
-      "sl_pct": 0.734,
-      "rr": 2.0,
-      "bar_time": "2026-08-09 00:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "ONDO",
+      "symbol": "WLD",
       "direction": "short",
       "interval": "1h",
-      "score": 6.28,
-      "entry": 0.34802,
-      "sl": 0.35158786,
-      "tp": 0.34088428,
-      "sl_pct": 1.025,
-      "rr": 2.0,
-      "bar_time": "2026-08-09 01:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "PENGU",
-      "direction": "short",
-      "interval": "1h",
-      "score": 5.68,
-      "entry": 0.006301,
-      "sl": 0.00638982,
-      "tp": 0.00612336,
-      "sl_pct": 1.41,
+      "score": 6.78,
+      "entry": 0.30351,
+      "sl": 0.30638143,
+      "tp": 0.29776714,
+      "sl_pct": 0.946,
       "rr": 2.0,
       "bar_time": "2026-08-09 01:00:00+00:00",
       "source": "hyperliquid"
@@ -1196,9 +1157,28 @@
     "ZRO_long_1h_2026-08-09 00:00:00+00:00": "2026-08-09T02:55:06.632060+00:00",
     "BNB_long_1h_2026-08-09 00:00:00+00:00": "2026-08-09T02:55:06.632060+00:00",
     "ONDO_short_1h_2026-08-09 01:00:00+00:00": "2026-08-09T02:55:06.632060+00:00",
-    "PENGU_short_1h_2026-08-09 01:00:00+00:00": "2026-08-09T02:55:06.632060+00:00"
+    "PENGU_short_1h_2026-08-09 01:00:00+00:00": "2026-08-09T02:55:06.632060+00:00",
+    "WLD_short_1h_2026-08-09 01:00:00+00:00": "2026-08-09T04:07:11.512693+00:00"
   },
   "batches": {
+    "2012": {
+      "time": "2026-08-09T04:07:11.512693+00:00",
+      "sigs": [
+        {
+          "symbol": "WLD",
+          "direction": "short",
+          "interval": "1h",
+          "score": 6.78,
+          "entry": 0.30351,
+          "sl": 0.30638143,
+          "tp": 0.29776714,
+          "sl_pct": 0.946,
+          "rr": 2.0,
+          "bar_time": "2026-08-09 01:00:00+00:00",
+          "source": "hyperliquid"
+        }
+      ]
+    },
     "2011": {
       "time": "2026-08-09T02:55:06.632060+00:00",
       "sigs": [
@@ -1588,24 +1568,6 @@
           "sl_pct": 0.839,
           "rr": 2.0,
           "bar_time": "2026-08-08 09:00:00+00:00",
-          "source": "hyperliquid"
-        }
-      ]
-    },
-    "1976": {
-      "time": "2026-08-08T08:24:35.852983+00:00",
-      "sigs": [
-        {
-          "symbol": "kPEPE",
-          "direction": "long",
-          "interval": "4h",
-          "score": 6.09,
-          "entry": 0.002866,
-          "sl": 0.0028,
-          "tp": 0.002998,
-          "sl_pct": 2.303,
-          "rr": 2.0,
-          "bar_time": "2026-08-08 00:00:00+00:00",
           "source": "hyperliquid"
         }
       ]
@@ -3452,19 +3414,19 @@
       "symbol": "WLD",
       "direction": "short",
       "interval": "1h",
-      "first_seen": "2026-08-06T22:39:18.445701+00:00",
-      "last_seen": "2026-08-07T06:03:20.445602+00:00",
-      "last_bar_time": "2026-08-07 05:00:00+00:00",
-      "entry": 0.2964,
-      "target": 0.28714072,
-      "stop": 0.30102964,
-      "score": 7.08,
+      "first_seen": "2026-08-09T04:07:11.512693+00:00",
+      "last_seen": "2026-08-09T04:07:11.512693+00:00",
+      "last_bar_time": "2026-08-09 01:00:00+00:00",
+      "entry": 0.30351,
+      "target": 0.29776714,
+      "stop": 0.30638143,
+      "score": 6.78,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
-      "lifecycle_label": "continuing",
-      "last_alerted_at": "2026-08-07T06:03:20.445602+00:00",
-      "alert_count": 21
+      "lifecycle_label": "new",
+      "last_alerted_at": "2026-08-09T04:07:11.512693+00:00",
+      "alert_count": 22
     },
     "PENGU|short|1h": {
       "symbol": "PENGU",
