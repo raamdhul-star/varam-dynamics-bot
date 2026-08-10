@@ -2,29 +2,29 @@
   "offset": 262981543,
   "sigs": [
     {
-      "symbol": "kPEPE",
-      "direction": "short",
-      "interval": "1h",
-      "score": 6.48,
-      "entry": 0.002881,
-      "sl": 0.0029306,
-      "tp": 0.0027818,
-      "sl_pct": 1.722,
+      "symbol": "MORPHO",
+      "direction": "long",
+      "interval": "4h",
+      "score": 6.37,
+      "entry": 1.9581,
+      "sl": 1.91656071,
+      "tp": 2.04117858,
+      "sl_pct": 2.121,
       "rr": 2.0,
-      "bar_time": "2026-08-10 09:00:00+00:00",
+      "bar_time": "2026-08-10 08:00:00+00:00",
       "source": "hyperliquid"
     },
     {
-      "symbol": "LINK",
+      "symbol": "CRV",
       "direction": "long",
       "interval": "1h",
-      "score": 6.48,
-      "entry": 8.2382,
-      "sl": 8.15070714,
-      "tp": 8.41318572,
-      "sl_pct": 1.062,
+      "score": 6.28,
+      "entry": 0.24345,
+      "sl": 0.23873036,
+      "tp": 0.25288928,
+      "sl_pct": 1.939,
       "rr": 2.0,
-      "bar_time": "2026-08-10 09:00:00+00:00",
+      "bar_time": "2026-08-10 11:00:00+00:00",
       "source": "hyperliquid"
     }
   ],
@@ -1173,9 +1173,42 @@
     "PENGU_long_4h_2026-08-10 04:00:00+00:00": "2026-08-10T09:03:48.796046+00:00",
     "ZEC_long_1h_2026-08-10 08:00:00+00:00": "2026-08-10T09:03:48.796046+00:00",
     "kPEPE_short_1h_2026-08-10 09:00:00+00:00": "2026-08-10T11:39:51.755907+00:00",
-    "LINK_long_1h_2026-08-10 09:00:00+00:00": "2026-08-10T11:39:51.755907+00:00"
+    "LINK_long_1h_2026-08-10 09:00:00+00:00": "2026-08-10T11:39:51.755907+00:00",
+    "MORPHO_long_4h_2026-08-10 08:00:00+00:00": "2026-08-10T12:37:38.098142+00:00",
+    "CRV_long_1h_2026-08-10 11:00:00+00:00": "2026-08-10T12:37:38.098142+00:00"
   },
   "batches": {
+    "2075": {
+      "time": "2026-08-10T12:37:38.098142+00:00",
+      "sigs": [
+        {
+          "symbol": "MORPHO",
+          "direction": "long",
+          "interval": "4h",
+          "score": 6.37,
+          "entry": 1.9581,
+          "sl": 1.91656071,
+          "tp": 2.04117858,
+          "sl_pct": 2.121,
+          "rr": 2.0,
+          "bar_time": "2026-08-10 08:00:00+00:00",
+          "source": "hyperliquid"
+        },
+        {
+          "symbol": "CRV",
+          "direction": "long",
+          "interval": "1h",
+          "score": 6.28,
+          "entry": 0.24345,
+          "sl": 0.23873036,
+          "tp": 0.25288928,
+          "sl_pct": 1.939,
+          "rr": 2.0,
+          "bar_time": "2026-08-10 11:00:00+00:00",
+          "source": "hyperliquid"
+        }
+      ]
+    },
     "2072": {
       "time": "2026-08-10T11:39:51.755907+00:00",
       "sigs": [
@@ -1630,24 +1663,6 @@
           "sl_pct": 1.885,
           "rr": 2.0,
           "bar_time": "2026-08-09 15:00:00+00:00",
-          "source": "hyperliquid"
-        }
-      ]
-    },
-    "2037": {
-      "time": "2026-08-09T15:18:38.178595+00:00",
-      "sigs": [
-        {
-          "symbol": "SOL",
-          "direction": "long",
-          "interval": "1h",
-          "score": 7.08,
-          "entry": 77.02,
-          "sl": 76.55275,
-          "tp": 77.9545,
-          "sl_pct": 0.607,
-          "rr": 2.0,
-          "bar_time": "2026-08-09 14:00:00+00:00",
           "source": "hyperliquid"
         }
       ]
@@ -2468,19 +2483,19 @@
       "symbol": "CRV",
       "direction": "long",
       "interval": "1h",
-      "first_seen": "2026-08-08T04:01:32.748164+00:00",
-      "last_seen": "2026-08-08T04:01:32.748164+00:00",
-      "last_bar_time": "2026-08-08 03:00:00+00:00",
-      "entry": 0.21612,
-      "target": 0.22051928,
-      "stop": 0.21392036,
-      "score": 6.58,
+      "first_seen": "2026-08-10T12:37:38.098142+00:00",
+      "last_seen": "2026-08-10T12:37:38.098142+00:00",
+      "last_bar_time": "2026-08-10 11:00:00+00:00",
+      "entry": 0.24345,
+      "target": 0.25288928,
+      "stop": 0.23873036,
+      "score": 6.28,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-08-08T04:01:32.748164+00:00",
-      "alert_count": 10
+      "last_alerted_at": "2026-08-10T12:37:38.098142+00:00",
+      "alert_count": 11
     },
     "INJ|long|1h": {
       "symbol": "INJ",
@@ -2829,18 +2844,18 @@
       "direction": "long",
       "interval": "4h",
       "first_seen": "2026-08-10T07:01:57.759390+00:00",
-      "last_seen": "2026-08-10T07:01:57.759390+00:00",
-      "last_bar_time": "2026-08-10 00:00:00+00:00",
-      "entry": 1.9402,
-      "target": 2.02051428,
-      "stop": 1.90004286,
-      "score": 6.59,
+      "last_seen": "2026-08-10T12:37:38.098142+00:00",
+      "last_bar_time": "2026-08-10 08:00:00+00:00",
+      "entry": 1.9581,
+      "target": 2.04117858,
+      "stop": 1.91656071,
+      "score": 6.37,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
-      "lifecycle_label": "new",
-      "last_alerted_at": "2026-08-10T07:01:57.759390+00:00",
-      "alert_count": 3
+      "lifecycle_label": "continuing",
+      "last_alerted_at": "2026-08-10T12:37:38.098142+00:00",
+      "alert_count": 4
     },
     "ICP|short|1h": {
       "symbol": "ICP",
