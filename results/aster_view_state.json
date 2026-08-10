@@ -724,7 +724,9 @@
     "aster|OPENAIUSDT|short|4h|2026-08-10 12:00:00+00:00": "2026-08-10T16:09:27.619538+00:00",
     "aster|NVDAUSDT|short|1h|2026-08-10 16:00:00+00:00": "2026-08-10T17:06:31.427423+00:00",
     "aster|SPCXUSDT|short|4h|2026-08-10 12:00:00+00:00": "2026-08-10T17:06:31.427423+00:00",
-    "aster|XAUUSDT|long|4h|2026-08-10 12:00:00+00:00": "2026-08-10T19:13:55.708232+00:00"
+    "aster|XAUUSDT|long|4h|2026-08-10 12:00:00+00:00": "2026-08-10T19:13:55.708232+00:00",
+    "aster|HYPEUSDT|long|4h|2026-08-10 16:00:00+00:00": "2026-08-10T20:01:51.222771+00:00",
+    "aster|SPCXUSDT|long|4h|2026-08-10 16:00:00+00:00": "2026-08-10T20:01:51.222771+00:00"
   },
   "calls": {
     "aster|ETHUSDT|long|4h": {
@@ -803,19 +805,19 @@
       "symbol": "SPCXUSDT",
       "direction": "long",
       "interval": "4h",
-      "first_seen": "2026-08-07T16:07:22.547335+00:00",
-      "last_seen": "2026-08-07T16:07:22.547335+00:00",
-      "last_bar_time": "2026-08-07 12:00:00+00:00",
-      "entry": 129.55,
-      "target": 145.11571428,
-      "stop": 121.76714286,
+      "first_seen": "2026-08-10T20:01:51.222771+00:00",
+      "last_seen": "2026-08-10T20:01:51.222771+00:00",
+      "last_bar_time": "2026-08-10 16:00:00+00:00",
+      "entry": 138.64,
+      "target": 149.95857142,
+      "stop": 132.98071429,
       "score": 6.79,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-08-07T16:07:22.547335+00:00",
-      "alert_count": 7
+      "last_alerted_at": "2026-08-10T20:01:51.222771+00:00",
+      "alert_count": 8
     },
     "aster|NVDAUSDT|long|4h": {
       "symbol": "NVDAUSDT",
@@ -2027,19 +2029,19 @@
       "symbol": "HYPEUSDT",
       "direction": "long",
       "interval": "4h",
-      "first_seen": "2026-08-05T06:39:58.071635+00:00",
-      "last_seen": "2026-08-05T06:39:58.071635+00:00",
-      "last_bar_time": "2026-08-05 00:00:00+00:00",
-      "entry": 56.032,
-      "target": 59.03692858,
-      "stop": 54.52953571,
-      "score": 6.99,
+      "first_seen": "2026-08-10T20:01:51.222771+00:00",
+      "last_seen": "2026-08-10T20:01:51.222771+00:00",
+      "last_bar_time": "2026-08-10 16:00:00+00:00",
+      "entry": 55.916,
+      "target": 58.28642858,
+      "stop": 54.73078571,
+      "score": 7.19,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-08-05T06:39:58.071635+00:00",
-      "alert_count": 2
+      "last_alerted_at": "2026-08-10T20:01:51.222771+00:00",
+      "alert_count": 3
     },
     "aster|ETHUSDT|short|1d": {
       "symbol": "ETHUSDT",
