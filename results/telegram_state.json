@@ -2,120 +2,29 @@
   "offset": 262981543,
   "sigs": [
     {
-      "symbol": "SUI",
+      "symbol": "XPL",
       "direction": "short",
-      "interval": "1h",
-      "score": 7.38,
-      "entry": 0.69408,
-      "sl": 0.70087394,
-      "tp": 0.68049212,
-      "sl_pct": 0.979,
+      "interval": "4h",
+      "score": 6.89,
+      "entry": 0.076628,
+      "sl": 0.07850054,
+      "tp": 0.07288292,
+      "sl_pct": 2.444,
       "rr": 2.0,
-      "bar_time": "2026-08-09 22:00:00+00:00",
+      "bar_time": "2026-08-09 20:00:00+00:00",
       "source": "hyperliquid"
     },
     {
-      "symbol": "SOL",
+      "symbol": "ARB",
       "direction": "short",
-      "interval": "1h",
-      "score": 7.28,
-      "entry": 76.823,
-      "sl": 77.40135714,
-      "tp": 75.66628572,
-      "sl_pct": 0.753,
+      "interval": "4h",
+      "score": 6.67,
+      "entry": 0.07779,
+      "sl": 0.07938106,
+      "tp": 0.07460788,
+      "sl_pct": 2.045,
       "rr": 2.0,
-      "bar_time": "2026-08-09 22:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "AAVE",
-      "direction": "short",
-      "interval": "1h",
-      "score": 6.78,
-      "entry": 90.989,
-      "sl": 91.78775,
-      "tp": 89.3915,
-      "sl_pct": 0.878,
-      "rr": 2.0,
-      "bar_time": "2026-08-09 22:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "LTC",
-      "direction": "short",
-      "interval": "1h",
-      "score": 6.78,
-      "entry": 45.655,
-      "sl": 45.92285714,
-      "tp": 45.11928572,
-      "sl_pct": 0.587,
-      "rr": 2.0,
-      "bar_time": "2026-08-09 22:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "LINK",
-      "direction": "short",
-      "interval": "1h",
-      "score": 6.78,
-      "entry": 8.2589,
-      "sl": 8.31977856,
-      "tp": 8.13714288,
-      "sl_pct": 0.737,
-      "rr": 2.0,
-      "bar_time": "2026-08-09 22:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "TAO",
-      "direction": "short",
-      "interval": "1h",
-      "score": 6.58,
-      "entry": 204.39,
-      "sl": 207.68464286,
-      "tp": 197.80071428,
-      "sl_pct": 1.612,
-      "rr": 2.0,
-      "bar_time": "2026-08-09 22:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "ONDO",
-      "direction": "short",
-      "interval": "1h",
-      "score": 6.58,
-      "entry": 0.35351,
-      "sl": 0.357515,
-      "tp": 0.3455,
-      "sl_pct": 1.133,
-      "rr": 2.0,
-      "bar_time": "2026-08-09 22:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "BNB",
-      "direction": "short",
-      "interval": "1h",
-      "score": 6.48,
-      "entry": 605.38,
-      "sl": 608.74857144,
-      "tp": 598.64285712,
-      "sl_pct": 0.556,
-      "rr": 2.0,
-      "bar_time": "2026-08-09 22:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "UNI",
-      "direction": "short",
-      "interval": "1h",
-      "score": 6.48,
-      "entry": 4.0307,
-      "sl": 4.08871786,
-      "tp": 3.91466428,
-      "sl_pct": 1.439,
-      "rr": 2.0,
-      "bar_time": "2026-08-09 22:00:00+00:00",
+      "bar_time": "2026-08-09 20:00:00+00:00",
       "source": "hyperliquid"
     }
   ],
@@ -124,8 +33,6 @@
   "setup": null,
   "trades": {},
   "alerted": {
-    "AVAX_long_1h_2026-07-05 21:00:00+00:00": "2026-07-05T23:53:16.387123+00:00",
-    "PENGU_long_1h_2026-07-05 21:00:00+00:00": "2026-07-05T23:53:16.387123+00:00",
     "JTO_long_1h_2026-07-06 00:00:00+00:00": "2026-07-06T01:32:30.460827+00:00",
     "PUMP_long_1h_2026-07-06 00:00:00+00:00": "2026-07-06T01:32:30.460827+00:00",
     "XRP_long_4h_2026-07-05 20:00:00+00:00": "2026-07-06T01:32:30.460827+00:00",
@@ -1262,9 +1169,42 @@
     "TAO_short_1h_2026-08-09 22:00:00+00:00": "2026-08-09T23:18:22.021547+00:00",
     "ONDO_short_1h_2026-08-09 22:00:00+00:00": "2026-08-09T23:18:22.021547+00:00",
     "BNB_short_1h_2026-08-09 22:00:00+00:00": "2026-08-09T23:18:22.021547+00:00",
-    "UNI_short_1h_2026-08-09 22:00:00+00:00": "2026-08-09T23:18:22.021547+00:00"
+    "UNI_short_1h_2026-08-09 22:00:00+00:00": "2026-08-09T23:18:22.021547+00:00",
+    "XPL_short_4h_2026-08-09 20:00:00+00:00": "2026-08-10T00:42:01.487330+00:00",
+    "ARB_short_4h_2026-08-09 20:00:00+00:00": "2026-08-10T00:42:01.487330+00:00"
   },
   "batches": {
+    "2061": {
+      "time": "2026-08-10T00:42:01.487330+00:00",
+      "sigs": [
+        {
+          "symbol": "XPL",
+          "direction": "short",
+          "interval": "4h",
+          "score": 6.89,
+          "entry": 0.076628,
+          "sl": 0.07850054,
+          "tp": 0.07288292,
+          "sl_pct": 2.444,
+          "rr": 2.0,
+          "bar_time": "2026-08-09 20:00:00+00:00",
+          "source": "hyperliquid"
+        },
+        {
+          "symbol": "ARB",
+          "direction": "short",
+          "interval": "4h",
+          "score": 6.67,
+          "entry": 0.07779,
+          "sl": 0.07938106,
+          "tp": 0.07460788,
+          "sl_pct": 2.045,
+          "rr": 2.0,
+          "bar_time": "2026-08-09 20:00:00+00:00",
+          "source": "hyperliquid"
+        }
+      ]
+    },
     "2058": {
       "time": "2026-08-09T23:18:22.021547+00:00",
       "sigs": [
@@ -1667,24 +1607,6 @@
           "sl_pct": 1.836,
           "rr": 2.0,
           "bar_time": "2026-08-09 08:00:00+00:00",
-          "source": "hyperliquid"
-        }
-      ]
-    },
-    "2022": {
-      "time": "2026-08-09T08:27:08.494129+00:00",
-      "sigs": [
-        {
-          "symbol": "INJ",
-          "direction": "long",
-          "interval": "1h",
-          "score": 6.58,
-          "entry": 4.4326,
-          "sl": 4.38202856,
-          "tp": 4.53374288,
-          "sl_pct": 1.141,
-          "rr": 2.0,
-          "bar_time": "2026-08-09 06:00:00+00:00",
           "source": "hyperliquid"
         }
       ]
@@ -6195,19 +6117,19 @@
       "symbol": "XPL",
       "direction": "short",
       "interval": "4h",
-      "first_seen": "2026-07-29T04:55:51.706458+00:00",
-      "last_seen": "2026-07-29T04:55:51.706458+00:00",
-      "last_bar_time": "2026-07-29 00:00:00+00:00",
-      "entry": 0.080256,
-      "target": 0.07158536,
-      "stop": 0.08459132,
-      "score": 6.99,
+      "first_seen": "2026-08-10T00:42:01.487330+00:00",
+      "last_seen": "2026-08-10T00:42:01.487330+00:00",
+      "last_bar_time": "2026-08-09 20:00:00+00:00",
+      "entry": 0.076628,
+      "target": 0.07288292,
+      "stop": 0.07850054,
+      "score": 6.89,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-07-29T04:55:51.706458+00:00",
-      "alert_count": 4
+      "last_alerted_at": "2026-08-10T00:42:01.487330+00:00",
+      "alert_count": 5
     },
     "ASTER|long|4h": {
       "symbol": "ASTER",
@@ -6717,19 +6639,19 @@
       "symbol": "ARB",
       "direction": "short",
       "interval": "4h",
-      "first_seen": "2026-07-27T12:24:35.519899+00:00",
-      "last_seen": "2026-07-27T12:24:35.519899+00:00",
-      "last_bar_time": "2026-07-27 00:00:00+00:00",
-      "entry": 0.08214,
-      "target": 0.0789857,
-      "stop": 0.08371715,
-      "score": 7.17,
+      "first_seen": "2026-08-10T00:42:01.487330+00:00",
+      "last_seen": "2026-08-10T00:42:01.487330+00:00",
+      "last_bar_time": "2026-08-09 20:00:00+00:00",
+      "entry": 0.07779,
+      "target": 0.07460788,
+      "stop": 0.07938106,
+      "score": 6.67,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-07-27T12:24:35.519899+00:00",
-      "alert_count": 1
+      "last_alerted_at": "2026-08-10T00:42:01.487330+00:00",
+      "alert_count": 2
     },
     "UNI|short|4h": {
       "symbol": "UNI",
