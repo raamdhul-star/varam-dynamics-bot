@@ -2,29 +2,16 @@
   "offset": 262981543,
   "sigs": [
     {
-      "symbol": "ICP",
-      "direction": "short",
+      "symbol": "HYPE",
+      "direction": "long",
       "interval": "1h",
-      "score": 6.78,
-      "entry": 2.2608,
-      "sl": 2.31386786,
-      "tp": 2.15466428,
-      "sl_pct": 2.347,
+      "score": 7.08,
+      "entry": 54.519,
+      "sl": 53.89682144,
+      "tp": 55.76335712,
+      "sl_pct": 1.141,
       "rr": 2.0,
-      "bar_time": "2026-08-11 15:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "ETH",
-      "direction": "short",
-      "interval": "4h",
-      "score": 6.69,
-      "entry": 1862.0,
-      "sl": 1892.03214286,
-      "tp": 1801.93571428,
-      "sl_pct": 1.613,
-      "rr": 2.0,
-      "bar_time": "2026-08-11 12:00:00+00:00",
+      "bar_time": "2026-08-11 19:00:00+00:00",
       "source": "hyperliquid"
     }
   ],
@@ -1177,9 +1164,28 @@
     "AVAX_short_4h_2026-08-11 12:00:00+00:00": "2026-08-11T16:43:23.454173+00:00",
     "ADA_short_4h_2026-08-11 12:00:00+00:00": "2026-08-11T17:46:12.131758+00:00",
     "ICP_short_1h_2026-08-11 15:00:00+00:00": "2026-08-11T19:52:28.720706+00:00",
-    "ETH_short_4h_2026-08-11 12:00:00+00:00": "2026-08-11T19:52:28.720706+00:00"
+    "ETH_short_4h_2026-08-11 12:00:00+00:00": "2026-08-11T19:52:28.720706+00:00",
+    "HYPE_long_1h_2026-08-11 19:00:00+00:00": "2026-08-11T20:31:01.086150+00:00"
   },
   "batches": {
+    "2139": {
+      "time": "2026-08-11T20:31:01.086150+00:00",
+      "sigs": [
+        {
+          "symbol": "HYPE",
+          "direction": "long",
+          "interval": "1h",
+          "score": 7.08,
+          "entry": 54.519,
+          "sl": 53.89682144,
+          "tp": 55.76335712,
+          "sl_pct": 1.141,
+          "rr": 2.0,
+          "bar_time": "2026-08-11 19:00:00+00:00",
+          "source": "hyperliquid"
+        }
+      ]
+    },
     "2138": {
       "time": "2026-08-11T19:52:28.720706+00:00",
       "sigs": [
@@ -1608,50 +1614,6 @@
           "sl_pct": 0.921,
           "rr": 2.0,
           "bar_time": "2026-08-11 04:00:00+00:00",
-          "source": "hyperliquid"
-        }
-      ]
-    },
-    "2107": {
-      "time": "2026-08-11T04:10:54.144686+00:00",
-      "sigs": [
-        {
-          "symbol": "LIT",
-          "direction": "long",
-          "interval": "4h",
-          "score": 8.07,
-          "entry": 2.4786,
-          "sl": 2.37984644,
-          "tp": 2.67610712,
-          "sl_pct": 3.984,
-          "rr": 2.0,
-          "bar_time": "2026-08-11 00:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "DOGE",
-          "direction": "long",
-          "interval": "4h",
-          "score": 6.97,
-          "entry": 0.070109,
-          "sl": 0.0690979,
-          "tp": 0.0721312,
-          "sl_pct": 1.442,
-          "rr": 2.0,
-          "bar_time": "2026-08-11 00:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "AVAX",
-          "direction": "long",
-          "interval": "4h",
-          "score": 6.89,
-          "entry": 6.5385,
-          "sl": 6.40396071,
-          "tp": 6.80757858,
-          "sl_pct": 2.058,
-          "rr": 2.0,
-          "bar_time": "2026-08-11 00:00:00+00:00",
           "source": "hyperliquid"
         }
       ]
@@ -2976,19 +2938,19 @@
       "symbol": "HYPE",
       "direction": "long",
       "interval": "1h",
-      "first_seen": "2026-08-10T20:29:02.732726+00:00",
-      "last_seen": "2026-08-11T02:57:06.394364+00:00",
-      "last_bar_time": "2026-08-11 01:00:00+00:00",
-      "entry": 55.371,
-      "target": 57.09921428,
-      "stop": 54.50689286,
-      "score": 7.77,
+      "first_seen": "2026-08-11T20:31:01.086150+00:00",
+      "last_seen": "2026-08-11T20:31:01.086150+00:00",
+      "last_bar_time": "2026-08-11 19:00:00+00:00",
+      "entry": 54.519,
+      "target": 55.76335712,
+      "stop": 53.89682144,
+      "score": 7.08,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
-      "lifecycle_label": "continuing",
-      "last_alerted_at": "2026-08-11T02:57:06.394364+00:00",
-      "alert_count": 20
+      "lifecycle_label": "new",
+      "last_alerted_at": "2026-08-11T20:31:01.086150+00:00",
+      "alert_count": 21
     },
     "CHIP|long|1h": {
       "symbol": "CHIP",
