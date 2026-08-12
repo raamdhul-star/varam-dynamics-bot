@@ -750,7 +750,9 @@
     "aster|ANTHROPICUSDT|short|4h|2026-08-12 04:00:00+00:00": "2026-08-12T08:37:56.905516+00:00",
     "aster|ETHUSDT|long|1h|2026-08-12 09:00:00+00:00": "2026-08-12T10:18:26.807288+00:00",
     "aster|SOLUSDT|long|1h|2026-08-12 09:00:00+00:00": "2026-08-12T10:18:26.807288+00:00",
-    "aster|SPXUSDT|long|4h|2026-08-11 20:00:00+00:00": "2026-08-12T10:18:26.807288+00:00"
+    "aster|SPXUSDT|long|4h|2026-08-11 20:00:00+00:00": "2026-08-12T10:18:26.807288+00:00",
+    "aster|SPCXUSDT|long|1h|2026-08-12 13:00:00+00:00": "2026-08-12T15:12:33.495918+00:00",
+    "aster|TSLAUSDT|short|1h|2026-08-12 13:00:00+00:00": "2026-08-12T15:12:33.495918+00:00"
   },
   "calls": {
     "aster|ETHUSDT|long|4h": {
@@ -937,19 +939,19 @@
       "symbol": "SPCXUSDT",
       "direction": "long",
       "interval": "1h",
-      "first_seen": "2026-08-06T12:16:31.040033+00:00",
-      "last_seen": "2026-08-06T12:16:31.040033+00:00",
-      "last_bar_time": "2026-08-06 11:00:00+00:00",
-      "entry": 112.32,
-      "target": 115.86642858,
-      "stop": 110.54678571,
-      "score": 7.68,
+      "first_seen": "2026-08-12T15:12:33.495918+00:00",
+      "last_seen": "2026-08-12T15:12:33.495918+00:00",
+      "last_bar_time": "2026-08-12 13:00:00+00:00",
+      "entry": 137.93,
+      "target": 140.67071428,
+      "stop": 136.55964286,
+      "score": 7.38,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-08-06T12:16:31.040033+00:00",
-      "alert_count": 9
+      "last_alerted_at": "2026-08-12T15:12:33.495918+00:00",
+      "alert_count": 10
     },
     "aster|NVDAUSDT|short|4h": {
       "symbol": "NVDAUSDT",
@@ -1369,19 +1371,19 @@
       "symbol": "TSLAUSDT",
       "direction": "short",
       "interval": "1h",
-      "first_seen": "2026-08-05T18:47:25.328064+00:00",
-      "last_seen": "2026-08-05T18:47:25.328064+00:00",
-      "last_bar_time": "2026-08-05 17:00:00+00:00",
-      "entry": 322.85,
-      "target": 316.955,
-      "stop": 325.7975,
-      "score": 6.18,
+      "first_seen": "2026-08-12T15:12:33.495918+00:00",
+      "last_seen": "2026-08-12T15:12:33.495918+00:00",
+      "last_bar_time": "2026-08-12 13:00:00+00:00",
+      "entry": 328.55,
+      "target": 325.57785712,
+      "stop": 330.03607144,
+      "score": 7.08,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-08-05T18:47:25.328064+00:00",
-      "alert_count": 10
+      "last_alerted_at": "2026-08-12T15:12:33.495918+00:00",
+      "alert_count": 11
     },
     "aster|NVDAUSDT|long|1h": {
       "symbol": "NVDAUSDT",
