@@ -779,7 +779,8 @@
     "aster|HYPEUSDT|long|4h|2026-08-13 12:00:00+00:00": "2026-08-13T19:17:14.132921+00:00",
     "aster|ANTHROPICUSDT|long|1h|2026-08-13 18:00:00+00:00": "2026-08-13T19:17:14.132921+00:00",
     "aster|SPCXUSDT|short|1h|2026-08-13 19:00:00+00:00": "2026-08-13T21:00:28.852586+00:00",
-    "aster|SPXUSDT|short|4h|2026-08-13 16:00:00+00:00": "2026-08-13T23:55:45.560852+00:00"
+    "aster|SPXUSDT|short|4h|2026-08-13 16:00:00+00:00": "2026-08-13T23:55:45.560852+00:00",
+    "aster|ANTHROPICUSDT|long|1d|2026-08-13 00:00:00+00:00": "2026-08-14T02:42:57.873372+00:00"
   },
   "calls": {
     "aster|ETHUSDT|long|4h": {
@@ -2310,6 +2311,24 @@
       "status": "active",
       "lifecycle_label": "new",
       "last_alerted_at": "2026-08-13T02:44:16.553790+00:00",
+      "alert_count": 1
+    },
+    "aster|ANTHROPICUSDT|long|1d": {
+      "symbol": "ANTHROPICUSDT",
+      "direction": "long",
+      "interval": "1d",
+      "first_seen": "2026-08-14T02:42:57.873372+00:00",
+      "last_seen": "2026-08-14T02:42:57.873372+00:00",
+      "last_bar_time": "2026-08-13 00:00:00+00:00",
+      "entry": 1593.33,
+      "target": 1661.12142858,
+      "stop": 1559.43428571,
+      "score": 6.61,
+      "rr": 2.0,
+      "risk_emoji": "\ud83d\udfe1",
+      "status": "active",
+      "lifecycle_label": "new",
+      "last_alerted_at": "2026-08-14T02:42:57.873372+00:00",
       "alert_count": 1
     }
   }
