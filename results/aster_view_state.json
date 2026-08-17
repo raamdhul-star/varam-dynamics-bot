@@ -805,7 +805,8 @@
     "aster|BTCUSDT|long|4h|2026-08-17 00:00:00+00:00": "2026-08-17T04:55:32.809344+00:00",
     "aster|SOLUSDT|long|4h|2026-08-17 00:00:00+00:00": "2026-08-17T04:55:32.809344+00:00",
     "aster|HYPEUSDT|long|4h|2026-08-17 00:00:00+00:00": "2026-08-17T04:55:32.809344+00:00",
-    "aster|OPENAIUSDT|long|1h|2026-08-17 04:00:00+00:00": "2026-08-17T05:48:07.902904+00:00"
+    "aster|OPENAIUSDT|long|1h|2026-08-17 04:00:00+00:00": "2026-08-17T05:48:07.902904+00:00",
+    "aster|OPENAIUSDT|short|1h|2026-08-17 06:00:00+00:00": "2026-08-17T07:13:32.858387+00:00"
   },
   "calls": {
     "aster|ETHUSDT|long|4h": {
@@ -1478,19 +1479,19 @@
       "symbol": "OPENAIUSDT",
       "direction": "short",
       "interval": "1h",
-      "first_seen": "2026-08-16T06:56:28.698111+00:00",
-      "last_seen": "2026-08-16T12:58:27.148567+00:00",
-      "last_bar_time": "2026-08-16 11:00:00+00:00",
-      "entry": 1257.68,
-      "target": 1245.0692857,
-      "stop": 1263.98535715,
-      "score": 6.18,
+      "first_seen": "2026-08-17T07:13:32.858387+00:00",
+      "last_seen": "2026-08-17T07:13:32.858387+00:00",
+      "last_bar_time": "2026-08-17 06:00:00+00:00",
+      "entry": 1244.43,
+      "target": 1230.91071428,
+      "stop": 1251.18964286,
+      "score": 6.78,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
-      "lifecycle_label": "continuing",
-      "last_alerted_at": "2026-08-16T12:58:27.148567+00:00",
-      "alert_count": 17
+      "lifecycle_label": "new",
+      "last_alerted_at": "2026-08-17T07:13:32.858387+00:00",
+      "alert_count": 18
     },
     "aster|ASTERUSDT|short|1h": {
       "symbol": "ASTERUSDT",
