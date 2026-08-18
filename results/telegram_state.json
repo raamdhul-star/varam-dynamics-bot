@@ -2,42 +2,16 @@
   "offset": 262981543,
   "sigs": [
     {
-      "symbol": "PUMP",
-      "direction": "long",
+      "symbol": "HYPE",
+      "direction": "short",
       "interval": "1h",
-      "score": 7.3,
-      "entry": 0.002817,
-      "sl": 0.00275046,
-      "tp": 0.00295008,
-      "sl_pct": 2.362,
+      "score": 7.97,
+      "entry": 58.776,
+      "sl": 59.70964286,
+      "tp": 56.90871428,
+      "sl_pct": 1.588,
       "rr": 2.0,
-      "bar_time": "2026-08-18 14:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "VIRTUAL",
-      "direction": "long",
-      "interval": "1h",
-      "score": 7.08,
-      "entry": 0.58516,
-      "sl": 0.57503071,
-      "tp": 0.60541858,
-      "sl_pct": 1.731,
-      "rr": 2.0,
-      "bar_time": "2026-08-18 14:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "ZEC",
-      "direction": "long",
-      "interval": "1h",
-      "score": 6.78,
-      "entry": 506.9,
-      "sl": 499.85428571,
-      "tp": 520.99142858,
-      "sl_pct": 1.39,
-      "rr": 2.0,
-      "bar_time": "2026-08-18 14:00:00+00:00",
+      "bar_time": "2026-08-18 16:00:00+00:00",
       "source": "hyperliquid"
     }
   ],
@@ -1174,9 +1148,28 @@
     "PUMP_short_1h_2026-08-18 13:00:00+00:00": "2026-08-18T14:20:31.534246+00:00",
     "PUMP_long_1h_2026-08-18 14:00:00+00:00": "2026-08-18T15:19:39.237028+00:00",
     "VIRTUAL_long_1h_2026-08-18 14:00:00+00:00": "2026-08-18T15:19:39.237028+00:00",
-    "ZEC_long_1h_2026-08-18 14:00:00+00:00": "2026-08-18T15:19:39.237028+00:00"
+    "ZEC_long_1h_2026-08-18 14:00:00+00:00": "2026-08-18T15:19:39.237028+00:00",
+    "HYPE_short_1h_2026-08-18 16:00:00+00:00": "2026-08-18T17:16:02.769234+00:00"
   },
   "batches": {
+    "2476": {
+      "time": "2026-08-18T17:16:02.769234+00:00",
+      "sigs": [
+        {
+          "symbol": "HYPE",
+          "direction": "short",
+          "interval": "1h",
+          "score": 7.97,
+          "entry": 58.776,
+          "sl": 59.70964286,
+          "tp": 56.90871428,
+          "sl_pct": 1.588,
+          "rr": 2.0,
+          "bar_time": "2026-08-18 16:00:00+00:00",
+          "source": "hyperliquid"
+        }
+      ]
+    },
     "2472": {
       "time": "2026-08-18T15:19:39.237028+00:00",
       "sigs": [
@@ -1512,63 +1505,6 @@
           "sl": 0.75649036,
           "tp": 0.73482928,
           "sl_pct": 0.964,
-          "rr": 2.0,
-          "bar_time": "2026-08-18 01:00:00+00:00",
-          "source": "hyperliquid"
-        }
-      ]
-    },
-    "2440": {
-      "time": "2026-08-18T02:08:26.075294+00:00",
-      "sigs": [
-        {
-          "symbol": "TRUMP",
-          "direction": "short",
-          "interval": "1h",
-          "score": 7.08,
-          "entry": 1.3844,
-          "sl": 1.39743929,
-          "tp": 1.35832142,
-          "sl_pct": 0.942,
-          "rr": 2.0,
-          "bar_time": "2026-08-18 01:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "TAO",
-          "direction": "short",
-          "interval": "1h",
-          "score": 6.78,
-          "entry": 192.47,
-          "sl": 194.62357144,
-          "tp": 188.16285712,
-          "sl_pct": 1.119,
-          "rr": 2.0,
-          "bar_time": "2026-08-18 01:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "MORPHO",
-          "direction": "short",
-          "interval": "1h",
-          "score": 6.38,
-          "entry": 2.104,
-          "sl": 2.14943929,
-          "tp": 2.01312142,
-          "sl_pct": 2.16,
-          "rr": 2.0,
-          "bar_time": "2026-08-18 01:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "ENA",
-          "direction": "short",
-          "interval": "1h",
-          "score": 6.28,
-          "entry": 0.082668,
-          "sl": 0.08379321,
-          "tp": 0.08041758,
-          "sl_pct": 1.361,
           "rr": 2.0,
           "bar_time": "2026-08-18 01:00:00+00:00",
           "source": "hyperliquid"
@@ -2283,19 +2219,19 @@
       "symbol": "HYPE",
       "direction": "short",
       "interval": "1h",
-      "first_seen": "2026-08-14T15:40:07.529850+00:00",
-      "last_seen": "2026-08-14T15:40:07.529850+00:00",
-      "last_bar_time": "2026-08-14 14:00:00+00:00",
-      "entry": 55.479,
-      "target": 54.32892858,
-      "stop": 56.05403571,
-      "score": 7.58,
+      "first_seen": "2026-08-18T17:16:02.769234+00:00",
+      "last_seen": "2026-08-18T17:16:02.769234+00:00",
+      "last_bar_time": "2026-08-18 16:00:00+00:00",
+      "entry": 58.776,
+      "target": 56.90871428,
+      "stop": 59.70964286,
+      "score": 7.97,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-08-14T15:40:07.529850+00:00",
-      "alert_count": 22
+      "last_alerted_at": "2026-08-18T17:16:02.769234+00:00",
+      "alert_count": 23
     },
     "NEAR|short|1h": {
       "symbol": "NEAR",
