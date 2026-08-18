@@ -264,6 +264,13 @@ def _stats():
 
 # ── Alert sending ─────────────────────────────────────────────────────────
 
+def _conviction_badge(score) -> str:
+    """H2: high-conviction tag by score (display only; 7.5+ is the alert floor)."""
+    s = float(score or 0)
+    if s >= 8.5: return " ⭐⭐ Top conviction"
+    if s >= 8.0: return " ⭐ High conviction"
+    return ""
+
 def _card(sb, acct, marker="🆕"):
     from scanner.assets import calc_leverage
     de   = "📈" if sb.direction=="long" else "📉"
@@ -274,10 +281,11 @@ def _card(sb, acct, marker="🆕"):
     chg_sign = "-" if sb.direction=="short" else "+"
     lead = f"{marker} " if marker else ""
     suffix = {"🔄": " — updated levels", "🟣": " — stronger setup"}.get(marker, "")
+    badge = _conviction_badge(sb.total_score)
     return (
         f"{'━'*32}\n"
         f"{lead}<b>{de} {sb.symbol} {sb.direction.upper()}</b>  "
-        f"[<b>{sb.total_score:.1f}/10</b>] {sb.risk_emoji} {sb.risk_label}{suffix}\n"
+        f"[<b>{sb.total_score:.1f}/10</b>] {sb.risk_emoji} {sb.risk_label}{badge}{suffix}\n"
         f"  TF: {sb.interval} | Setup: Qualified\n"
         f"  🎯 Entry  <code>{sb.entry_price:.6g}</code>\n"
         f"  🟢 Target <code>{sb.tp_price:.6g}</code> ({chg_sign}{chg:.1f}%)\n"

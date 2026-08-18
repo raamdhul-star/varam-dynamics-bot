@@ -24,6 +24,7 @@ import telegram.bot as tg
 
 ACCOUNT_SIZE     = float(os.environ.get("ACCOUNT_SIZE", "200"))
 MAX_PER_CATEGORY = 10    # Sprint C: per-category alert ceiling (NOT a quota — no padding)
+ALERT_FLOOR      = 7.5   # Sprint H2: only 7.5+ calls reach Telegram + paper (sub-7.5 loses)
 
 # Sprint H1: one informational message when a scan runs but sends no alert
 # (no qualified signals, or all signals A2-suppressed, or all uncategorized).
@@ -79,7 +80,18 @@ EXIT_STYLE_MEANING = {
 
 # Short, generic method labels for the grouped paper-trade update (display only).
 EXIT_STYLE_SHORT = {"fixed_pct": "Fixed %", "cpr_target": "Target", "trailing": "Trailing"}
-_STYLE_ORDER = ["fixed_pct", "cpr_target", "trailing"]   # stable display order
+# Trailing first — it is the exit we actually track/trade (H2 analysis).
+_STYLE_ORDER = ["trailing", "fixed_pct", "cpr_target"]
+
+def _conviction_tag(score) -> str:
+    """H2: compact conviction star(s) for a score (display only)."""
+    s = float(score or 0)
+    return " ⭐⭐" if s >= 8.5 else " ⭐" if s >= 8.0 else ""
+
+def _method_label(style: str) -> str:
+    """Method label; the tracked (trailing) exit is flagged with ▶."""
+    lbl = EXIT_STYLE_SHORT.get(style, style or "?")
+    return f"▶ {lbl}" if style == "trailing" else lbl
 
 def _verdict(result: str) -> tuple[str, str]:
     if result == "win":
@@ -108,13 +120,15 @@ def _group_closed(closed: list[dict]) -> list[str]:
         # stable method order
         recs = sorted(recs, key=lambda r: _STYLE_ORDER.index(r.get("exit_style"))
                       if r.get("exit_style") in _STYLE_ORDER else 99)
-        head = f"<b>{sym} {direction.upper()}</b>"
+        score = recs[0].get("score")
+        sc = f" · {float(score):.1f}" if score is not None else ""
+        head = f"<b>{sym} {direction.upper()}</b>{sc}{_conviction_tag(score)}"
         entry_s = f"{entry:.6g}" if entry is not None else "?"
 
         if len(recs) == 1:                                   # single method
             r = recs[0]
             emoji, verdict = _verdict(r.get("result"))
-            label = EXIT_STYLE_SHORT.get(r.get("exit_style"), r.get("exit_style", ""))
+            label = _method_label(r.get("exit_style"))
             lines = [f"{emoji} {head} — {verdict}"]
             exitp = r.get("exit_price")
             lines.append(f"   Entry {entry_s} → Exit {exitp:.6g}" if exitp is not None
@@ -128,7 +142,7 @@ def _group_closed(closed: list[dict]) -> list[str]:
         if len(set(pnls)) == 1:                              # uniform: all pnl identical
             r0 = recs[0]
             emoji, verdict = _verdict(r0.get("result"))
-            methods = ", ".join(EXIT_STYLE_SHORT.get(r.get("exit_style"), "?") for r in recs)
+            methods = ", ".join(_method_label(r.get("exit_style")) for r in recs)
             lines = [f"{emoji} {head} — {verdict}"]
             exitp = r0.get("exit_price")
             lines.append(f"   Entry {entry_s} → Exit {exitp:.6g}" if exitp is not None
@@ -139,8 +153,8 @@ def _group_closed(closed: list[dict]) -> list[str]:
         else:                                                # mixed: pnl differ
             lines = [f"⚖️ {head} — Mixed result", f"   Entry {entry_s}"]
             for r in recs:
-                label = EXIT_STYLE_SHORT.get(r.get("exit_style"), "?")
-                lines.append(f"   {label}: {r.get('pnl_pct', 0.0):+.2f}%")
+                lines.append(f"   {_method_label(r.get('exit_style'))}: "
+                             f"{r.get('pnl_pct', 0.0):+.2f}%")
             blocks.append("\n".join(lines))
     return blocks
 
@@ -227,6 +241,11 @@ def run_scan():
             seen_assets[sig.symbol] = sig
     all_sigs = list(seen_assets.values())
     all_sigs.sort(key=lambda x: x.total_score, reverse=True)
+
+    # ── Sprint H2: gate to the high-conviction floor (7.5+). The scorer still
+    # computes every score (logged above); this only controls what reaches
+    # Telegram + paper. Sub-7.5 calls lose money in backtest, so they're cut. ──
+    all_sigs = [s for s in all_sigs if s.total_score >= ALERT_FLOOR]
 
     # ── Sprint C: split the score-ranked signals by reviewed asset class and
     # cap each category independently (ceiling, not quota — no padding).
