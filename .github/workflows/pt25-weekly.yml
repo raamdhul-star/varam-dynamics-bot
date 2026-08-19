@@ -1,0 +1,68 @@
+name: Varam-Dynamics PT25 Paper Portfolio
+# Weekly report for the twin $25 paper portfolios (capped 3x vs full leverage),
+# following the bot's 7.5+ trailing signals. Read-only layer over the paper
+# history — does NOT touch alerts, Upstash, trades.csv, the webhook, or the
+# existing paper flow. Its only effects: one weekly Telegram message + its own
+# state file (results/pt25_state.json). Off-switch: disable this workflow.
+
+on:
+  schedule:
+    - cron: '15 12 * * 0'      # weekly, Sunday 12:15 UTC (offset from all other jobs)
+  workflow_dispatch: {}          # manual trigger (e.g. to fire the first report now)
+
+concurrency:
+  group: varam-dynamics-pt25
+  cancel-in-progress: false
+
+jobs:
+  pt25:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+
+    permissions:
+      contents: write            # only to persist results/pt25_state.json
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Send weekly paper-portfolio report
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID:   ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python tools/pt25_portfolio.py --send
+
+      - name: Commit PT25 state (only that file, if changed)
+        run: |
+          git config user.name  "varam-dynamics-bot"
+          git config user.email "varam-dynamics-bot@users.noreply.github.com"
+          if [ -f results/pt25_state.json ]; then
+            git add results/pt25_state.json
+          fi
+          if git diff --staged --quiet; then
+            echo "No PT25 state change to commit"
+          else
+            git commit -m "pt25: $(date -u +%FT%TZ)"
+            n=0
+            until [ "$n" -ge 3 ]; do
+              if git pull --rebase origin main && git push; then
+                echo "Push succeeded on attempt $((n + 1))"
+                exit 0
+              fi
+              git rebase --abort 2>/dev/null || true
+              n=$((n + 1))
+              echo "Push attempt $n failed; retrying in 5s..."
+              sleep 5
+            done
+            echo "ERROR: all 3 push attempts failed"
+            exit 1
+          fi
