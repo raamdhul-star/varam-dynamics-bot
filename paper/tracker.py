@@ -80,6 +80,8 @@ def open_position(signal_score) -> None:
             "current_sl":   signal_score.sl_price,
             "score":        signal_score.total_score,
             "risk_label":   signal_score.risk_label,
+            "cpr_width":    getattr(signal_score, "cpr_width", None),  # save for analysis
+            "cpr_type":     getattr(signal_score, "cpr_type", None),
             "open_time":    now,
             "status":       "open",
             "peak_pnl_pct": 0.0,
