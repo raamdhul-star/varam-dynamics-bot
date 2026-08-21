@@ -874,7 +874,8 @@
     "aster|MSTRUSDT|long|1d|2026-08-19 00:00:00+00:00": "2026-08-20T16:49:05.724671+00:00",
     "aster|SPXUSDT|long|4h|2026-08-20 12:00:00+00:00": "2026-08-20T20:43:57.660080+00:00",
     "aster|SPYUSDT|short|1d|2026-08-20 00:00:00+00:00": "2026-08-21T01:55:28.596003+00:00",
-    "aster|TSLAUSDT|long|1h|2026-08-21 02:00:00+00:00": "2026-08-21T03:13:50.285127+00:00"
+    "aster|TSLAUSDT|long|1h|2026-08-21 02:00:00+00:00": "2026-08-21T03:13:50.285127+00:00",
+    "aster|SPXUSDT|long|1h|2026-08-21 07:00:00+00:00": "2026-08-21T08:55:16.553488+00:00"
   },
   "calls": {
     "aster|ETHUSDT|long|4h": {
@@ -1025,19 +1026,19 @@
       "symbol": "SPXUSDT",
       "direction": "long",
       "interval": "1h",
-      "first_seen": "2026-08-20T16:49:05.724671+00:00",
-      "last_seen": "2026-08-20T16:49:05.724671+00:00",
-      "last_bar_time": "2026-08-20 15:00:00+00:00",
-      "entry": 0.3899,
-      "target": 0.40170712,
-      "stop": 0.38399644,
-      "score": 7.77,
+      "first_seen": "2026-08-21T08:55:16.553488+00:00",
+      "last_seen": "2026-08-21T08:55:16.553488+00:00",
+      "last_bar_time": "2026-08-21 07:00:00+00:00",
+      "entry": 0.431,
+      "target": 0.43890712,
+      "stop": 0.42704644,
+      "score": 6.18,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-08-20T16:49:05.724671+00:00",
-      "alert_count": 48
+      "last_alerted_at": "2026-08-21T08:55:16.553488+00:00",
+      "alert_count": 49
     },
     "aster|OPENAIUSDT|long|1h": {
       "symbol": "OPENAIUSDT",
