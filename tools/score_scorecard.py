@@ -109,6 +109,31 @@ def report(score_min: float = 8.0) -> str:
         flag = "＋" if sum(v) > 0 else "－"
         L.append(f"  {k[0]}-W{k[1]:02d}  n={len(v):<3} win={100 * w / len(v):3.0f}%  "
                  f"avg={sum(v) / len(v):+6.2f}%  sum={sum(v):+7.1f}%  {flag}")
+
+    # Forward CPR-width validation (only rows that carry a saved cpr_width; the
+    # tracker started saving it after the width analysis — so this fills in over
+    # time and lets us confirm live whether wide beats narrow).
+    def _wbucket(w):
+        return "Narrow(<0.5%)" if w < 0.5 else "Normal(0.5-1%)" if w < 1.0 else "Wide(>=1%)"
+    wb = defaultdict(list)
+    for r in rows:
+        try:
+            wb[_wbucket(float(r["cpr_width"]))].append(r["_pnl"])
+        except (TypeError, ValueError, KeyError):
+            continue
+    covered = sum(len(v) for v in wb.values())
+    L.append(f"\nBy CPR width (forward data, {covered}/{len(rows)} calls carry saved width):")
+    if covered == 0:
+        L.append("  (none yet — width is saved on NEW calls from here on)")
+    else:
+        for name in ("Narrow(<0.5%)", "Normal(0.5-1%)", "Wide(>=1%)"):
+            v = wb.get(name, [])
+            if not v:
+                continue
+            w = sum(1 for x in v if x > 0.05)
+            L.append(f"  {name:<15} n={len(v):<3} win={100 * w / len(v):3.0f}%  "
+                     f"avg={sum(v) / len(v):+6.2f}%")
+
     L.append("\nNote: paper-simulated (idealized fills, no fees/slippage/funding). "
              "Use as a signal-quality tracker, not a P&L statement.")
     return "\n".join(L)

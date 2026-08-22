@@ -271,6 +271,14 @@ def _conviction_badge(score) -> str:
     if s >= 8.0: return " ⭐ High conviction"
     return ""
 
+def _cpr_tag(cpr_width) -> str:
+    """Phase A: flag a WIDE CPR (>=1%) — analysis shows wide-range breakouts
+    outperform narrow ones for this strategy. Display only, no score change."""
+    try:
+        return " · 🔵 Wide range" if float(cpr_width) >= 1.0 else ""
+    except (TypeError, ValueError):
+        return ""
+
 def _card(sb, acct, marker="🆕"):
     from scanner.assets import calc_leverage
     de   = "📈" if sb.direction=="long" else "📉"
@@ -286,7 +294,7 @@ def _card(sb, acct, marker="🆕"):
         f"{'━'*32}\n"
         f"{lead}<b>{de} {sb.symbol} {sb.direction.upper()}</b>  "
         f"[<b>{sb.total_score:.1f}/10</b>] {sb.risk_emoji} {sb.risk_label}{badge}{suffix}\n"
-        f"  TF: {sb.interval} | Setup: Qualified\n"
+        f"  TF: {sb.interval} | Setup: Qualified{_cpr_tag(getattr(sb, 'cpr_width', None))}\n"
         f"  🎯 Entry  <code>{sb.entry_price:.6g}</code>\n"
         f"  🟢 Target <code>{sb.tp_price:.6g}</code> ({chg_sign}{chg:.1f}%)\n"
         f"  🔴 Stop   <code>{sb.sl_price:.6g}</code> ({'+' if sb.direction=='short' else '-'}{sb.sl_pct:.2f}%)\n"
