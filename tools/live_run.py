@@ -57,15 +57,26 @@ def main(argv=None) -> int:
         backend = DryRunBackend()
         real = False
 
+    if not real:
+        banner = "DRY RUN, nothing sent"
+    elif mode == "testnet":
+        banner = "TESTNET — real orders, PRACTICE money"
+    else:
+        banner = "MAINNET — REAL ORDERS, REAL MONEY"
     print("=" * 72)
-    print("LIVE RUN — " + ("REAL ORDERS, REAL MONEY" if real else "DRY RUN, nothing sent"))
+    print("LIVE RUN — " + banner)
     print("=" * 72)
     print(f"mode: {mode}   mainnet gate: {C.MAINNET_ENABLED}   "
           f"kill switch: {'ENGAGED' if C.kill_switch_on() else 'off'}")
     if real:
         print(f"trade cap this run: {cap}")
-    if not C.account_address():
-        print("\nHL_ACCOUNT_ADDRESS not set — set your PUBLIC address to run a pass.")
+    # Per-network address, same as the preflight. Reading the generic fallback
+    # here meant a correctly configured testnet run refused to start.
+    if not C.account_address(mode):
+        print(f"\nNo account address set for mode {mode!r}.")
+        print("  testnet -> HL_TESTNET_ACCOUNT_ADDRESS")
+        print("  mainnet -> HL_MAINNET_ACCOUNT_ADDRESS")
+        print("  (public wallet address, never a private key)")
         return 0
     sigs = recent_calls()
     res = run_once(signals=sigs, mode=mode, backend=backend, max_new=cap)
@@ -161,6 +172,19 @@ def _selftest() -> int:
             all(get_backend(m).places_orders is False
                 for m in ("dryrun", "testnet", "mainnet")))
         chk("unknown mode still raises", _raises(lambda: get_backend("nonsense")))
+
+        # Per-network address resolution. A correctly configured testnet run
+        # once refused to start because main() read the generic fallback.
+        os.environ["HL_TESTNET_ACCOUNT_ADDRESS"] = "0xTESTADDR"
+        os.environ.pop("HL_ACCOUNT_ADDRESS", None)
+        chk("testnet finds its address with no generic fallback set",
+            C.account_address("testnet") == "0xTESTADDR")
+        chk("mainnet does not borrow the testnet address",
+            C.account_address("mainnet") == "")
+        os.environ["HL_ACCOUNT_ADDRESS"] = "0xFALLBACK"
+        chk("testnet prefers its own address over the fallback",
+            C.account_address("testnet") == "0xTESTADDR")
+        os.environ.pop("HL_TESTNET_ACCOUNT_ADDRESS"); os.environ.pop("HL_ACCOUNT_ADDRESS")
 
         # ── the supervised-run guard ────────────────────────────────────────
         META_CAP = {"ZEC": {"sz_decimals": 2, "max_leverage": 10},
