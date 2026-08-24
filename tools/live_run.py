@@ -99,8 +99,21 @@ def main(argv=None) -> int:
         print("skipped:")
         for k, v in sorted(counts.items(), key=lambda kv: -kv[1]):
             print(f"   {v:>3}x {k}")
-    if real and not res["placed"]:
+    flattened = [s for s in res["skipped"]
+                 if str(s["reason"]).startswith("flattened_no_stop")]
+    if flattened:
+        print("\n" + "!" * 72)
+        print("AN ENTRY FILLED BUT ITS STOP DID NOT ATTACH — position was CLOSED again.")
+        print("Money moved and a fee was paid. The exchange said:")
+        for f in flattened:
+            print(f"   {f['symbol']}: {str(f['reason']).split(': ', 1)[-1]}")
+        print("CHECK THE EXCHANGE NOW and confirm you hold no position in those.")
+        print("Full request and response are in results/live/<mode>/audit.jsonl")
+        print("!" * 72)
+    if real and not res["placed"] and not flattened:
         print("\nNothing was placed this run — no order reached the exchange.")
+    elif real and not res["placed"]:
+        print("\nNo position is open, but an order DID reach the exchange (see above).")
     elif real:
         print("\nREAL ORDERS WERE SENT. Now check on the exchange, by hand:")
         print("  1. the position exists, at the size and leverage printed above")
@@ -402,7 +415,10 @@ def _selftest() -> int:
         fb = FakeBackend(fail_stop=True)
         okb, status, _ = settle_bracket(fb, b, fb.place_bracket(b))
         chk("entry filled but stop missing -> FLATTEN immediately",
-            not okb and status == "flattened_no_stop" and fb.flattened == ["ZEC"])
+            not okb and status.startswith("flattened_no_stop")
+            and fb.flattened == ["ZEC"])
+        chk("the flatten status carries WHY, not just that it happened",
+            ": " in status and len(status) > len("flattened_no_stop: "))
         fb2 = FakeBackend(fail_entry=True)
         okb2, st2, _ = settle_bracket(fb2, b, fb2.place_bracket(b))
         chk("rejected entry is not treated as a position",

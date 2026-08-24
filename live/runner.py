@@ -221,6 +221,16 @@ def run_once(*, signals: list, mode: str | None = None, backend=None,
         resp = backend.place_bracket(bracket)
         ok_b, status, stop_oid = settle_bracket(backend, bracket, resp)
         if not ok_b:
+            # An entry that filled and then had to be flattened is NOT a quiet
+            # skip — money moved and a fee was paid. Record everything the
+            # exchange said, including the exact request we sent.
+            if status.startswith("flattened_no_stop"):
+                state.audit(mode, "flattened_no_stop", {
+                    "symbol": sym, "error": resp.get("stop_error"),
+                    "stop_status": resp.get("stop_status"),
+                    "sent": resp.get("sent_stop_request"),
+                    "bracket": bracket}, root, now)
+                out["attention"].append(sym)
             skip(sym, status); continue
 
         positions[sym] = state.record(

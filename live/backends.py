@@ -133,5 +133,8 @@ def settle_bracket(backend, bracket: dict, resp: dict) -> tuple:
         return True, "open", resp.get("stop_order_id")
     if bracket.get("on_stop_missing") == "flatten":
         backend.flatten(bracket["symbol"], reason="stop_missing_after_entry")
-        return False, "flattened_no_stop", None
+        # carry the exchange's reason out so the caller can show it; a bare
+        # "flattened_no_stop" tells you WHAT happened but never WHY
+        why = resp.get("stop_error") or "stop leg returned no order id"
+        return False, f"flattened_no_stop: {why}", None
     return False, "stop_missing", None

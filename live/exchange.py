@@ -141,9 +141,18 @@ class ExchangeBackend:
             filled = float(st[0]["filled"]["totalSz"])
         except (KeyError, TypeError, ValueError):
             filled = entry["size"]
-        # stop_order_id stays None if that leg errored -> settle_bracket flattens
+        # stop_order_id stays None if that leg errored -> settle_bracket flattens.
+        # Keep the exchange's OWN words about why: without them a failed stop
+        # is indistinguishable from a dozen different causes.
+        stop_err = None
+        if self._errored(st[1]):
+            stop_err = str(st[1].get("error"))
+        elif not self._oid(st[1]):
+            stop_err = f"no order id in stop status: {st[1]!r}"
         return {"entry_ok": True, "entry_order_id": self._oid(st[0]),
-                "stop_order_id": None if self._errored(st[1]) else self._oid(st[1]),
+                "stop_order_id": None if stop_err else self._oid(st[1]),
+                "stop_error": stop_err, "stop_status": st[1],
+                "sent_stop_request": self._order_req(stop),
                 "filled_size": filled, "raw": resp}
 
     def place_stop(self, symbol: str, trigger_px: float, size: float,
