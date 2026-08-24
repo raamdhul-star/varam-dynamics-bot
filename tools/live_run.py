@@ -303,6 +303,40 @@ def _selftest() -> int:
             len(tb._client.calls[1][1]) == 2 and tb._client.calls[1][2] == "normalTpsl")
         chk("a good response reports the entry and the stop", r["entry_ok"]
             and r["stop_order_id"] == "2")
+
+        # ── the testnet bug: "waitingForTrigger" is SUCCESS, not failure ────
+        # Hyperliquid answers a newly placed trigger order with that bare
+        # string and NO order id. Reading a missing id as a failed stop made
+        # the code flatten three healthy positions.
+        chk("waitingForTrigger counts as accepted",
+            ExchangeBackend._accepted("waitingForTrigger") is True)
+        chk("a real error is still a failure",
+            ExchangeBackend._accepted({"error": "bad tick"}) is False)
+        chk("a resting dict is accepted and yields its id",
+            ExchangeBackend._accepted({"resting": {"oid": 7}}) is True
+            and ExchangeBackend._oid({"resting": {"oid": 7}}) == "7")
+        chk("a bracket with a live-but-idless stop is COMPLETE",
+            bracket_is_complete({"entry_ok": True, "stop_live": True,
+                                 "stop_order_id": None}) is True)
+        chk("a bracket whose stop was rejected is NOT complete",
+            bracket_is_complete({"entry_ok": True, "stop_live": False,
+                                 "stop_order_id": None}) is False)
+        # end to end: a client that answers waitingForTrigger must NOT flatten
+        class _TriggerClient(_FakeClient):
+            def bulk_orders(self, reqs, grouping=None):
+                self.calls.append(("bulk", reqs, grouping))
+                return {"response": {"data": {"statuses": [
+                    {"filled": {"oid": 1, "totalSz": reqs[0]["sz"]}},
+                    "waitingForTrigger"]}}}
+        tb2 = ExchangeBackend("testnet", client=_TriggerClient())
+        br = build_bracket(plan_order(symbol="ZEC", direction="long", entry=40.0,
+                                      stop=39.2, equity=999.0, used_margin=0.0,
+                                      sz_decimals=2, asset_max_leverage=10), 2)
+        rr = tb2.place_bracket(br)
+        okt, stt, _ = settle_bracket(tb2, br, rr)
+        chk("waitingForTrigger does NOT trigger a flatten",
+            okt is True and stt == "open"
+            and not any(k == "flatten" for k, _ in tb2.sent))
         os.environ.pop("LIVE_MODE")
         os.environ.pop("LIVE_TESTNET_ARMED"); os.environ.pop("HL_TESTNET_PRIVATE_KEY")
         os.environ.pop("HL_TESTNET_ACCOUNT_ADDRESS")

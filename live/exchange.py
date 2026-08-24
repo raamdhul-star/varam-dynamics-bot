@@ -103,7 +103,7 @@ class ExchangeBackend:
     @classmethod
     def _oid(cls, status) -> str | None:
         if not isinstance(status, dict):
-            return None
+            return None            # e.g. "waitingForTrigger" — accepted, no id
         for k in ("resting", "filled"):
             if isinstance(status.get(k), dict) and status[k].get("oid"):
                 return str(status[k]["oid"])
@@ -112,6 +112,22 @@ class ExchangeBackend:
     @staticmethod
     def _errored(status) -> bool:
         return isinstance(status, dict) and "error" in status
+
+    @classmethod
+    def _accepted(cls, status) -> bool:
+        """Did the exchange ACCEPT this leg?
+
+        A newly placed trigger order comes back as the bare string
+        "waitingForTrigger" — armed and live, but with no order id. Treating a
+        missing id as failure made the code flatten three perfectly good
+        positions on testnet. Acceptance and having-an-id are different
+        questions and are now asked separately.
+        """
+        if cls._errored(status):
+            return False
+        if isinstance(status, str):
+            return "error" not in status.lower()
+        return bool(cls._oid(status))
 
     # ── actions ─────────────────────────────────────────────────────────────
     def place_bracket(self, bracket: dict) -> dict:
@@ -145,15 +161,31 @@ class ExchangeBackend:
         # Keep the exchange's OWN words about why: without them a failed stop
         # is indistinguishable from a dozen different causes.
         stop_err = None
-        if self._errored(st[1]):
-            stop_err = str(st[1].get("error"))
-        elif not self._oid(st[1]):
-            stop_err = f"no order id in stop status: {st[1]!r}"
+        if not self._accepted(st[1]):
+            stop_err = (str(st[1].get("error")) if self._errored(st[1])
+                        else f"stop rejected: {st[1]!r}")
+        stop_oid = self._oid(st[1])
+        if stop_err is None and not stop_oid:
+            # Accepted but no id (the "waitingForTrigger" case). The stop IS
+            # live; look its id up so the trailing step can replace it later.
+            stop_oid = self._lookup_stop_oid(bracket["symbol"], stop["trigger_px"])
         return {"entry_ok": True, "entry_order_id": self._oid(st[0]),
-                "stop_order_id": None if stop_err else self._oid(st[1]),
+                "stop_order_id": stop_oid,
+                "stop_live": stop_err is None,
                 "stop_error": stop_err, "stop_status": st[1],
                 "sent_stop_request": self._order_req(stop),
                 "filled_size": filled, "raw": resp}
+
+    def _lookup_stop_oid(self, symbol: str, trigger_px: float):
+        """Best effort. A missing id is NOT a missing stop — never flatten on it."""
+        try:
+            from .hl_info import find_stop_order, open_orders, poster_for
+            addr = C.account_address(self.mode)
+            found = find_stop_order(open_orders(addr, poster=poster_for(self.mode)),
+                                    symbol, trigger_px)
+            return found["order_id"] if found else None
+        except Exception:                                     # noqa: BLE001
+            return None
 
     def place_stop(self, symbol: str, trigger_px: float, size: float,
                    is_buy: bool) -> dict:
@@ -178,6 +210,34 @@ class ExchangeBackend:
         except Exception as e:                                # noqa: BLE001
             return {"ok": False, "error": str(e)}
         return {"ok": (resp or {}).get("status") == "ok", "raw": resp}
+
+    def cancel_stale_stops(self, symbol: str, keep_order_id=None) -> dict:
+        """Cancel every resting reduce-only stop on `symbol` except the newest.
+
+        The trailing step places the new stop BEFORE cancelling the old one, so
+        the position is never unprotected. When the old stop's id was never
+        known (the "waitingForTrigger" case) there is nothing to cancel by id,
+        and stale stops would otherwise pile up one per hour. This sweeps them
+        by reading what is actually resting. Best effort: a failure here leaves
+        extra reduce-only stops, which is untidy but never dangerous.
+        """
+        try:
+            from .hl_info import open_orders, poster_for
+            addr = C.account_address(self.mode)
+            orders = open_orders(addr, poster=poster_for(self.mode))
+        except Exception as e:                                # noqa: BLE001
+            return {"ok": False, "error": str(e), "cancelled": 0}
+        n = 0
+        for o in orders:
+            if str(o.get("symbol", "")).upper() != str(symbol).upper():
+                continue
+            if not o.get("reduce_only") or not o.get("order_id"):
+                continue
+            if keep_order_id and str(o["order_id"]) == str(keep_order_id):
+                continue
+            if self.cancel_order(symbol, o["order_id"]).get("ok"):
+                n += 1
+        return {"ok": True, "cancelled": n}
 
     def flatten(self, symbol: str, reason: str = "") -> dict:
         """Close the position at market. Used when a stop failed to attach, so

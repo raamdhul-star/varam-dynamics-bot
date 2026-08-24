@@ -101,8 +101,18 @@ def build_bracket(plan: OrderPlan, sz_decimals: int,
 
 
 def bracket_is_complete(resp: dict) -> bool:
-    """True only when BOTH legs are confirmed. Anything else is incomplete and
-    must trigger the flatten path — never treated as success."""
+    """True only when BOTH legs are confirmed.
+
+    A stop can be LIVE without an order id: Hyperliquid answers a new trigger
+    order with the bare string "waitingForTrigger". Requiring an id here made
+    the code flatten three healthy positions on testnet, so acceptance is what
+    counts. `stop_live` is the authoritative answer when the backend provides
+    it; the id-based check remains for backends that do not.
+    """
     if not isinstance(resp, dict):
         return False
-    return bool(resp.get("entry_ok")) and bool(resp.get("stop_order_id"))
+    if not resp.get("entry_ok"):
+        return False
+    if "stop_live" in resp:
+        return bool(resp["stop_live"])
+    return bool(resp.get("stop_order_id"))

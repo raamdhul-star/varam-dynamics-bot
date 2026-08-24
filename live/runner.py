@@ -166,6 +166,18 @@ def run_once(*, signals: list, mode: str | None = None, backend=None,
             continue
         if move.old_order_id:
             backend.cancel_order(sym, move.old_order_id)
+        else:
+            # The old stop's id was never known (Hyperliquid answers a new
+            # trigger order with "waitingForTrigger" and no id). Sweep any
+            # other reduce-only stop on this symbol so they do not pile up one
+            # per hour. Only ever runs AFTER the new stop is confirmed placed.
+            sweep = getattr(backend, "cancel_stale_stops", None)
+            if sweep:
+                res_sweep = sweep(sym, keep_order_id=placed.get("order_id"))
+                if res_sweep.get("cancelled"):
+                    state.audit(mode, "stale_stops_cancelled",
+                                {"symbol": sym, "n": res_sweep["cancelled"]},
+                                root, now)
         rec["stop"] = move.new_stop
         rec["stop_order_id"] = placed.get("order_id")
         rec["moved_to_breakeven"] = True
