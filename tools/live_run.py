@@ -132,9 +132,9 @@ def _selftest() -> int:
     try:
         # ── arming: an order path now EXISTS, so prove it stays locked ───────
         from live.exchange import ExchangeBackend, NotArmed, arm_status
-        # The code gate is now ON (user chose to go live). Everything else must
-        # still hold it shut, so an accidental run cannot place an order.
-        chk("code gate is on, as intended", C.MAINNET_ENABLED is True)
+        # Mainnet is hard-off again while we prove the plumbing on testnet.
+        # Testnet arms separately and cannot reach real money.
+        chk("mainnet is hard-off while we prove testnet", C.MAINNET_ENABLED is False)
         chk("mainnet is NOT armed without LIVE_MODE + LIVE_CONFIRM + keys",
             arm_status("mainnet")[0] is False)
         os.environ["LIVE_MODE"] = "mainnet"
@@ -407,8 +407,8 @@ def _selftest() -> int:
         os.environ.pop("LIVE_KILL_SWITCH")
         chk("dryrun is never allowed to send orders",
             gates.mode_allows_orders("dryrun") is False)
-        chk("mainnet may send orders only when the mode really resolves to it",
-            gates.mode_allows_orders("mainnet") is True
+        chk("mainnet cannot send orders while the code gate is False",
+            gates.mode_allows_orders("mainnet") is False
             and get_backend(C.mode()).places_orders is False)
 
         # ── whole pass, offline ─────────────────────────────────────────────

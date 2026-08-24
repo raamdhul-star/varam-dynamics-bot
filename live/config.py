@@ -32,22 +32,27 @@ import os
 
 # ── HARD CODE GATE ───────────────────────────────────────────────────────────
 # Real-money execution requires this True in reviewed code, ON TOP OF every
-# environment gate. Turned on 2026-08-24 at the user's explicit instruction,
-# having chosen to skip the testnet step.
+# environment gate.
 #
-# WHAT IS STILL UNVERIFIED: every test to date runs against a fake client we
-# wrote ourselves. The shape of Hyperliquid's REAL responses — how it reports
-# that an order filled and that a stop attached — has never been observed. If
-# that parsing is wrong, the two failure modes are a trade closed for no
-# reason, or a position left with NO STOP while the code believes it is
-# protected. So the FIRST live run must be supervised and capped to one trade
-# (tools/live_run.py --live --max-trades 1) and checked on the exchange.
+# Set back to False 2026-08-24: the user chose to prove the plumbing on TESTNET
+# first. Real money stays hard-off until that passes.
+#
+# WHAT TESTNET IS FOR: every test so far runs against a fake client we wrote
+# ourselves. The shape of Hyperliquid's REAL responses — how it reports that an
+# order filled and that a stop attached — has never been observed. Wrong
+# parsing fails two ways: a trade closed for no reason, or a position left with
+# NO STOP while the code believes it is protected. Testnet is the only way to
+# see a real response without risking money.
+#
+# Flip to True only AFTER a testnet round trip has been verified on the
+# exchange: position opened, stop resting against it, stop moved on a later
+# run, position closed, local state matching.
 #
 # To stop all live trading, ANY ONE of these is sufficient on its own:
-#   * set this back to False
-#   * set LIVE_KILL_SWITCH=1
+#   * this stays/returns False
+#   * LIVE_KILL_SWITCH=1
 #   * remove LIVE_CONFIRM
-MAINNET_ENABLED = True
+MAINNET_ENABLED = False
 CONFIRM_PHRASE  = "I_UNDERSTAND"
 VALID_MODES     = ("dryrun", "testnet", "mainnet")
 
@@ -108,9 +113,28 @@ def min_tradable_equity(margin_frac: float = MARGIN_FRAC,
     return min_notional / lev_cap / margin_frac
 
 
-def account_address() -> str:
-    """Public wallet address to READ. Never a private key."""
+def account_address(mode: str = "") -> str:
+    """Public wallet address to READ, for the given mode. Never a private key.
+
+    Mode matters: reading mainnet balances while trading testnet would size
+    testnet orders off real money and reconcile testnet positions against real
+    ones. Each network reads its OWN address.
+    """
+    m = (mode or "").strip().lower()
+    if m in ("mainnet", "testnet"):
+        _, addr = credentials(m)
+        if addr:
+            return addr
     return (os.environ.get("HL_ACCOUNT_ADDRESS", "") or "").strip()
+
+
+def info_url(mode: str = "") -> str:
+    """Read endpoint for the given mode. A live mode must read its OWN network;
+    dryrun reads mainnet, since that is the real market we are simulating."""
+    m = (mode or "").strip().lower()
+    if m in HL_BASE_URL:
+        return HL_BASE_URL[m] + "/info"
+    return HL_INFO_URL
 
 
 def mode() -> str:

@@ -21,7 +21,8 @@ from datetime import datetime, timezone
 from . import config as C
 from . import gates, state
 from .backends import get_backend, settle_bracket
-from .hl_info import HLReadError, account_state, asset_meta, high_low_since, mids
+from .hl_info import (HLReadError, account_state, asset_meta, high_low_since,
+                      mids, poster_for)
 from .orders import build_bracket
 from .reconcile import CLOSED_AWAY, EXPIRED, PROCEED, reconcile, summarize
 from .sizing import plan_order
@@ -58,10 +59,18 @@ def run_once(*, signals: list, mode: str | None = None, backend=None,
             meta, acct, prices = got[0], got[1], got[2]
             peaks = got[3] if len(got) > 3 else None
         else:
-            addr = C.account_address()
+            # Read the SAME network we trade on. A testnet run must never size
+            # or reconcile against real-money balances.
+            read = poster_for(mode)
+            addr = C.account_address(mode)
             if not addr:
-                raise HLReadError("HL_ACCOUNT_ADDRESS not set")
-            meta, acct, prices = asset_meta(), account_state(addr), mids()
+                raise HLReadError(f"no account address set for mode {mode!r}")
+            state.audit(mode, "reading", {"endpoint": read.url,
+                                          "address": addr[:6] + "..." + addr[-4:]},
+                        root, now)
+            meta = asset_meta(poster=read)
+            acct = account_state(addr, poster=read)
+            prices = mids(poster=read)
             # high/low since we last looked, for the trailing step below.
             # A failure here is NOT fatal: we fall back to the spot price,
             # which can only ever leave the stop where it already is.
@@ -70,7 +79,8 @@ def run_once(*, signals: list, mode: str | None = None, backend=None,
             start_ms = end_ms - int(C.PEAK_LOOKBACK_MIN * 60 * 1000)
             for p in acct.get("positions") or []:
                 try:
-                    peaks[p["symbol"]] = high_low_since(p["symbol"], start_ms, end_ms)
+                    peaks[p["symbol"]] = high_low_since(p["symbol"], start_ms,
+                                                        end_ms, poster=read)
                 except HLReadError as e:
                     state.audit(mode, "peak_read_failed",
                                 {"symbol": p.get("symbol"), "error": str(e)},

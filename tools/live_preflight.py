@@ -23,7 +23,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from live import config as C
-from live.hl_info import HLReadError, account_state, asset_meta
+from live.hl_info import HLReadError, account_state, asset_meta, poster_for
 from live.sizing import OrderPlan, floor_to, geometry_ok, is_tight_stop, plan_order, suggested_leverage
 
 STATE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
@@ -90,16 +90,20 @@ def report() -> int:
     print(f"  min tradable equity: ${C.min_tradable_equity():.2f}"
           f"   <- below this NO legal order exists at these settings")
 
-    addr = C.account_address()
+    # Read whichever network we are pointed at — testnet reads testnet.
+    mode = C.mode()
+    read = poster_for(mode)
+    addr = C.account_address(mode)
+    print(f"  reading           : {read.url}")
     if not addr:
-        print("\nAccount: HL_ACCOUNT_ADDRESS not set — skipping the live read.")
-        print("  Set it to your PUBLIC wallet address (never a private key) to see")
-        print("  your real balance and what would be placed.")
+        print(f"\nAccount: no address set for mode {mode!r} — skipping the live read.")
+        print("  Set HL_ACCOUNT_ADDRESS (or the per-network address) to your PUBLIC")
+        print("  wallet address — never a private key — to see your real balance.")
         return 0
 
     try:
-        meta = asset_meta()
-        acct = account_state(addr)
+        meta = asset_meta(poster=read)
+        acct = account_state(addr, poster=read)
     except HLReadError as e:
         print(f"\nEXCHANGE READ FAILED: {e}")
         print("FAIL CLOSED: the executor would do nothing on this run.")
@@ -176,10 +180,24 @@ def _selftest() -> int:
     # ---- gates ----
     # The code gate is deliberately ON now. Preflight itself must stay
     # read-only regardless, and mainnet must still need credentials.
-    chk("code gate is on, as intended", C.MAINNET_ENABLED is True)
+    chk("mainnet is hard-off while we prove testnet", C.MAINNET_ENABLED is False)
     os.environ["LIVE_MODE"] = "mainnet"; os.environ["LIVE_CONFIRM"] = C.CONFIRM_PHRASE
-    from live.exchange import arm_status as _arm
-    chk("mainnet still refuses to arm without credentials", _arm("mainnet")[0] is False)
+    chk("mainnet downgrades to dryrun while the code gate is False",
+        C.mode() == "dryrun")
+    # each network must READ its own endpoint and its own address
+    chk("testnet and mainnet read different endpoints",
+        C.info_url("testnet") != C.info_url("mainnet")
+        and "testnet" in C.info_url("testnet"))
+    chk("dryrun reads the real market", C.info_url("dryrun") == C.HL_INFO_URL)
+    chk("a reader is bound to one network and says which",
+        poster_for("testnet").url == C.info_url("testnet"))
+    os.environ["HL_TESTNET_ACCOUNT_ADDRESS"] = "0xTEST"
+    os.environ["HL_ACCOUNT_ADDRESS"] = "0xFALLBACK"
+    chk("testnet reads the TESTNET address, not the fallback",
+        C.account_address("testnet") == "0xTEST")
+    chk("mainnet does not borrow the testnet address",
+        C.account_address("mainnet") == "0xFALLBACK")
+    os.environ.pop("HL_TESTNET_ACCOUNT_ADDRESS"); os.environ.pop("HL_ACCOUNT_ADDRESS")
     os.environ["LIVE_MODE"] = "garbage"
     chk("unknown mode falls back to dryrun", C.mode() == "dryrun")
     os.environ.pop("LIVE_MODE"); os.environ.pop("LIVE_CONFIRM")
@@ -318,7 +336,7 @@ def _selftest() -> int:
         all(x in body for x in ("account_state", "asset_meta"))
         and not any(x in body for x in ("place_", "bulk_orders", "market_close",
                                         "cancel_order", "flatten")))
-    chk("code gate is on, but this tool can still never send", C.MAINNET_ENABLED is True)
+    chk("mainnet stays hard-off until testnet is proven", C.MAINNET_ENABLED is False)
     from live.exchange import arm_status
     chk("neither live mode is armed in this environment",
         arm_status("mainnet")[0] is False and arm_status("testnet")[0] is False)

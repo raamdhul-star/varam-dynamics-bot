@@ -15,7 +15,7 @@ import json
 import urllib.error
 import urllib.request
 
-from .config import HL_INFO_URL, HTTP_TIMEOUT
+from .config import HL_INFO_URL, HTTP_TIMEOUT, info_url
 
 
 class HLReadError(RuntimeError):
@@ -32,6 +32,23 @@ def _post(payload: dict, url: str = HL_INFO_URL, timeout: int = HTTP_TIMEOUT):
     except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError,
             json.JSONDecodeError, OSError) as e:
         raise HLReadError(f"{payload.get('type')}: {type(e).__name__}: {e}") from e
+
+
+def poster_for(mode: str = ""):
+    """A reader bound to ONE network's endpoint.
+
+    Every read in a run must go to the same network the orders go to. Reading
+    mainnet while trading testnet would size testnet orders off real balances
+    and reconcile testnet positions against real ones — the same class of bug
+    that once let a testnet job wipe a live mainnet record.
+    """
+    url = info_url(mode)
+
+    def _bound(payload: dict):
+        return _post(payload, url=url)
+
+    _bound.url = url          # so callers can log/verify which network is in use
+    return _bound
 
 
 def asset_meta(poster=_post) -> dict:
