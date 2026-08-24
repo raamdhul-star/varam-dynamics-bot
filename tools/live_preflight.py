@@ -23,7 +23,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from live import config as C
-from live.hl_info import HLReadError, account_state, asset_meta, poster_for
+from live.hl_info import HLReadError, account_state, asset_meta, mids, poster_for
 from live.sizing import OrderPlan, floor_to, geometry_ok, is_tight_stop, plan_order, suggested_leverage
 
 STATE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
@@ -40,6 +40,8 @@ SKIP_TEXT = {
     "unknown_asset_max_leverage": "asset not in the Hyperliquid book",
     "unknown_size_decimals":    "asset size precision unknown",
     "bad_direction":            "unknown direction",
+    "price_moved_away":         "price drifted too far from the signal — not the setup we scored",
+    "bad_mark_price":           "no usable live price for this asset",
 }
 
 
@@ -104,6 +106,7 @@ def report() -> int:
     try:
         meta = asset_meta(poster=read)
         acct = account_state(addr, poster=read)
+        prices = mids(poster=read)
     except HLReadError as e:
         print(f"\nEXCHANGE READ FAILED: {e}")
         print("FAIL CLOSED: the executor would do nothing on this run.")
@@ -141,11 +144,16 @@ def report() -> int:
         if c["score"] < C.SCORE_MIN:
             continue
         m = meta.get(c["symbol"])
+        # Size off the LIVE mark, exactly as the runner does. Without this the
+        # preview disagreed with the real run: it sized off the hour-old signal
+        # price and reported different skip reasons — a preview that does not
+        # match what actually happens is worse than none.
         plan = plan_order(symbol=c["symbol"], direction=c["direction"],
                           entry=c["entry"], stop=c["stop"], equity=eq,
                           used_margin=sim_used,
                           sz_decimals=(m or {}).get("sz_decimals", -1),
-                          asset_max_leverage=(m or {}).get("max_leverage", 0))
+                          asset_max_leverage=(m or {}).get("max_leverage", 0),
+                          mark_price=prices.get(c["symbol"]))
         if plan.ok and len(would) < C.MAX_CONCURRENT:
             would.append(plan)
             sim_used += plan.margin
