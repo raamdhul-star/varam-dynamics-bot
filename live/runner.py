@@ -132,6 +132,20 @@ def run_once(*, signals: list, mode: str | None = None, backend=None,
     out["attention"] = summary["attention"]
     blocked = set(summary["blocked"])
 
+    # The exchange is the source of truth about what we paid. A record written
+    # before a fix, or adopted from a position we did not open, can disagree —
+    # and the trail measures profit from this number, so a stale entry trails
+    # at the wrong moment on every subsequent run. Reconcile it.
+    for sym, rec in positions.items():
+        live_entry = (on_exch.get(sym) or {}).get("entry")
+        if not live_entry or not rec.get("entry"):
+            continue
+        if abs(float(live_entry) - float(rec["entry"])) / float(live_entry) > 1e-6:
+            state.audit(mode, "entry_corrected",
+                        {"symbol": sym, "was": rec["entry"], "now": live_entry,
+                         "note": "exchange is the truth"}, root, now)
+            rec["entry"] = float(live_entry)
+
     # ── 4. move trailing stops (before opening anything new) ────────────────
     # Trail from the HIGH-WATER MARK since we last looked, not from the price
     # right now. The bot sleeps for an hour; a trade that ran +5% and fell back

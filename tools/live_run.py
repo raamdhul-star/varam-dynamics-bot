@@ -399,6 +399,34 @@ def _selftest() -> int:
         chk("garbage falls back to the real trigger",
             C.trail_trigger("testnet") == C.TRAIL_TRIGGER)
         os.environ.pop("LIVE_TRAIL_TRIGGER_PCT")
+
+        # ── a stale recorded entry must be corrected FROM the exchange ───────
+        # Seen live: the record held the signal price 79565 while the exchange
+        # reported the real fill 79470. The trail measures profit from this
+        # number, so it would have trailed late on every run.
+        stale_root = os.path.join(tmp, "stale")
+        state.save_positions("dryrun", {"BTC": state.record(
+            "BTC", direction="long", size=0.0094, entry=79565.0, stop=78372.5,
+            leverage=3, stop_order_id="s9", fingerprint="BTC|long|1h|x",
+            now=now)}, stale_root)
+        r_stale = run_once(
+            signals=[], mode="dryrun", backend=DryRunBackend(),
+            reader=lambda: ({"BTC": {"sz_decimals": 5, "max_leverage": 40}},
+                            {"equity": 992.0, "margin_used": 248.0,
+                             "withdrawable": 744.0,
+                             "positions": [{"symbol": "BTC", "size": 0.0094,
+                                            "direction": "long", "entry": 79470.0,
+                                            "notional": 746.0}],
+                             "resting_stops": {"BTC": "s9"}},
+                            {"BTC": 79400.0}),
+            now=now, root=stale_root)
+        chk("a stale recorded entry is corrected from the exchange",
+            abs(state.load_positions("dryrun", stale_root)["BTC"]["entry"]
+                - 79470.0) < 1e-9)
+        chk("the holding line reports the corrected entry",
+            r_stale["holding"] and abs(r_stale["holding"][0]["entry"] - 79470.0) < 1e-9)
+        chk("a position at a LOSS never trails, however low the trigger",
+            not r_stale["stop_moves"])
         os.environ.pop("LIVE_MODE")
         os.environ.pop("LIVE_TESTNET_ARMED"); os.environ.pop("HL_TESTNET_PRIVATE_KEY")
         os.environ.pop("HL_TESTNET_ACCOUNT_ADDRESS")
