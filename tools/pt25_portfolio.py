@@ -62,7 +62,16 @@ CAP_B         = 20      # 🔴 full account ceiling (practical exchange-max stan
 # Leverage multiplies the cost as well as the profit, which is exactly why the
 # 🔴 account keeps less of its edge than the raw P&L suggests.
 FEE_PCT   = 0.045   # taker fee per side (Hyperliquid taker ~0.045%)
-SLIP_PCT  = 0.050   # slippage per side; exits are stop-market, so assume taker
+# Entry and exit slip differently and are no longer lumped together.
+# ENTRY is an IOC limit we control, capped at 1% and usually far tighter.
+# EXIT is a stop-MARKET, so it fills wherever the market is when it triggers.
+# 0.127% is the MEASURED median overshoot past the stop across 393 trades
+# replayed on 1-minute candles (75th pct 0.383%, 95th 1.66%, worst 13.07%,
+# and 9.5% of stops overshot by more than 1%). The old flat 0.05% was
+# flattering the reports.
+SLIP_ENTRY_PCT = 0.050
+SLIP_EXIT_PCT  = 0.127
+SLIP_PCT  = SLIP_ENTRY_PCT          # kept for callers that used the old name
 FUND_PCT  = 0.010   # funding per 8h, assumed PAID (conservative: never earned)
 FUND_HRS  = 8.0
 
@@ -100,7 +109,8 @@ def _hours(open_time: str, exit_time: str) -> float:
 def cost_pct(hours: float) -> float:
     """Round-trip cost as % of NOTIONAL: fee+slippage both sides, plus funding
     for the time held. Charged on notional, so leverage scales it up."""
-    return 2.0 * (FEE_PCT + SLIP_PCT) + FUND_PCT * (max(0.0, hours) / FUND_HRS)
+    return (2.0 * FEE_PCT + SLIP_ENTRY_PCT + SLIP_EXIT_PCT
+            + FUND_PCT * (max(0.0, hours) / FUND_HRS))
 
 
 def net_return(L: int, pnl_pct: float, hours: float, costs: bool = True) -> float:
@@ -353,10 +363,13 @@ def _selftest() -> int:
     chk("liquidation floor at -100", _lev_return(9, -45) == -100.0)
 
     # ── cost model ───────────────────────────────────────────────────────────
-    chk("round-trip cost = 2 sides fee+slip at 0h", abs(cost_pct(0) - 0.19) < 1e-9)
+    chk("round-trip cost = 2 fees + entry slip + measured exit slip",
+        abs(cost_pct(0) - (2 * 0.045 + 0.050 + 0.127)) < 1e-9)
+    chk("exit slippage is the measured stop-market overshoot, not a guess",
+        SLIP_EXIT_PCT == 0.127 and SLIP_EXIT_PCT > SLIP_ENTRY_PCT)
     chk("funding accrues with holding time", abs(cost_pct(8) - cost_pct(0) - FUND_PCT) < 1e-9)
     chk("costs scale with leverage on the margin",
-        abs(net_return(4, 1.0, 0) - 4 * (1.0 - 0.19)) < 1e-9)
+        abs(net_return(4, 1.0, 0) - 4 * (1.0 - cost_pct(0))) < 1e-9)
     chk("gross == net when costs disabled", net_return(3, 5.0, 99, costs=False) == 15.0)
     chk("a flat trade loses money after costs", net_return(1, 0.0, 0) < 0)
     chk("cost floor still respects liquidation", net_return(20, -50.0, 0) == -100.0)
