@@ -337,6 +337,41 @@ def _selftest() -> int:
         chk("waitingForTrigger does NOT trigger a flatten",
             okt is True and stt == "open"
             and not any(k == "flatten" for k, _ in tb2.sent))
+
+        # ── protection detection: a stop must be VISIBLE to the runner ───────
+        from live.hl_info import find_stop_order, resting_stops
+        live_orders = [{"symbol": "BTC", "order_id": "58433555287", "size": 0.0094,
+                        "trigger_px": 78372.0, "limit_px": 78372.0,
+                        "reduce_only": True, "is_trigger": True, "side": "A"},
+                       {"symbol": "ETH", "order_id": "99", "size": 1.0,
+                        "trigger_px": None, "limit_px": 3000.0,
+                        "reduce_only": False, "is_trigger": False, "side": "B"}]
+        chk("resting_stops maps a real stop to its symbol",
+            resting_stops(live_orders) == {"BTC": "58433555287"})
+        chk("a non-reduce-only order is not mistaken for a stop",
+            "ETH" not in resting_stops(live_orders))
+        chk("find_stop_order with no price answers 'protected at all?'",
+            (find_stop_order(live_orders, "BTC") or {}).get("order_id")
+            == "58433555287")
+        chk("find_stop_order still matches on price when given one",
+            (find_stop_order(live_orders, "BTC", 78372.0) or {}).get("order_id")
+            == "58433555287")
+        chk("a far-off price does not match", find_stop_order(live_orders, "BTC",
+                                                              50000.0) is None)
+        chk("no stop for a symbol returns nothing",
+            find_stop_order(live_orders, "SOL") is None)
+
+        # the fill price, not the signal price, must be what gets recorded
+        class _FillClient(_FakeClient):
+            def bulk_orders(self, reqs, grouping=None):
+                self.calls.append(("bulk", reqs, grouping))
+                return {"response": {"data": {"statuses": [
+                    {"filled": {"oid": 1, "totalSz": reqs[0]["sz"],
+                                "avgPx": "79470.0"}},
+                    "waitingForTrigger"]}}}
+        tb3 = ExchangeBackend("testnet", client=_FillClient())
+        rf = tb3.place_bracket(br)
+        chk("the price actually paid is reported back", rf["fill_price"] == 79470.0)
         os.environ.pop("LIVE_MODE")
         os.environ.pop("LIVE_TESTNET_ARMED"); os.environ.pop("HL_TESTNET_PRIVATE_KEY")
         os.environ.pop("HL_TESTNET_ACCOUNT_ADDRESS")

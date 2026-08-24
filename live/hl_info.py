@@ -180,12 +180,15 @@ def open_orders(address: str, poster=_post) -> list:
     return out
 
 
-def find_stop_order(orders: list, symbol: str, trigger_px: float,
+def find_stop_order(orders: list, symbol: str, trigger_px: float | None = None,
                     tol_pct: float = 0.5):
-    """The resting reduce-only STOP for a symbol, matched on trigger price.
+    """The resting reduce-only STOP for a symbol.
 
-    Matching on price rather than assuming order means a stop placed by an
-    earlier run, or by hand, is still found and managed rather than orphaned.
+    With `trigger_px` it matches on price, so the id of a stop we just placed
+    can be recovered. With `trigger_px=None` it answers the different and more
+    important question — "is this position protected AT ALL?" — and returns any
+    reduce-only stop found. Matching on what is actually resting means a stop
+    placed by an earlier run, or by hand, is adopted rather than orphaned.
     """
     best, best_gap = None, None
     for o in orders or []:
@@ -194,12 +197,29 @@ def find_stop_order(orders: list, symbol: str, trigger_px: float,
         if not o.get("reduce_only") or not o.get("order_id"):
             continue
         px = o.get("trigger_px") or o.get("limit_px")
-        if not px or not trigger_px:
+        if not px:
             continue
+        if trigger_px in (None, 0):
+            return o                      # any protection counts
         gap = abs(px - trigger_px) / trigger_px * 100
         if gap <= tol_pct and (best_gap is None or gap < best_gap):
             best, best_gap = o, gap
     return best
+
+
+def resting_stops(orders: list) -> dict:
+    """{symbol: order_id} for every resting reduce-only stop.
+
+    The runner needs this to tell a protected position from a naked one. It was
+    previously read from a key account_state never returned, so EVERY position
+    looked unprotected — a permanent false alarm that would have hidden a real
+    one.
+    """
+    out = {}
+    for o in orders or []:
+        if o.get("reduce_only") and o.get("order_id"):
+            out.setdefault(o.get("symbol"), o["order_id"])
+    return out
 
 
 def mids(poster=_post) -> dict:

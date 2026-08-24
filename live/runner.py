@@ -22,7 +22,7 @@ from . import config as C
 from . import gates, state
 from .backends import get_backend, settle_bracket
 from .hl_info import (HLReadError, account_state, asset_meta, high_low_since,
-                      mids, poster_for)
+                      mids, open_orders, poster_for, resting_stops)
 from .orders import build_bracket
 from .reconcile import CLOSED_AWAY, EXPIRED, PROCEED, reconcile, summarize
 from .sizing import plan_order
@@ -71,6 +71,10 @@ def run_once(*, signals: list, mode: str | None = None, backend=None,
             meta = asset_meta(poster=read)
             acct = account_state(addr, poster=read)
             prices = mids(poster=read)
+            # Which positions actually have a stop resting on them. Without
+            # this every position looks naked and the "needs attention" alarm
+            # fires on every run — which would hide a real naked position.
+            acct["resting_stops"] = resting_stops(open_orders(addr, poster=read))
             # high/low since we last looked, for the trailing step below.
             # A failure here is NOT fatal: we fall back to the spot price,
             # which can only ever leave the stop where it already is.
@@ -245,8 +249,12 @@ def run_once(*, signals: list, mode: str | None = None, backend=None,
                 out["attention"].append(sym)
             skip(sym, status); continue
 
+        # Record the price actually PAID where the exchange reports it. The
+        # trail measures profit from this number, so using the stale signal
+        # price would move the stop at the wrong moment on every trade.
+        actual_entry = resp.get("fill_price") or plan.entry
         positions[sym] = state.record(
-            sym, direction=plan.direction, size=plan.size, entry=plan.entry,
+            sym, direction=plan.direction, size=plan.size, entry=actual_entry,
             stop=plan.stop, leverage=plan.leverage, stop_order_id=stop_oid,
             fingerprint=fp, now=now)
         used += plan.margin

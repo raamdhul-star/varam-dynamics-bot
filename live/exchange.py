@@ -157,6 +157,14 @@ class ExchangeBackend:
             filled = float(st[0]["filled"]["totalSz"])
         except (KeyError, TypeError, ValueError):
             filled = entry["size"]
+        # The price we ACTUALLY paid. The trailing stop measures profit from
+        # the recorded entry, so recording the hour-old signal price instead
+        # would trigger the trail at the wrong point on every trade.
+        fill_px = None
+        try:
+            fill_px = float(st[0]["filled"]["avgPx"])
+        except (KeyError, TypeError, ValueError):
+            fill_px = None
         # stop_order_id stays None if that leg errored -> settle_bracket flattens.
         # Keep the exchange's OWN words about why: without them a failed stop
         # is indistinguishable from a dozen different causes.
@@ -174,7 +182,7 @@ class ExchangeBackend:
                 "stop_live": stop_err is None,
                 "stop_error": stop_err, "stop_status": st[1],
                 "sent_stop_request": self._order_req(stop),
-                "filled_size": filled, "raw": resp}
+                "filled_size": filled, "fill_price": fill_px, "raw": resp}
 
     def _lookup_stop_oid(self, symbol: str, trigger_px: float):
         """Best effort. A missing id is NOT a missing stop — never flatten on it."""
