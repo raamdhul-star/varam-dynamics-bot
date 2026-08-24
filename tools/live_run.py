@@ -29,22 +29,50 @@ from live.trailing import next_stop, plan_stop_move
 from tools.live_preflight import recent_calls
 
 
-def main() -> int:
-    print("=" * 72)
-    print("LIVE RUN — DRY-RUN.  L2 contains no order-sending code.")
-    print("=" * 72)
+def main(argv=None) -> int:
+    argv = argv if argv is not None else sys.argv
+    want_live = "--live" in argv
+    cap = None
+    for i, a in enumerate(argv):
+        if a == "--max-trades" and i + 1 < len(argv):
+            try:
+                cap = int(argv[i + 1])
+            except ValueError:
+                cap = None
+
     mode = C.mode()
+    backend = get_backend(mode)
+    real = getattr(backend, "places_orders", False)
+
+    # Going live REQUIRES an explicit cap. The first supervised run must place
+    # exactly one order so it can be checked on the exchange before anything is
+    # automated — and forgetting the flag must not silently open four.
+    if want_live and real and cap is None:
+        print("REFUSED: --live needs an explicit --max-trades N.")
+        print("  For the first supervised run use:  --live --max-trades 1")
+        return 2
+    if real and not want_live:
+        print("This environment is ARMED for real orders but --live was not given.")
+        print("  Running as a dry run. Add --live when you actually mean it.")
+        backend = DryRunBackend()
+        real = False
+
+    print("=" * 72)
+    print("LIVE RUN — " + ("REAL ORDERS, REAL MONEY" if real else "DRY RUN, nothing sent"))
+    print("=" * 72)
     print(f"mode: {mode}   mainnet gate: {C.MAINNET_ENABLED}   "
           f"kill switch: {'ENGAGED' if C.kill_switch_on() else 'off'}")
+    if real:
+        print(f"trade cap this run: {cap}")
     if not C.account_address():
         print("\nHL_ACCOUNT_ADDRESS not set — set your PUBLIC address to run a pass.")
         return 0
     sigs = recent_calls()
-    res = run_once(signals=sigs, mode=mode, backend=get_backend(mode))
+    res = run_once(signals=sigs, mode=mode, backend=backend, max_new=cap)
     if res["halted"]:
         print(f"\nHALTED: {res['halted']}")
         return 1
-    print(f"\nwould place {len(res['placed'])}:")
+    print(f"\n{'PLACED' if real else 'would place'} {len(res['placed'])}:")
     for p in res["placed"]:
         print(f"   {p['symbol']:<9} {p['leverage']}x  size {p['size']}  "
               f"entry {p['entry']}  stop {p['stop']}  margin ${p['margin']}")
@@ -60,7 +88,14 @@ def main() -> int:
         print("skipped:")
         for k, v in sorted(counts.items(), key=lambda kv: -kv[1]):
             print(f"   {v:>3}x {k}")
-    print("\nDRY-RUN: nothing was sent.")
+    if real:
+        print("\nREAL ORDERS WERE SENT. Now check on the exchange, by hand:")
+        print("  1. the position exists, at the size and leverage printed above")
+        print("  2. a STOP-LOSS order is resting against it  <- the one that matters")
+        print("  3. the stop is on the correct side and roughly the price shown")
+        print("If the stop is missing, close the position yourself immediately.")
+    else:
+        print("\nDRY RUN: nothing was sent.")
     return 0
 
 
@@ -97,9 +132,22 @@ def _selftest() -> int:
     try:
         # ── arming: an order path now EXISTS, so prove it stays locked ───────
         from live.exchange import ExchangeBackend, NotArmed, arm_status
-        chk("mainnet is still hard-disabled in reviewed code",
-            C.MAINNET_ENABLED is False)
-        chk("mainnet refuses to arm even with the confirm phrase",
+        # The code gate is now ON (user chose to go live). Everything else must
+        # still hold it shut, so an accidental run cannot place an order.
+        chk("code gate is on, as intended", C.MAINNET_ENABLED is True)
+        chk("mainnet is NOT armed without LIVE_MODE + LIVE_CONFIRM + keys",
+            arm_status("mainnet")[0] is False)
+        os.environ["LIVE_MODE"] = "mainnet"
+        chk("LIVE_MODE alone does not arm it", arm_status("mainnet")[0] is False)
+        os.environ["LIVE_CONFIRM"] = C.CONFIRM_PHRASE
+        chk("LIVE_MODE + confirm phrase, but no keys, still does not arm it",
+            arm_status("mainnet")[0] is False)
+        os.environ["LIVE_KILL_SWITCH"] = "1"
+        chk("the kill switch halts a run even when fully armed",
+            gates.all_clear(mode="mainnet", equity=25.0)[1] == "kill_switch_engaged")
+        os.environ.pop("LIVE_KILL_SWITCH")
+        os.environ.pop("LIVE_MODE"); os.environ.pop("LIVE_CONFIRM")
+        chk("back to unarmed once the environment is cleared",
             arm_status("mainnet")[0] is False)
         chk("testnet refuses to arm without its own flag",
             arm_status("testnet")[0] is False)
@@ -113,6 +161,46 @@ def _selftest() -> int:
             all(get_backend(m).places_orders is False
                 for m in ("dryrun", "testnet", "mainnet")))
         chk("unknown mode still raises", _raises(lambda: get_backend("nonsense")))
+
+        # ── the supervised-run guard ────────────────────────────────────────
+        META_CAP = {"ZEC": {"sz_decimals": 2, "max_leverage": 10},
+                    "ETH": {"sz_decimals": 4, "max_leverage": 25}}
+        sigs_cap = [{"symbol": "ZEC", "direction": "long", "entry": 40.0,
+                     "sl": 39.2, "score": 8.1, "interval": "1h", "bar_time": "c1"},
+                    {"symbol": "ETH", "direction": "short", "entry": 3000.0,
+                     "sl": 3060.0, "score": 7.9, "interval": "1h", "bar_time": "c1"}]
+        reader_cap = lambda: (META_CAP,
+                              {"equity": 60.0, "margin_used": 0.0,
+                               "withdrawable": 60.0, "positions": [],
+                               "resting_stops": {}},
+                              {"ZEC": 40.0, "ETH": 3000.0})
+        capped = run_once(signals=sigs_cap, mode="dryrun", backend=DryRunBackend(),
+                          reader=reader_cap, now=now, root=os.path.join(tmp, "a"),
+                          max_new=1)
+        chk("a cap of 1 opens exactly one position", len(capped["placed"]) == 1)
+        chk("the calls it declined say exactly why",
+            any(x["reason"] == "run_trade_cap_reached" for x in capped["skipped"]))
+        uncapped = run_once(signals=sigs_cap, mode="dryrun", backend=DryRunBackend(),
+                            reader=reader_cap, now=now,
+                            root=os.path.join(tmp, "b"), max_new=None)
+        chk("without a cap it would have opened more", len(uncapped["placed"]) > 1)
+        # trailing is never rationed by the cap — protecting open money is not
+        # something to hold back
+        state.save_positions("dryrun", {"ZEC": state.record(
+            "ZEC", direction="long", size=0.3, entry=40.0, stop=39.2, leverage=3,
+            stop_order_id="o1", fingerprint="ZEC|long|1h|old",
+            now=now)}, os.path.join(tmp, "c"))
+        trail_capped = run_once(
+            signals=sigs_cap, mode="dryrun", backend=DryRunBackend(),
+            reader=lambda: (META_CAP,
+                            {"equity": 60.0, "margin_used": 4.0, "withdrawable": 56.0,
+                             "positions": [{"symbol": "ZEC", "size": 0.3,
+                                            "notional": 14.4}],
+                             "resting_stops": {"ZEC": "o1"}},
+                            {"ZEC": 48.0}),
+            now=now, root=os.path.join(tmp, "c"), max_new=0)
+        chk("a cap of ZERO still moves stops on open positions",
+            len(trail_capped["placed"]) == 0 and len(trail_capped["stop_moves"]) == 1)
 
         # testnet credentials must never let a mainnet order through
         os.environ["HL_TESTNET_PRIVATE_KEY"] = "0xdeadbeef"
@@ -319,8 +407,9 @@ def _selftest() -> int:
         os.environ.pop("LIVE_KILL_SWITCH")
         chk("dryrun is never allowed to send orders",
             gates.mode_allows_orders("dryrun") is False)
-        chk("mainnet is not allowed to send orders while the code gate is False",
-            gates.mode_allows_orders("mainnet") is False)
+        chk("mainnet may send orders only when the mode really resolves to it",
+            gates.mode_allows_orders("mainnet") is True
+            and get_backend(C.mode()).places_orders is False)
 
         # ── whole pass, offline ─────────────────────────────────────────────
         META = {"ZEC": {"sz_decimals": 2, "max_leverage": 10},

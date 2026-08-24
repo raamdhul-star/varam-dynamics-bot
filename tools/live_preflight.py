@@ -174,9 +174,12 @@ def _selftest() -> int:
     def chk(n, c): ok.append(bool(c)); print(f"  [{'PASS' if c else 'FAIL'}] {n}")
 
     # ---- gates ----
-    chk("mainnet is hard-disabled in code", C.MAINNET_ENABLED is False)
+    # The code gate is deliberately ON now. Preflight itself must stay
+    # read-only regardless, and mainnet must still need credentials.
+    chk("code gate is on, as intended", C.MAINNET_ENABLED is True)
     os.environ["LIVE_MODE"] = "mainnet"; os.environ["LIVE_CONFIRM"] = C.CONFIRM_PHRASE
-    chk("mainnet downgrades to dryrun while the code gate is False", C.mode() == "dryrun")
+    from live.exchange import arm_status as _arm
+    chk("mainnet still refuses to arm without credentials", _arm("mainnet")[0] is False)
     os.environ["LIVE_MODE"] = "garbage"
     chk("unknown mode falls back to dryrun", C.mode() == "dryrun")
     os.environ.pop("LIVE_MODE"); os.environ.pop("LIVE_CONFIRM")
@@ -315,7 +318,7 @@ def _selftest() -> int:
         all(x in body for x in ("account_state", "asset_meta"))
         and not any(x in body for x in ("place_", "bulk_orders", "market_close",
                                         "cancel_order", "flatten")))
-    chk("mainnet is still hard-disabled in reviewed code", C.MAINNET_ENABLED is False)
+    chk("code gate is on, but this tool can still never send", C.MAINNET_ENABLED is True)
     from live.exchange import arm_status
     chk("neither live mode is armed in this environment",
         arm_status("mainnet")[0] is False and arm_status("testnet")[0] is False)

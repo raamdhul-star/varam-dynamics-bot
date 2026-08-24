@@ -30,9 +30,16 @@ from .trailing import plan_stop_move
 
 def run_once(*, signals: list, mode: str | None = None, backend=None,
              reader=None, now: datetime | None = None,
-             root: str | None = None) -> dict:
-    """One pass. `reader` returns (meta, account, prices) and is injectable so
-    the whole flow can be tested offline."""
+             root: str | None = None, max_new: int | None = None) -> dict:
+    """One pass. `reader` returns (meta, account, prices[, peaks]) and is
+    injectable so the whole flow can be tested offline.
+
+    `max_new` caps how many NEW positions this run may open. Trailing stops on
+    existing positions are deliberately NOT capped — protecting money already
+    at risk is not something to ration. Used for the first supervised live run
+    (--max-trades 1), so exactly one order exists to inspect on the exchange
+    before anything gets automated.
+    """
     now = now or datetime.now(timezone.utc)
     mode = mode or C.mode()
     out = {"mode": mode, "placed": [], "skipped": [], "stop_moves": [],
@@ -168,6 +175,8 @@ def run_once(*, signals: list, mode: str | None = None, backend=None,
 
     for sig in signals or []:
         sym = sig.get("symbol", "?")
+        if max_new is not None and len(out["placed"]) >= max_new:
+            skip(sym, "run_trade_cap_reached"); continue
         if not gates.score_ok(sig.get("score")):
             skip(sym, "below_score_floor"); continue
         fp = state.fingerprint(sig)

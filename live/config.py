@@ -31,10 +31,23 @@ from __future__ import annotations
 import os
 
 # ── HARD CODE GATE ───────────────────────────────────────────────────────────
-# Real-money execution requires this to be flipped True in reviewed code, on
-# top of every environment gate. L1 has no order-placement path at all, so it
-# stays False and MUST stay False until the executor is built and tested.
-MAINNET_ENABLED = False
+# Real-money execution requires this True in reviewed code, ON TOP OF every
+# environment gate. Turned on 2026-08-24 at the user's explicit instruction,
+# having chosen to skip the testnet step.
+#
+# WHAT IS STILL UNVERIFIED: every test to date runs against a fake client we
+# wrote ourselves. The shape of Hyperliquid's REAL responses — how it reports
+# that an order filled and that a stop attached — has never been observed. If
+# that parsing is wrong, the two failure modes are a trade closed for no
+# reason, or a position left with NO STOP while the code believes it is
+# protected. So the FIRST live run must be supervised and capped to one trade
+# (tools/live_run.py --live --max-trades 1) and checked on the exchange.
+#
+# To stop all live trading, ANY ONE of these is sufficient on its own:
+#   * set this back to False
+#   * set LIVE_KILL_SWITCH=1
+#   * remove LIVE_CONFIRM
+MAINNET_ENABLED = True
 CONFIRM_PHRASE  = "I_UNDERSTAND"
 VALID_MODES     = ("dryrun", "testnet", "mainnet")
 
