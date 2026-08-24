@@ -81,7 +81,8 @@ def run_once(*, signals: list, mode: str | None = None, backend=None,
                 age = 0.0
         r = reconcile(symbol=sym, local=rec, exch_position=on_exch.get(sym),
                       has_resting_stop=bool(stops.get(sym)), read_ok=True,
-                      pending_age_hours=age)
+                      pending_age_hours=age,
+                      pending_timeout_hours=C.PENDING_TIMEOUT_HOURS)
         resolutions.append(r)
         state.audit(mode, "reconcile", {"symbol": sym, "outcome": r.outcome,
                                         "detail": r.detail}, root, now)

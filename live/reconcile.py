@@ -24,6 +24,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Optional
 
+from .config import PENDING_TIMEOUT_HOURS
+
 # outcomes
 PROCEED       = "proceed"          # nothing here, free to open
 HEALTHY       = "healthy"          # position + resting stop, all good
@@ -55,7 +57,7 @@ class Resolution:
 def reconcile(*, symbol: str, local: Optional[dict], exch_position: Optional[dict],
               has_resting_stop: bool, read_ok: bool = True,
               pending_age_hours: float = 0.0,
-              pending_timeout_hours: float = 8.0) -> Resolution:
+              pending_timeout_hours: float = PENDING_TIMEOUT_HOURS) -> Resolution:
     """Resolve one symbol. `local` is our record (or None); `exch_position` is
     what the exchange reports (or None). `read_ok=False` means the read failed
     and NOTHING may be concluded from it."""

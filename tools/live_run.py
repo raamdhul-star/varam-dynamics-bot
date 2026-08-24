@@ -167,12 +167,18 @@ def _selftest() -> int:
         chk("our record but exchange flat -> closed while away",
             R(local={"status": "open"}, exch_position=None,
               has_resting_stop=False) == CLOSED_AWAY)
-        chk("resting entry not yet filled -> pending",
+        chk("unfilled entry under the 2h limit -> still pending",
             R(local={"status": "pending"}, exch_position=None, has_resting_stop=False,
-              pending_age_hours=1) == STILL_PENDING)
-        chk("stale resting entry -> expire it",
+              pending_age_hours=1.9) == STILL_PENDING)
+        chk("unfilled entry past the 2h limit -> cancel it and free the margin",
             R(local={"status": "pending"}, exch_position=None, has_resting_stop=False,
-              pending_age_hours=9) == EXPIRED)
+              pending_age_hours=2.1) == EXPIRED)
+        chk("the pending timeout is 2h, not the runbook's 8h",
+            C.PENDING_TIMEOUT_HOURS == 2.0)
+        # Entries are IOC, so nothing can rest in the first place -- this path is
+        # defensive only until we ever use a resting limit entry.
+        chk("entries are IOC, so no entry can sit unfilled today",
+            build_bracket(p, 2)["orders"][0]["tif"] == "Ioc")
         chk("FAILED READ clears nothing and blocks",
             R(local={"status": "open"}, exch_position=None, has_resting_stop=False,
               read_ok=False) == FAIL_CLOSED)

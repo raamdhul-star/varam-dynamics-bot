@@ -45,6 +45,11 @@ MAX_EXPOSURE  = 0.90    # total posted margin never exceeds 90% of equity
 MIN_NOTIONAL  = 10.0    # Hyperliquid minimum order value (USD)
 MAX_CONCURRENT = 4      # 3 full + 1 partial fills MAX_EXPOSURE; the
                         # exposure ceiling is the real constraint, this is a backstop
+# How long an UNFILLED entry order may sit before we cancel it and free the
+# margin. Entries are IOC today (fill at once or die), so no entry can rest and
+# this never fires -- it is here for the day we use a resting limit entry, and
+# it is kept short so capital is never parked in an order that is not working.
+PENDING_TIMEOUT_HOURS = 2.0
 
 # ── strategy filter ──────────────────────────────────────────────────────────
 SCORE_MIN     = 7.5     # same floor the alerts use
