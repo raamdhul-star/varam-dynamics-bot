@@ -1,0 +1,183 @@
+"""
+live/runner.py — one pass of the live loop. Places nothing in L2.
+=================================================================
+Order of work, fail-closed at every step:
+
+  1. kill switch / mode
+  2. read the exchange (equity + positions). A failed read STOPS the run —
+     an unread exchange is not an empty one.
+  3. reconcile every symbol we know about against what the exchange reports
+  4. move trailing stops on healthy positions (place-then-cancel)
+  5. consider new signals, cheapest gate first
+  6. write an audit line for everything, including every refusal
+
+Step 4 runs BEFORE step 5 on purpose: protecting money already at risk matters
+more than deploying more of it. If the run dies halfway, the stops moved.
+"""
+from __future__ import annotations
+
+from datetime import datetime, timezone
+
+from . import config as C
+from . import gates, state
+from .backends import get_backend, settle_bracket
+from .hl_info import HLReadError, account_state, asset_meta, mids
+from .orders import build_bracket
+from .reconcile import CLOSED_AWAY, EXPIRED, PROCEED, reconcile, summarize
+from .sizing import plan_order
+from .trailing import plan_stop_move
+
+
+def run_once(*, signals: list, mode: str | None = None, backend=None,
+             reader=None, now: datetime | None = None,
+             root: str | None = None) -> dict:
+    """One pass. `reader` returns (meta, account, prices) and is injectable so
+    the whole flow can be tested offline."""
+    now = now or datetime.now(timezone.utc)
+    mode = mode or C.mode()
+    out = {"mode": mode, "placed": [], "skipped": [], "stop_moves": [],
+           "attention": [], "halted": None}
+
+    if gates.halted():
+        out["halted"] = "kill_switch_engaged"
+        state.audit(mode, "halt", {"reason": out["halted"]}, root, now)
+        return out
+
+    # ── 2. read the exchange ────────────────────────────────────────────────
+    try:
+        if reader is not None:
+            meta, acct, prices = reader()
+        else:
+            addr = C.account_address()
+            if not addr:
+                raise HLReadError("HL_ACCOUNT_ADDRESS not set")
+            meta, acct, prices = asset_meta(), account_state(addr), mids()
+    except HLReadError as e:
+        out["halted"] = f"exchange_read_failed: {e}"
+        state.audit(mode, "halt", {"reason": out["halted"]}, root, now)
+        return out
+
+    equity = acct.get("equity", 0.0)
+    ok, reason = gates.all_clear(mode=mode, equity=equity)
+    if not ok:
+        out["halted"] = reason
+        state.audit(mode, "halt", {"reason": reason, "equity": equity}, root, now)
+        return out
+
+    positions = state.load_positions(mode, root)
+    on_exch = {p["symbol"]: p for p in acct.get("positions") or []}
+    stops = acct.get("resting_stops") or {}       # {symbol: order_id}
+
+    # ── 3. reconcile ────────────────────────────────────────────────────────
+    resolutions = []
+    for sym in sorted(set(positions) | set(on_exch)):
+        rec = positions.get(sym)
+        age = 0.0
+        if rec and rec.get("status") == "pending":
+            try:
+                opened = datetime.fromisoformat(rec["opened_at"])
+                age = (now - opened).total_seconds() / 3600
+            except (KeyError, TypeError, ValueError):
+                age = 0.0
+        r = reconcile(symbol=sym, local=rec, exch_position=on_exch.get(sym),
+                      has_resting_stop=bool(stops.get(sym)), read_ok=True,
+                      pending_age_hours=age)
+        resolutions.append(r)
+        state.audit(mode, "reconcile", {"symbol": sym, "outcome": r.outcome,
+                                        "detail": r.detail}, root, now)
+        if r.outcome in (CLOSED_AWAY, EXPIRED):
+            positions.pop(sym, None)              # stale record, drop it
+        elif r.outcome == PROCEED:
+            positions.pop(sym, None)
+    summary = summarize(resolutions)
+    out["attention"] = summary["attention"]
+    blocked = set(summary["blocked"])
+
+    # ── 4. move trailing stops (before opening anything new) ────────────────
+    for sym, rec in list(positions.items()):
+        if rec.get("status") != "open" or sym not in on_exch:
+            continue
+        px = prices.get(sym)
+        if px is None:
+            continue
+        move = plan_stop_move(symbol=sym, entry=rec["entry"], price=px,
+                              direction=rec["direction"],
+                              current_stop=rec["stop"],
+                              old_order_id=rec.get("stop_order_id"),
+                              moved_to_breakeven=rec.get("moved_to_breakeven", False))
+        if move is None:
+            continue
+        m = meta.get(sym) or {}
+        # PLACE FIRST: if this fails, the old stop is still resting.
+        placed = backend.place_stop(sym, move.new_stop, rec["size"],
+                                    is_buy=(rec["direction"] != "long"))
+        if not placed.get("ok"):
+            state.audit(mode, "stop_move_failed",
+                        {"symbol": sym, "from": move.old_stop, "to": move.new_stop,
+                         "note": "old stop still resting — still protected"}, root, now)
+            continue
+        if move.old_order_id:
+            backend.cancel_order(sym, move.old_order_id)
+        rec["stop"] = move.new_stop
+        rec["stop_order_id"] = placed.get("order_id")
+        rec["moved_to_breakeven"] = True
+        rec["updated_at"] = now.isoformat()
+        out["stop_moves"].append({"symbol": sym, "from": move.old_stop,
+                                  "to": move.new_stop, "reason": move.reason})
+        state.audit(mode, "stop_moved", out["stop_moves"][-1], root, now)
+
+    # ── 5. new signals ──────────────────────────────────────────────────────
+    seen = {r.get("fingerprint") for r in positions.values() if r.get("fingerprint")}
+    used = sum(abs(p.get("notional", 0)) / max(1, p.get("leverage") or 1)
+               for p in on_exch.values())
+
+    def skip(sym, why):
+        out["skipped"].append({"symbol": sym, "reason": why})
+        state.audit(mode, "skip", {"symbol": sym, "reason": why}, root, now)
+
+    for sig in signals or []:
+        sym = sig.get("symbol", "?")
+        if not gates.score_ok(sig.get("score")):
+            skip(sym, "below_score_floor"); continue
+        fp = state.fingerprint(sig)
+        if gates.is_duplicate(fp, seen):
+            skip(sym, "duplicate_signal"); continue
+        if gates.symbol_busy(sym, blocked) or sym in positions:
+            skip(sym, "symbol_already_live"); continue
+        if not gates.capacity_left(len(positions), used, equity):
+            skip(sym, "no_capacity"); continue
+
+        m = meta.get(sym)
+        if not m:
+            skip(sym, "asset_not_in_book"); continue
+        plan = plan_order(symbol=sym, direction=sig.get("direction", ""),
+                          entry=sig.get("entry"), stop=sig.get("sl"),
+                          equity=equity, used_margin=used,
+                          sz_decimals=m["sz_decimals"],
+                          asset_max_leverage=m["max_leverage"])
+        if not plan.ok:
+            skip(sym, plan.skip_reason); continue
+
+        bracket = build_bracket(plan, m["sz_decimals"])
+        if bracket is None:
+            skip(sym, "bracket_unbuildable"); continue
+
+        resp = backend.place_bracket(bracket)
+        ok_b, status, stop_oid = settle_bracket(backend, bracket, resp)
+        if not ok_b:
+            skip(sym, status); continue
+
+        positions[sym] = state.record(
+            sym, direction=plan.direction, size=plan.size, entry=plan.entry,
+            stop=plan.stop, leverage=plan.leverage, stop_order_id=stop_oid,
+            fingerprint=fp, now=now)
+        used += plan.margin
+        seen.add(fp)
+        out["placed"].append({"symbol": sym, "size": plan.size, "entry": plan.entry,
+                              "stop": plan.stop, "leverage": plan.leverage,
+                              "margin": round(plan.margin, 2),
+                              "notional": round(plan.notional, 2)})
+        state.audit(mode, "placed", out["placed"][-1], root, now)
+
+    state.save_positions(mode, positions, root)
+    return out

@@ -303,8 +303,17 @@ def _selftest() -> int:
     # ---- no execution path exists yet ----
     import live
     files = os.listdir(os.path.dirname(os.path.abspath(live.__file__)))
-    chk("live/ contains no executor or signing module",
-        not any(f.startswith(("exec", "order", "sign", "wallet")) for f in files))
+    # Behavioural, not filename-based: live/orders.py legitimately exists and
+    # BUILDS order payloads, but nothing can SEND one — there is no backend
+    # that places orders, so get_backend must refuse for mainnet.
+    from live.backends import BackendError, get_backend
+    try:
+        get_backend("mainnet")
+        chk("no backend exists that can send an order", False)
+    except BackendError:
+        chk("no backend exists that can send an order", True)
+    chk("the dry-run backend declares it places nothing",
+        get_backend("dryrun").places_orders is False)
     # Scan the live/ package ONLY. This test file is excluded on purpose: it
     # necessarily contains the very strings it is searching for.
     live_dir = os.path.dirname(os.path.abspath(live.__file__))
