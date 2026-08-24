@@ -110,6 +110,33 @@ def _selftest() -> int:
             and next_stop(entry=100, price=120, direction="sideways",
                           current_stop=100) is None)
 
+        # ── the user's scenario: ran +5% while asleep, back to +2% on waking ──
+        # Trailing from the price NOW sees only +2%, below the +3% trigger, and
+        # leaves the stop untouched -- the whole +5% excursion is invisible.
+        chk("spot-price trailing MISSES a spike that reversed",
+            next_stop(entry=100, price=102, direction="long", current_stop=97.5) is None)
+        # Trailing from the high-water mark sees the +5% and tightens the stop,
+        # but only as far as is safe given the price now.
+        peak = next_stop(entry=100, price=105, direction="long", current_stop=97.5,
+                         current_price=102)
+        chk("peak trailing CATCHES it and tightens the stop",
+            peak is not None and peak > 97.5)
+        chk("but never to a level that would fire instantly", peak < 102)
+        chk("and never below breakeven once triggered", peak >= 100)
+        # An extreme spike that fully reversed: the trail candidate (140 x 0.98
+        # = 137.2) is unsafe, so it falls back to breakeven, which is both safe
+        # and tighter than where the stop was. It must never fire us out.
+        spike = next_stop(entry=100, price=140, direction="long", current_stop=97.5,
+                          current_price=100.5)
+        chk("a fully reversed spike falls back to breakeven, not the trail",
+            spike == 100.0)
+        chk("that fallback is still safely below the price now", spike < 100.5)
+        # shorts, same logic mirrored
+        ps = next_stop(entry=100, price=95, direction="short", current_stop=102.5,
+                       current_price=98)
+        chk("short: peak trailing works downward", ps is not None and ps < 102.5
+            and ps > 98)
+
         mv = plan_stop_move(symbol="X", entry=100, price=120, direction="long",
                             current_stop=100, old_order_id="oid1",
                             moved_to_breakeven=True)
@@ -276,17 +303,37 @@ def _selftest() -> int:
         state.save_positions("dryrun", {"ZEC": state.record(
             "ZEC", direction="long", size=0.3, entry=40.0, stop=39.2, leverage=3,
             stop_order_id="old1", fingerprint="ZEC|long|1h|t0", now=now)}, tmp)
+        acct_zec = {"equity": 25.0, "margin_used": 4.0, "withdrawable": 21.0,
+                    "positions": [{"symbol": "ZEC", "size": 0.3, "notional": 14.4}],
+                    "resting_stops": {"ZEC": "old1"}}
         bk3 = DryRunBackend()
         r4 = run_once(signals=[], mode="dryrun", backend=bk3,
-                      reader=lambda: (META, {"equity": 25.0, "margin_used": 4.0,
-                                             "withdrawable": 21.0,
-                                             "positions": [{"symbol": "ZEC", "size": 0.3,
-                                                            "notional": 14.4}],
-                                             "resting_stops": {"ZEC": "old1"}},
-                                      {"ZEC": 48.0}),
+                      reader=lambda: (META, acct_zec, {"ZEC": 48.0}),
                       now=now, root=tmp)
         chk("held position gets its stop moved up", len(r4["stop_moves"]) == 1
             and r4["stop_moves"][0]["to"] > 39.2)
+
+        # the same pass, but the price spiked to 60 and fell back to 41 while
+        # the bot slept: spot-only would do nothing, peak trailing protects.
+        state.save_positions("dryrun", {"ZEC": state.record(
+            "ZEC", direction="long", size=0.3, entry=40.0, stop=39.2, leverage=3,
+            stop_order_id="old1", fingerprint="ZEC|long|1h|t0", now=now)}, tmp)
+        r4b = run_once(signals=[], mode="dryrun", backend=DryRunBackend(),
+                       reader=lambda: (META, acct_zec, {"ZEC": 41.0}),
+                       now=now, root=tmp)
+        chk("without peak data a small pullback moves nothing",
+            not r4b["stop_moves"])
+        state.save_positions("dryrun", {"ZEC": state.record(
+            "ZEC", direction="long", size=0.3, entry=40.0, stop=39.2, leverage=3,
+            stop_order_id="old1", fingerprint="ZEC|long|1h|t0", now=now)}, tmp)
+        r4c = run_once(signals=[], mode="dryrun", backend=DryRunBackend(),
+                       reader=lambda: (META, acct_zec, {"ZEC": 41.0},
+                                       {"ZEC": {"high": 48.0, "low": 40.0,
+                                                "last": 41.0}}),
+                       now=now, root=tmp)
+        chk("WITH peak data the missed spike still tightens the stop",
+            len(r4c["stop_moves"]) == 1
+            and 39.2 < r4c["stop_moves"][0]["to"] < 41.0)
         chk("stop move placed the new order BEFORE cancelling the old",
             [k for k, _ in bk3.sent] == ["place_stop", "cancel_order"])
 

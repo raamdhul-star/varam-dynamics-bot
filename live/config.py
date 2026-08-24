@@ -51,6 +51,12 @@ MAX_CONCURRENT = 4      # 3 full + 1 partial fills MAX_EXPOSURE; the
 # it is kept short so capital is never parked in an order that is not working.
 PENDING_TIMEOUT_HOURS = 2.0
 
+# How far back the bot looks for the high-water mark when moving a trailing
+# stop. Must comfortably exceed the gap between runs -- measured GitHub drift
+# is median +13 min with gaps up to 2h26m, so 180 min covers the worst observed
+# case. Looking too far back is harmless: the stop can only ever tighten.
+PEAK_LOOKBACK_MIN = 180
+
 # ── strategy filter ──────────────────────────────────────────────────────────
 SCORE_MIN     = 7.5     # same floor the alerts use
 TIGHT_ONLY    = False   # take every qualifying call; the $10 floor and the

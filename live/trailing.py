@@ -44,12 +44,21 @@ def pnl_pct(entry: float, price: float, direction: str) -> float:
 def next_stop(*, entry: float, price: float, direction: str, current_stop: float,
               moved_to_breakeven: bool = False,
               trigger: float = TRAIL_TRIGGER,
-              step: float = TRAIL_STEP) -> Optional[float]:
+              step: float = TRAIL_STEP,
+              current_price: Optional[float] = None) -> Optional[float]:
     """The stop this position should have now, or None to leave it alone.
 
-    Never returns a looser stop than `current_stop`. Never returns a stop on
-    the wrong side of the current price (which the exchange would trigger
-    instantly, closing the position at market for no reason).
+    `price` is the HIGH-WATER MARK since we last looked (the best price the
+    trade reached while the bot slept). `current_price` is the price right now;
+    it defaults to `price` when not supplied.
+
+    The two are separate on purpose. We trail from the peak so an hour-long nap
+    cannot hide a move that really happened -- but the resulting stop is checked
+    against the price NOW, because a stop at or through the current price would
+    fire the instant it is placed and close the trade at market for no reason.
+    So a big missed spike tightens the stop as far as is safe, and no further.
+
+    Never returns a looser stop than `current_stop`.
     """
     if direction not in ("long", "short"):
         return None
@@ -59,26 +68,36 @@ def next_stop(*, entry: float, price: float, direction: str, current_stop: float
         return None
     if entry <= 0 or price <= 0 or current_stop <= 0:
         return None
+    try:
+        now_px = float(current_price) if current_price is not None else price
+    except (TypeError, ValueError):
+        return None
+    if now_px <= 0:
+        return None
 
     if pnl_pct(entry, price, direction) < trigger:
         return None                      # not far enough in profit yet
 
     long_ = direction == "long"
     # candidate 1: breakeven (only the first time we cross the trigger)
-    # candidate 2: `step` behind the current price
+    # candidate 2: `step` behind the high-water mark
     trail = price * (1 - step) if long_ else price * (1 + step)
     cands = [trail] if moved_to_breakeven else [entry, trail]
-    best = max(cands) if long_ else min(cands)
+
+    # Discard any candidate at or through the price NOW -- it would fire the
+    # instant it was placed. Filter FIRST, then take the tightest survivor:
+    # picking the tightest and only then checking safety would throw away a
+    # perfectly good breakeven move whenever the trail candidate is unsafe,
+    # which is exactly the case after a big spike that reversed.
+    safe = [c for c in cands if (c < now_px if long_ else c > now_px)]
+    if not safe:
+        return None
+    best = max(safe) if long_ else min(safe)
 
     # rule 1: only ever tighter
     if long_ and best <= current_stop:
         return None
     if not long_ and best >= current_stop:
-        return None
-    # a stop already through the price would fire immediately — refuse
-    if long_ and best >= price:
-        return None
-    if not long_ and best <= price:
         return None
     return best
 
@@ -103,11 +122,14 @@ class StopMove:
 
 def plan_stop_move(*, symbol: str, entry: float, price: float, direction: str,
                    current_stop: float, old_order_id: Optional[str] = None,
-                   moved_to_breakeven: bool = False) -> Optional[StopMove]:
-    """A StopMove to execute, or None if the stop should stay where it is."""
+                   moved_to_breakeven: bool = False,
+                   current_price: Optional[float] = None) -> Optional[StopMove]:
+    """A StopMove to execute, or None if the stop should stay where it is.
+    `price` is the high-water mark; `current_price` is the price now."""
     nxt = next_stop(entry=entry, price=price, direction=direction,
                     current_stop=current_stop,
-                    moved_to_breakeven=moved_to_breakeven)
+                    moved_to_breakeven=moved_to_breakeven,
+                    current_price=current_price)
     if nxt is None:
         return None
     reason = "breakeven" if (not moved_to_breakeven and

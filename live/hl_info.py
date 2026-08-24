@@ -100,6 +100,36 @@ def account_state(address: str, poster=_post) -> dict:
             "positions": positions}
 
 
+def high_low_since(symbol: str, start_ms: int, end_ms: int,
+                   poster=_post) -> dict:
+    """Highest high and lowest low over a window, from 1-minute candles.
+
+    The bot sleeps between runs. Using only the price at wake-up misses any
+    move that happened and reversed while it slept -- exactly the case where a
+    trade ran +5% and fell back to +2% before we looked. Trailing from this
+    high-water mark instead was measured better: profit factor 3.32 vs 3.02 and
+    a SHALLOWER drawdown (-14% vs -19%).
+
+    Read-only. Returns {high, low, last}; raises HLReadError so callers keep
+    the existing stop rather than acting on a guess.
+    """
+    raw = poster({"type": "candleSnapshot",
+                  "req": {"coin": symbol, "interval": "1m",
+                          "startTime": int(start_ms), "endTime": int(end_ms)}})
+    if not isinstance(raw, list) or not raw:
+        raise HLReadError(f"candleSnapshot {symbol}: empty")
+    highs, lows, last = [], [], None
+    for c in raw:
+        try:
+            highs.append(float(c["h"])); lows.append(float(c["l"]))
+            last = float(c["c"])
+        except (KeyError, TypeError, ValueError):
+            continue
+    if not highs or last is None:
+        raise HLReadError(f"candleSnapshot {symbol}: no usable candles")
+    return {"high": max(highs), "low": min(lows), "last": last}
+
+
 def mids(poster=_post) -> dict:
     """{symbol: mid price}. Used only to price and sanity-check, never to trade."""
     raw = poster({"type": "allMids"})
