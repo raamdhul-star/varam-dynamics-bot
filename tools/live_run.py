@@ -99,7 +99,9 @@ def main(argv=None) -> int:
         print("skipped:")
         for k, v in sorted(counts.items(), key=lambda kv: -kv[1]):
             print(f"   {v:>3}x {k}")
-    if real:
+    if real and not res["placed"]:
+        print("\nNothing was placed this run — no order reached the exchange.")
+    elif real:
         print("\nREAL ORDERS WERE SENT. Now check on the exchange, by hand:")
         print("  1. the position exists, at the size and leverage printed above")
         print("  2. a STOP-LOSS order is resting against it  <- the one that matters")
@@ -172,6 +174,37 @@ def _selftest() -> int:
             all(get_backend(m).places_orders is False
                 for m in ("dryrun", "testnet", "mainnet")))
         chk("unknown mode still raises", _raises(lambda: get_backend("nonsense")))
+
+        # ── the preflight and the runner must AGREE on the same signals ─────
+        # They disagreed twice: once on mark pricing, once because
+        # recent_calls() emits "stop" while the runner read "sl", so every call
+        # skipped as bad_geometry. A preview that differs from the real run is
+        # worse than none, so this is now asserted rather than assumed.
+        AGREE_META = {"ZEC": {"sz_decimals": 2, "max_leverage": 10}}
+        agree_px = {"ZEC": 40.0}
+        normalised = {"symbol": "ZEC", "direction": "long", "entry": 40.0,
+                      "stop": 39.2, "score": 8.1, "interval": "1h"}   # recent_calls shape
+        raw_batch = {"symbol": "ZEC", "direction": "long", "entry": 40.0,
+                     "sl": 39.2, "score": 8.1, "interval": "1h"}      # batch shape
+        for label, sig in (("recent_calls shape", normalised),
+                           ("raw batch shape", raw_batch)):
+            r_ = run_once(signals=[sig], mode="dryrun", backend=DryRunBackend(),
+                          reader=lambda: (AGREE_META,
+                                          {"equity": 999.0, "margin_used": 0.0,
+                                           "withdrawable": 999.0, "positions": [],
+                                           "resting_stops": {}}, agree_px),
+                          now=now, root=os.path.join(tmp, "agree" + label[:3]))
+            chk(f"runner accepts the {label}", len(r_["placed"]) == 1)
+        # and a genuinely missing stop is reported as a WIRING fault
+        broken = plan_order(symbol="ZEC", direction="long", entry=40.0, stop=None,
+                            equity=999.0, used_margin=0.0, sz_decimals=2,
+                            asset_max_leverage=10)
+        chk("a missing stop is named as a wiring fault, not bad market data",
+            broken.skip_reason == "missing_price_or_stop")
+        chk("a stop on the wrong side is still bad_geometry",
+            plan_order(symbol="ZEC", direction="long", entry=40.0, stop=41.0,
+                       equity=999.0, used_margin=0.0, sz_decimals=2,
+                       asset_max_leverage=10).skip_reason == "bad_geometry")
 
         # Per-network address resolution. A correctly configured testnet run
         # once refused to start because main() read the generic fallback.

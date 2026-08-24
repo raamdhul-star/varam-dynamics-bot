@@ -201,7 +201,11 @@ def run_once(*, signals: list, mode: str | None = None, backend=None,
         if not m:
             skip(sym, "asset_not_in_book"); continue
         plan = plan_order(symbol=sym, direction=sig.get("direction", ""),
-                          entry=sig.get("entry"), stop=sig.get("sl"),
+                          entry=sig.get("entry"),
+                          # Two shapes reach here: raw batch signals use "sl",
+                          # recent_calls() normalises to "stop". Accept both —
+                          # reading only one silently skipped EVERY call.
+                          stop=sig.get("stop", sig.get("sl")),
                           equity=equity, used_margin=used,
                           sz_decimals=m["sz_decimals"],
                           asset_max_leverage=m["max_leverage"],

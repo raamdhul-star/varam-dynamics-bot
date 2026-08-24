@@ -108,6 +108,11 @@ def plan_order(*, symbol: str, direction: str, entry: float, stop: float,
 
     if direction not in ("long", "short"):
         p.skip_reason = "bad_direction"; return p
+    # A MISSING stop is a wiring fault, not bad market data. Reported
+    # separately so a schema mismatch is loud instead of hiding behind
+    # "bad_geometry" — that exact confusion once made every call skip silently.
+    if entry in (None, "") or stop in (None, ""):
+        p.skip_reason = "missing_price_or_stop"; return p
     if not geometry_ok(direction, entry, stop):
         p.skip_reason = "bad_geometry"; return p
     if equity is None or equity <= 0:
