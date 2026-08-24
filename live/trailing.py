@@ -123,13 +123,14 @@ class StopMove:
 def plan_stop_move(*, symbol: str, entry: float, price: float, direction: str,
                    current_stop: float, old_order_id: Optional[str] = None,
                    moved_to_breakeven: bool = False,
-                   current_price: Optional[float] = None) -> Optional[StopMove]:
+                   current_price: Optional[float] = None,
+                   trigger: float = TRAIL_TRIGGER) -> Optional[StopMove]:
     """A StopMove to execute, or None if the stop should stay where it is.
     `price` is the high-water mark; `current_price` is the price now."""
     nxt = next_stop(entry=entry, price=price, direction=direction,
                     current_stop=current_stop,
                     moved_to_breakeven=moved_to_breakeven,
-                    current_price=current_price)
+                    current_price=current_price, trigger=trigger)
     if nxt is None:
         return None
     reason = "breakeven" if (not moved_to_breakeven and

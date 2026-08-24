@@ -44,7 +44,7 @@ def run_once(*, signals: list, mode: str | None = None, backend=None,
     now = now or datetime.now(timezone.utc)
     mode = mode or C.mode()
     out = {"mode": mode, "placed": [], "skipped": [], "stop_moves": [],
-           "attention": [], "halted": None}
+           "attention": [], "holding": [], "halted": None}
 
     if gates.halted():
         out["halted"] = "kill_switch_engaged"
@@ -156,7 +156,8 @@ def run_once(*, signals: list, mode: str | None = None, backend=None,
                               direction=rec["direction"],
                               current_stop=rec["stop"],
                               old_order_id=rec.get("stop_order_id"),
-                              moved_to_breakeven=rec.get("moved_to_breakeven", False))
+                              moved_to_breakeven=rec.get("moved_to_breakeven", False),
+                              trigger=C.trail_trigger(mode))
         if move is None:
             continue
         m = meta.get(sym) or {}
@@ -264,6 +265,34 @@ def run_once(*, signals: list, mode: str | None = None, backend=None,
                               "margin": round(plan.margin, 2),
                               "notional": round(plan.notional, 2)})
         state.audit(mode, "placed", out["placed"][-1], root, now)
+
+    # What we are actually holding, and whether each position is protected.
+    # Without this the output looks identical whether we hold a healthy
+    # position or nothing at all — silence meant both.
+    for sym, p in sorted(on_exch.items()):
+        rec = positions.get(sym) or {}
+        px = prices.get(sym)
+        entry = rec.get("entry") or p.get("entry")
+        # Derive direction from the size sign when the exchange payload omits
+        # it — a negative size IS a short, so never depend on a label.
+        side = p.get("direction") or rec.get("direction")
+        if not side:
+            try:
+                side = "long" if float(p.get("size") or 0) >= 0 else "short"
+            except (TypeError, ValueError):
+                side = "long"
+        pnl = None
+        if px and entry:
+            pnl = ((px - entry) / entry * 100 if side == "long"
+                   else (entry - px) / entry * 100)
+        out["holding"].append({
+            "symbol": sym, "direction": side, "size": p.get("size"),
+            "entry": entry, "price": px, "pnl_pct": pnl,
+            "stop": rec.get("stop"),
+            "protected": bool(stops.get(sym)),
+            "stop_order_id": stops.get(sym),
+            "unrealized": p.get("unrealized"),
+        })
 
     state.save_positions(mode, positions, root)
     return out

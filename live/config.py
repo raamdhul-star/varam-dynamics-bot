@@ -172,6 +172,29 @@ def credentials(mode: str) -> tuple:
     return (None, None)
 
 
+def trail_trigger(mode: str = "") -> float:
+    """The profit at which trailing starts, with a TESTNET-ONLY override.
+
+    Proving the stop-replacement works against a real exchange needs a trade
+    far enough in profit, which may not happen for days. On TESTNET the bar can
+    be lowered deliberately so the mechanism is exercised on demand.
+
+    Two guards: it is ignored entirely outside testnet — a strategy parameter
+    must not be settable by environment on real money — and it can only ever
+    LOWER the trigger, never raise it.
+    """
+    if (mode or "").strip().lower() != "testnet":
+        return TRAIL_TRIGGER
+    raw = (os.environ.get("LIVE_TRAIL_TRIGGER_PCT", "") or "").strip()
+    if not raw:
+        return TRAIL_TRIGGER
+    try:
+        v = float(raw) / 100.0
+    except ValueError:
+        return TRAIL_TRIGGER
+    return v if 0 < v <= TRAIL_TRIGGER else TRAIL_TRIGGER
+
+
 def credentials_present(mode: str) -> bool:
     if mode == "dryrun":
         return True

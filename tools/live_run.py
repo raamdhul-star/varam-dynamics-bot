@@ -87,6 +87,18 @@ def main(argv=None) -> int:
     for p in res["placed"]:
         print(f"   {p['symbol']:<9} {p['leverage']}x  size {p['size']}  "
               f"entry {p['entry']}  stop {p['stop']}  margin ${p['margin']}")
+    if res.get("holding"):
+        print(f"\nHOLDING {len(res['holding'])}:")
+        for h in res["holding"]:
+            shield = "PROTECTED" if h["protected"] else "*** NO STOP ***"
+            pnl = f"{h['pnl_pct']:+.2f}%" if h["pnl_pct"] is not None else "?"
+            trg = h["stop"] if h["stop"] else "?"
+            print(f"   {h['symbol']:<8} {h['direction']:<5} size {h['size']:<10} "
+                  f"entry {h['entry']}  now {h['price']}  {pnl:>8}")
+            print(f"      stop {trg}   {shield}   "
+                  f"(trail starts at +{C.TRAIL_TRIGGER*100:.0f}%)")
+    else:
+        print("\nHOLDING nothing.")
     print(f"stop moves: {len(res['stop_moves'])}")
     for m in res["stop_moves"]:
         print(f"   {m['symbol']:<9} {m['from']} -> {m['to']}  ({m['reason']})")
@@ -372,6 +384,21 @@ def _selftest() -> int:
         tb3 = ExchangeBackend("testnet", client=_FillClient())
         rf = tb3.place_bracket(br)
         chk("the price actually paid is reported back", rf["fill_price"] == 79470.0)
+
+        # ── the testnet-only trail override must not reach real money ───────
+        os.environ["LIVE_TRAIL_TRIGGER_PCT"] = "0.1"
+        chk("testnet honours a lowered trail trigger",
+            abs(C.trail_trigger("testnet") - 0.001) < 1e-12)
+        chk("MAINNET ignores it entirely — strategy is not an env var",
+            C.trail_trigger("mainnet") == C.TRAIL_TRIGGER)
+        chk("dryrun ignores it too", C.trail_trigger("dryrun") == C.TRAIL_TRIGGER)
+        os.environ["LIVE_TRAIL_TRIGGER_PCT"] = "50"
+        chk("it can only ever LOWER the trigger, never raise it",
+            C.trail_trigger("testnet") == C.TRAIL_TRIGGER)
+        os.environ["LIVE_TRAIL_TRIGGER_PCT"] = "rubbish"
+        chk("garbage falls back to the real trigger",
+            C.trail_trigger("testnet") == C.TRAIL_TRIGGER)
+        os.environ.pop("LIVE_TRAIL_TRIGGER_PCT")
         os.environ.pop("LIVE_MODE")
         os.environ.pop("LIVE_TESTNET_ARMED"); os.environ.pop("HL_TESTNET_PRIVATE_KEY")
         os.environ.pop("HL_TESTNET_ACCOUNT_ADDRESS")
