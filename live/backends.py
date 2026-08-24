@@ -102,14 +102,20 @@ class FakeBackend(DryRunBackend):
 
 
 def get_backend(mode: str):
-    """Only dry-run backends exist. Mainnet raises rather than returning
-    something that might one day send an order by accident."""
-    if mode in ("dryrun", "testnet"):
+    """Return the backend for a mode, refusing anything not deliberately armed.
+
+    An unarmed testnet or mainnet quietly becomes a DRY RUN rather than an
+    error: a half-configured environment must never place orders, and must
+    never stop the rest of the run either.
+    """
+    if mode == "dryrun":
         return DryRunBackend()
-    if mode == "mainnet":
-        raise BackendError(
-            "no mainnet backend exists yet (L2 places nothing). "
-            "Order sending arrives in L3 as a separately reviewed layer.")
+    if mode in ("testnet", "mainnet"):
+        from .exchange import ExchangeBackend, NotArmed   # lazy: no SDK needed
+        try:
+            return ExchangeBackend(mode)
+        except NotArmed:
+            return DryRunBackend()
     raise BackendError(f"unknown mode: {mode!r}")
 
 

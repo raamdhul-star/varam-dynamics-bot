@@ -36,7 +36,12 @@ import os
 # stays False and MUST stay False until the executor is built and tested.
 MAINNET_ENABLED = False
 CONFIRM_PHRASE  = "I_UNDERSTAND"
-VALID_MODES     = ("dryrun", "mainnet")
+VALID_MODES     = ("dryrun", "testnet", "mainnet")
+
+# Testnet and mainnet arm SEPARATELY and never share credentials. Proving the
+# plumbing on testnet must not be able to place a single real order.
+TESTNET_ARM_VAR = "LIVE_TESTNET_ARMED"     # must equal "1"
+MAINNET_ARM_VAR = "LIVE_CONFIRM"           # must equal CONFIRM_PHRASE
 
 # ── sizing (measured; see module docstring) ──────────────────────────────────
 MARGIN_FRAC   = 0.25    # margin per trade as a fraction of equity
@@ -71,7 +76,14 @@ TRAIL_TRIGGER = 0.03
 TRAIL_STEP    = 0.02
 
 HL_INFO_URL   = "https://api.hyperliquid.xyz/info"
+HL_BASE_URL   = {"mainnet": "https://api.hyperliquid.xyz",
+                 "testnet": "https://api.hyperliquid-testnet.xyz"}
 HTTP_TIMEOUT  = 20
+
+# How far the market may have drifted from the signal price before we refuse
+# the trade. Beyond this the setup is not the one that was scored: the stop is
+# a different distance away, so the risk and the leverage are both wrong.
+MAX_ENTRY_DRIFT_PCT = 1.0
 
 
 def min_tradable_equity(margin_frac: float = MARGIN_FRAC,
@@ -97,9 +109,37 @@ def mode() -> str:
     if m == "mainnet":
         if not MAINNET_ENABLED:
             return "dryrun"
-        if (os.environ.get("LIVE_CONFIRM", "") or "").strip() != CONFIRM_PHRASE:
+        if (os.environ.get(MAINNET_ARM_VAR, "") or "").strip() != CONFIRM_PHRASE:
+            return "dryrun"
+    if m == "testnet":
+        # Testnet still has to be armed deliberately; an unset flag means
+        # dry-run, never "probably fine, it is only fake money".
+        if (os.environ.get(TESTNET_ARM_VAR, "") or "").strip() != "1":
             return "dryrun"
     return m
+
+
+def credentials(mode: str) -> tuple:
+    """(private_key, account_address) for a live mode, or (None, None).
+
+    Read straight from the environment at the moment of use and never stored,
+    cached, logged or returned anywhere else. Testnet and mainnet use different
+    variables so one can never be used against the other.
+    """
+    if mode == "mainnet":
+        return (os.environ.get("HL_MAINNET_PRIVATE_KEY", "").strip() or None,
+                os.environ.get("HL_MAINNET_ACCOUNT_ADDRESS", "").strip() or None)
+    if mode == "testnet":
+        return (os.environ.get("HL_TESTNET_PRIVATE_KEY", "").strip() or None,
+                os.environ.get("HL_TESTNET_ACCOUNT_ADDRESS", "").strip() or None)
+    return (None, None)
+
+
+def credentials_present(mode: str) -> bool:
+    if mode == "dryrun":
+        return True
+    k, a = credentials(mode)
+    return bool(k and a)
 
 
 def kill_switch_on() -> bool:

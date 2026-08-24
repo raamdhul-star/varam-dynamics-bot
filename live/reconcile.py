@@ -35,8 +35,9 @@ CLOSED_AWAY   = "closed_externally" # our record is stale; the position is gone
 STILL_PENDING = "pending"          # entry order resting, not filled yet
 EXPIRED       = "pending_expired"  # resting entry too old — cancel it
 FAIL_CLOSED   = "fail_closed"      # could not read; do nothing at all
+DEAD_MARKET   = "dead_market"      # we hold it but the asset is gone from the book
 
-BLOCKING = (HEALTHY, NO_STOP, ADOPTED, STILL_PENDING, FAIL_CLOSED)
+BLOCKING = (HEALTHY, NO_STOP, ADOPTED, STILL_PENDING, FAIL_CLOSED, DEAD_MARKET)
 
 
 @dataclass
@@ -51,13 +52,14 @@ class Resolution:
 
     @property
     def needs_attention(self) -> bool:
-        return self.outcome in (NO_STOP, ADOPTED)
+        return self.outcome in (NO_STOP, ADOPTED, DEAD_MARKET)
 
 
 def reconcile(*, symbol: str, local: Optional[dict], exch_position: Optional[dict],
               has_resting_stop: bool, read_ok: bool = True,
               pending_age_hours: float = 0.0,
-              pending_timeout_hours: float = PENDING_TIMEOUT_HOURS) -> Resolution:
+              pending_timeout_hours: float = PENDING_TIMEOUT_HOURS,
+              in_book: bool = True) -> Resolution:
     """Resolve one symbol. `local` is our record (or None); `exch_position` is
     what the exchange reports (or None). `read_ok=False` means the read failed
     and NOTHING may be concluded from it."""
@@ -88,6 +90,16 @@ def reconcile(*, symbol: str, local: Optional[dict], exch_position: Optional[dic
         return Resolution(symbol, CLOSED_AWAY,
                           "we recorded a position but the exchange is flat — "
                           "it closed while we were away; clearing our record")
+
+    # We hold it but the asset has left the tradable book. Measured risk: the
+    # 21 symbols that fell out of the $1M universe were the only losing bucket
+    # in the whole dataset (-2.02%/trade, profit factor 0.45). Flag it and
+    # block; do NOT auto-close, because a dying market is exactly where a
+    # market order gets the worst fill.
+    if not in_book:
+        return Resolution(symbol, DEAD_MARKET,
+                          "we hold this but it is no longer in the tradable "
+                          "book — blocking; needs attention")
 
     # local says open AND the exchange agrees
     if not has_resting_stop:

@@ -15,8 +15,8 @@ import math
 from dataclasses import dataclass, asdict
 from typing import Optional
 
-from .config import (MARGIN_FRAC, LEV_CAP, MAX_EXPOSURE, MIN_NOTIONAL,
-                     RISK_PCT, TIGHT_ONLY)
+from .config import (MARGIN_FRAC, LEV_CAP, MAX_EXPOSURE, MAX_ENTRY_DRIFT_PCT,
+                     MIN_NOTIONAL, RISK_PCT, TIGHT_ONLY)
 
 
 @dataclass
@@ -25,6 +25,8 @@ class OrderPlan:
     direction: str
     entry: float
     stop: float
+    mark: float = 0.0
+    drift_pct: float = 0.0
     leverage: int = 0
     margin: float = 0.0
     notional: float = 0.0
@@ -86,11 +88,21 @@ def geometry_ok(direction: str, entry: float, stop: float) -> bool:
 
 def plan_order(*, symbol: str, direction: str, entry: float, stop: float,
                equity: float, used_margin: float, sz_decimals: int,
-               asset_max_leverage: int, margin_frac: float = MARGIN_FRAC,
+               asset_max_leverage: int, mark_price: float | None = None,
+               margin_frac: float = MARGIN_FRAC,
                lev_cap: int = LEV_CAP, min_notional: float = MIN_NOTIONAL,
                max_exposure: float = MAX_EXPOSURE,
-               tight_only: bool = TIGHT_ONLY) -> OrderPlan:
-    """Build a legal order, or explain precisely why we cannot."""
+               tight_only: bool = TIGHT_ONLY,
+               max_drift_pct: float = MAX_ENTRY_DRIFT_PCT) -> OrderPlan:
+    """Build a legal order, or explain precisely why we cannot.
+
+    `mark_price` is what the market is RIGHT NOW. The signal's `entry` can be
+    an hour old, and sizing off a stale price gets the risk wrong: fill 0.9%
+    worse than planned and a 2.5% stop is really a 3.4% stop, a third more risk
+    than intended. So everything below is measured from the mark when we have
+    it, and a mark that has drifted too far means the setup is no longer the
+    one that was scored, so we decline it.
+    """
     p = OrderPlan(symbol=symbol, direction=direction,
                   entry=float(entry or 0), stop=float(stop or 0))
 
@@ -101,9 +113,26 @@ def plan_order(*, symbol: str, direction: str, entry: float, stop: float,
     if equity is None or equity <= 0:
         p.skip_reason = "no_equity"; return p
 
-    p.stop_distance_pct = abs(p.entry - p.stop) / p.entry * 100
+    # price everything off the mark when we have one
+    p.mark = p.entry
+    if mark_price is not None:
+        try:
+            mk = float(mark_price)
+        except (TypeError, ValueError):
+            p.skip_reason = "bad_mark_price"; return p
+        if mk <= 0:
+            p.skip_reason = "bad_mark_price"; return p
+        p.mark = mk
+        p.drift_pct = (mk - p.entry) / p.entry * 100
+        if abs(p.drift_pct) > max_drift_pct:
+            p.skip_reason = "price_moved_away"; return p
+        # the stop must still be on the correct side of where we will fill
+        if not geometry_ok(direction, p.mark, p.stop):
+            p.skip_reason = "bad_geometry"; return p
 
-    if tight_only and not is_tight_stop(p.entry, p.stop, lev_cap):
+    p.stop_distance_pct = abs(p.mark - p.stop) / p.mark * 100
+
+    if tight_only and not is_tight_stop(p.mark, p.stop, lev_cap):
         p.skip_reason = "not_tight_stop"; return p
 
     try:
@@ -114,7 +143,7 @@ def plan_order(*, symbol: str, direction: str, entry: float, stop: float,
         p.skip_reason = "unknown_asset_max_leverage"; return p
 
     # our cap AND the asset's own ceiling; the exchange rejects anything above
-    p.leverage = max(1, min(suggested_leverage(p.entry, p.stop, lev_cap), amax))
+    p.leverage = max(1, min(suggested_leverage(p.mark, p.stop, lev_cap), amax))
 
     free = equity * max_exposure - max(0.0, used_margin or 0.0)
     p.margin = min(margin_frac * equity, free)
@@ -131,12 +160,12 @@ def plan_order(*, symbol: str, direction: str, entry: float, stop: float,
     except (TypeError, ValueError):
         p.skip_reason = "unknown_size_decimals"; return p
 
-    p.size = floor_to(p.notional / p.entry, decs)
+    p.size = floor_to(p.notional / p.mark, decs)
     if p.size <= 0:
         p.skip_reason = "size_rounds_to_zero"; return p
 
     # flooring only ever shrinks the order, so re-check the floor afterwards
-    p.notional = p.size * p.entry
+    p.notional = p.size * p.mark
     if p.notional < min_notional:
         p.skip_reason = "below_min_after_rounding"; return p
     p.margin = p.notional / p.leverage

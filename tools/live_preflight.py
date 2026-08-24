@@ -303,28 +303,24 @@ def _selftest() -> int:
     # ---- no execution path exists yet ----
     import live
     files = os.listdir(os.path.dirname(os.path.abspath(live.__file__)))
-    # Behavioural, not filename-based: live/orders.py legitimately exists and
-    # BUILDS order payloads, but nothing can SEND one — there is no backend
-    # that places orders, so get_backend must refuse for mainnet.
-    from live.backends import BackendError, get_backend
-    try:
-        get_backend("mainnet")
-        chk("no backend exists that can send an order", False)
-    except BackendError:
-        chk("no backend exists that can send an order", True)
-    chk("the dry-run backend declares it places nothing",
-        get_backend("dryrun").places_orders is False)
-    # Scan the live/ package ONLY. This test file is excluded on purpose: it
-    # necessarily contains the very strings it is searching for.
-    live_dir = os.path.dirname(os.path.abspath(live.__file__))
-    src = "".join(open(os.path.join(live_dir, f)).read()
-                  for f in files if f.endswith(".py"))
-    trade_ep = "/" + "exchange"          # split so this literal is not itself a hit
-    key_env = "PRIVATE" + "_KEY"
-    chk("live/ never references the order-placing endpoint", trade_ep not in src)
-    chk("live/ never references a private-key variable", key_env not in src)
-    chk("live/ imports no signing library",
-        not any(x in src for x in ("eth_account", "hyperliquid.exchange", "def sign")))
+    # L1's own guarantee: THIS tool is read-only. It never builds a sending
+    # backend and never touches an order path. Arming of the real backend is
+    # covered exhaustively by the L2 suite in tools/live_run.py.
+    src = open(os.path.abspath(__file__)).read()
+    body = src.split("def _selftest")[0]          # the tool, not its own tests
+    chk("the preflight tool never imports the sending module",
+        "live.exchange" not in body and "ExchangeBackend" not in body)
+    chk("the preflight tool never builds any backend", "get_backend" not in body)
+    chk("the preflight tool calls read functions only",
+        all(x in body for x in ("account_state", "asset_meta"))
+        and not any(x in body for x in ("place_", "bulk_orders", "market_close",
+                                        "cancel_order", "flatten")))
+    chk("mainnet is still hard-disabled in reviewed code", C.MAINNET_ENABLED is False)
+    from live.exchange import arm_status
+    chk("neither live mode is armed in this environment",
+        arm_status("mainnet")[0] is False and arm_status("testnet")[0] is False)
+    chk("the read layer reaches only the info endpoint", C.HL_INFO_URL.endswith("/info"))
+
 
     print(f"\nL1 PREFLIGHT SELFTEST: {sum(ok)}/{len(ok)} passed")
     return 0 if all(ok) else 1

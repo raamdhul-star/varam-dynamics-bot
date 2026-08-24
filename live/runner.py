@@ -98,7 +98,8 @@ def run_once(*, signals: list, mode: str | None = None, backend=None,
         r = reconcile(symbol=sym, local=rec, exch_position=on_exch.get(sym),
                       has_resting_stop=bool(stops.get(sym)), read_ok=True,
                       pending_age_hours=age,
-                      pending_timeout_hours=C.PENDING_TIMEOUT_HOURS)
+                      pending_timeout_hours=C.PENDING_TIMEOUT_HOURS,
+                      in_book=sym in meta)
         resolutions.append(r)
         state.audit(mode, "reconcile", {"symbol": sym, "outcome": r.outcome,
                                         "detail": r.detail}, root, now)
@@ -184,7 +185,9 @@ def run_once(*, signals: list, mode: str | None = None, backend=None,
                           entry=sig.get("entry"), stop=sig.get("sl"),
                           equity=equity, used_margin=used,
                           sz_decimals=m["sz_decimals"],
-                          asset_max_leverage=m["max_leverage"])
+                          asset_max_leverage=m["max_leverage"],
+                          # size off the price NOW, not the hour-old signal
+                          mark_price=prices.get(sym))
         if not plan.ok:
             skip(sym, plan.skip_reason); continue
 

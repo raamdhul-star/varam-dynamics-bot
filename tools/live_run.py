@@ -64,6 +64,30 @@ def main() -> int:
     return 0
 
 
+class _FakeClient:
+    """Stands in for the SDK. Records calls; reaches no network."""
+    def __init__(self): self.calls = []
+    def update_leverage(self, lev, coin): self.calls.append(("lev", lev, coin))
+    def bulk_orders(self, reqs, grouping=None):
+        self.calls.append(("bulk", reqs, grouping))
+        return {"response": {"data": {"statuses": [
+            {"filled": {"oid": 1, "totalSz": reqs[0]["sz"]}}, {"resting": {"oid": 2}}]}}}
+    def order(self, *a, **k):
+        self.calls.append(("order", a, k))
+        return {"response": {"data": {"statuses": [{"resting": {"oid": 3}}]}}}
+    def cancel(self, coin, oid):
+        self.calls.append(("cancel", coin, oid)); return {"status": "ok"}
+    def market_close(self, coin):
+        self.calls.append(("close", coin)); return {"status": "ok"}
+
+
+def _raises(fn) -> bool:
+    try:
+        fn(); return False
+    except Exception:
+        return True
+
+
 def _selftest() -> int:
     ok = []
     def chk(n, c): ok.append(bool(c)); print(f"  [{'PASS' if c else 'FAIL'}] {n}")
@@ -71,13 +95,73 @@ def _selftest() -> int:
     tmp = tempfile.mkdtemp(prefix="l2test_")
 
     try:
-        # ── no mainnet path exists ──────────────────────────────────────────
-        try:
-            get_backend("mainnet"); chk("mainnet backend refuses to exist", False)
-        except BackendError:
-            chk("mainnet backend refuses to exist (no order path in L2)", True)
-        chk("dryrun backend declares it places nothing",
-            get_backend("dryrun").places_orders is False)
+        # ── arming: an order path now EXISTS, so prove it stays locked ───────
+        from live.exchange import ExchangeBackend, NotArmed, arm_status
+        chk("mainnet is still hard-disabled in reviewed code",
+            C.MAINNET_ENABLED is False)
+        chk("mainnet refuses to arm even with the confirm phrase",
+            arm_status("mainnet")[0] is False)
+        chk("testnet refuses to arm without its own flag",
+            arm_status("testnet")[0] is False)
+        for m in ("dryrun", "mainnet", "testnet"):
+            try:
+                ExchangeBackend(m, client=object())
+                chk(f"ExchangeBackend({m}) refuses to construct unarmed", False)
+            except NotArmed:
+                chk(f"ExchangeBackend({m}) refuses to construct unarmed", True)
+        chk("an unarmed mode silently degrades to DRY RUN, never an order",
+            all(get_backend(m).places_orders is False
+                for m in ("dryrun", "testnet", "mainnet")))
+        chk("unknown mode still raises", _raises(lambda: get_backend("nonsense")))
+
+        # testnet credentials must never let a mainnet order through
+        os.environ["HL_TESTNET_PRIVATE_KEY"] = "0xdeadbeef"
+        os.environ["HL_TESTNET_ACCOUNT_ADDRESS"] = "0xabc"
+        os.environ["LIVE_TESTNET_ARMED"] = "1"
+        chk("the arm flag alone is not enough — LIVE_MODE must ask for it too",
+            arm_status("testnet")[0] is False)
+        os.environ["LIVE_MODE"] = "testnet"
+        chk("both flags together do arm testnet", arm_status("testnet")[0] is True)
+        chk("armed testnet does NOT arm mainnet", arm_status("mainnet")[0] is False)
+        chk("testnet and mainnet read different credentials",
+            C.credentials("testnet") != C.credentials("mainnet")
+            and C.credentials("mainnet") == (None, None))
+        chk("testnet and mainnet use different hosts",
+            C.HL_BASE_URL["testnet"] != C.HL_BASE_URL["mainnet"]
+            and "testnet" in C.HL_BASE_URL["testnet"])
+        # with testnet armed the real backend builds, but only for testnet
+        tb = ExchangeBackend("testnet", client=_FakeClient())
+        chk("armed testnet builds a real backend", tb.places_orders is True)
+        chk("the private key is never stored on the backend",
+            not any("deadbeef" in str(v).lower() for v in vars(tb).values()))
+        # a real send, against the fake client: leverage set, both legs sent
+        r = tb.place_bracket(b if "b" in dir() else build_bracket(
+            plan_order(symbol="ZEC", direction="long", entry=40.0, stop=39.2,
+                       equity=25.0, used_margin=0.0, sz_decimals=2,
+                       asset_max_leverage=10), 2))
+        chk("a bracket sets leverage BEFORE sending the orders",
+            tb._client.calls[0][0] == "lev" and tb._client.calls[1][0] == "bulk")
+        chk("both legs go in ONE grouped request",
+            len(tb._client.calls[1][1]) == 2 and tb._client.calls[1][2] == "normalTpsl")
+        chk("a good response reports the entry and the stop", r["entry_ok"]
+            and r["stop_order_id"] == "2")
+        os.environ.pop("LIVE_MODE")
+        os.environ.pop("LIVE_TESTNET_ARMED"); os.environ.pop("HL_TESTNET_PRIVATE_KEY")
+        os.environ.pop("HL_TESTNET_ACCOUNT_ADDRESS")
+
+        # payload translation, checked without touching a network
+        req = ExchangeBackend._order_req({"action": "entry", "symbol": "ZEC",
+                                          "is_buy": True, "size": 0.3,
+                                          "limit_px": 40.4, "tif": "Ioc"})
+        chk("entry translates to an IOC limit, not reduce-only",
+            req["order_type"]["limit"]["tif"] == "Ioc" and req["reduce_only"] is False)
+        sreq = ExchangeBackend._order_req({"action": "stop", "symbol": "ZEC",
+                                           "is_buy": False, "size": 0.3,
+                                           "trigger_px": 39.2})
+        chk("stop translates to a reduce-only market trigger",
+            sreq["reduce_only"] is True
+            and sreq["order_type"]["trigger"]["isMarket"] is True
+            and sreq["order_type"]["trigger"]["tpsl"] == "sl")
 
         # ── trailing: the risky piece ───────────────────────────────────────
         chk("no move before the trigger",
@@ -362,16 +446,32 @@ def _selftest() -> int:
             not any(p["symbol"] == "ZEC" for p in r6["placed"])
             and "ZEC" in r6["attention"])
 
-        # ── still no order-sending code anywhere in live/ ────────────────────
+        # ── order sending is confined to ONE module ─────────────────────────
         import live
         live_dir = os.path.dirname(os.path.abspath(live.__file__))
-        src = "".join(open(os.path.join(live_dir, f)).read()
-                      for f in os.listdir(live_dir) if f.endswith(".py"))
-        chk("live/ still references only the read endpoint",
-            ("/" + "exchange") not in src and src.count("https://") == 1)
-        chk("live/ still has no private-key variable", ("PRIVATE" + "_KEY") not in src)
-        chk("live/ still imports no signing library",
-            not any(x in src for x in ("eth_account", "hyperliquid.exchange")))
+        # exchange.py is the only sender; config.py is the only place
+        # credentials are named. Everything else must mention neither.
+        others = [f for f in os.listdir(live_dir)
+                  if f.endswith(".py") and f not in ("exchange.py", "config.py")]
+        rest = "".join(open(os.path.join(live_dir, f)).read() for f in others)
+        chk("no module except exchange.py can sign or send",
+            not any(x in rest for x in ("eth_account", "hyperliquid.exchange",
+                                        "bulk_orders", "market_close")))
+        chk("credentials are named in config only, never elsewhere",
+            ("PRIVATE" + "_KEY") not in rest)
+        cfg_src = open(os.path.join(live_dir, "config.py")).read()
+        chk("config only READS credentials, never logs or defaults them",
+            "print(" not in cfg_src and ("PRIVATE" + "_KEY\"") not in cfg_src.split("os.environ.get")[0])
+        ex_src = open(os.path.join(live_dir, "exchange.py")).read()
+        nl = chr(10)
+        chk("the signing SDK is imported lazily, inside a function",
+            "def _sdk" in ex_src
+            and (nl + "from eth_account") not in ex_src
+            and (nl + "from hyperliquid") not in ex_src)
+        chk("exchange.py never logs or returns a key",
+            "print(" not in ex_src and "self._key" not in ex_src)
+        chk("only hyperliquid hosts are reachable",
+            all("hyperliquid" in u for u in C.HL_BASE_URL.values()))
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
 

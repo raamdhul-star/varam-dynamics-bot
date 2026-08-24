@@ -1,3 +1,8 @@
 requests>=2.31.0
 pandas>=2.0.0
 numpy>=1.24.0
+
+# Live execution (Sprint L3). Only imported when an order is actually placed;
+# everything else in live/ works without it.
+hyperliquid-python-sdk>=0.9
+eth-account>=0.10
