@@ -58,6 +58,14 @@ RISK_PCT      = 0.07    # 7% risk basis for suggested leverage
 CAP_A         = 3       # 🟢 capped account ceiling
 CAP_B         = 20      # 🔴 full account ceiling (practical exchange-max stand-in)
 
+# ── trading costs (all % of NOTIONAL, i.e. margin x leverage) ────────────────
+# Leverage multiplies the cost as well as the profit, which is exactly why the
+# 🔴 account keeps less of its edge than the raw P&L suggests.
+FEE_PCT   = 0.045   # taker fee per side (Hyperliquid taker ~0.045%)
+SLIP_PCT  = 0.050   # slippage per side; exits are stop-market, so assume taker
+FUND_PCT  = 0.010   # funding per 8h, assumed PAID (conservative: never earned)
+FUND_HRS  = 8.0
+
 FOOTER = "ℹ️ Auto-simulated · view-only · not financial advice · DYOR"
 
 
@@ -79,7 +87,30 @@ def _lev_return(L: int, pnl_pct: float) -> float:
     return max(L * pnl_pct, -100.0)
 
 
-def simulate(trades: list, cap: int, start: float = START, cutoff: str | None = None) -> dict:
+def _hours(open_time: str, exit_time: str) -> float:
+    """Holding time in hours; 0.0 if the timestamps cannot be parsed."""
+    try:
+        a = datetime.fromisoformat(str(open_time).replace("Z", "+00:00"))
+        b = datetime.fromisoformat(str(exit_time).replace("Z", "+00:00"))
+        return max(0.0, (b - a).total_seconds() / 3600.0)
+    except (TypeError, ValueError):
+        return 0.0
+
+
+def cost_pct(hours: float) -> float:
+    """Round-trip cost as % of NOTIONAL: fee+slippage both sides, plus funding
+    for the time held. Charged on notional, so leverage scales it up."""
+    return 2.0 * (FEE_PCT + SLIP_PCT) + FUND_PCT * (max(0.0, hours) / FUND_HRS)
+
+
+def net_return(L: int, pnl_pct: float, hours: float, costs: bool = True) -> float:
+    """Return on the MARGIN after costs, floored at -100% (liquidation)."""
+    gross = pnl_pct - (cost_pct(hours) if costs else 0.0)
+    return max(L * gross, -100.0)
+
+
+def simulate(trades: list, cap: int, start: float = START, cutoff: str | None = None,
+             costs: bool = True) -> dict:
     """Replay `trades` through a margin account with CONCURRENT positions.
 
     Trades need open_time / exit_time / entry / stop / pnl. Events are strictly
@@ -98,6 +129,7 @@ def simulate(trades: list, cap: int, start: float = START, cutoff: str | None = 
     peak, max_dd = float(start), 0.0
     margins: dict[int, float] = {}
     taken = skipped = liq = 0
+    cost_usd = 0.0
     closed: list[dict] = []
     max_open = 0
 
@@ -120,20 +152,25 @@ def simulate(trades: list, cap: int, start: float = START, cutoff: str | None = 
             if m is None:                                # was skipped, never opened
                 continue
             L = suggested_leverage(t["entry"], t["stop"], cap)
-            r = _lev_return(L, t["pnl"])
+            hrs = _hours(t["open_time"], t["exit_time"])
+            r = net_return(L, t["pnl"], hrs, costs)
             if r <= -100.0:
                 liq += 1
+            # what the costs alone took out, in dollars, for reporting
+            drag = (m * L * cost_pct(hrs) / 100.0) if costs else 0.0
+            cost_usd += drag
             equity += m * r / 100.0
             used = max(0.0, used - m)
             peak = max(peak, equity)
             if peak > 0:
                 max_dd = max(max_dd, (peak - equity) / peak * 100.0)
             closed.append({"symbol": t["symbol"], "pnl": t["pnl"], "lev": L,
-                           "ret": r, "usd": m * r / 100.0, "exit_time": t["exit_time"]})
+                           "ret": r, "usd": m * r / 100.0, "cost_usd": drag,
+                           "hours": hrs, "exit_time": t["exit_time"]})
 
     return {"equity": equity, "open_margin": used, "still_open": len(margins),
             "taken": taken, "skipped": skipped, "liq": liq, "max_dd": max_dd,
-            "max_open": max_open, "closed": closed}
+            "max_open": max_open, "cost_usd": cost_usd, "closed": closed}
 
 
 def week_stats(sim_a: dict, sim_b: dict, since: str) -> dict:
@@ -183,6 +220,8 @@ def build_report(capped: float, full: float, wk_a: float, wk_b: float,
         L.append(f"Capital: max {sim_a['max_open']}🟢/{sim_b['max_open']}🔴 positions at once · "
                  f"{sim_a['skipped']}🟢/{sim_b['skipped']}🔴 calls skipped (no free margin)")
         L.append(f"Max drawdown: 🟢 -{sim_a['max_dd']:.1f}%  ·  🔴 -{sim_b['max_dd']:.1f}%")
+        L.append(f"Costs paid (fees+slippage+funding): 🟢 ${sim_a['cost_usd']:.2f}  ·  "
+                 f"🔴 ${sim_b['cost_usd']:.2f}")
     L += ["", FOOTER]
     return "\n".join(L)
 
@@ -313,12 +352,28 @@ def _selftest() -> int:
     chk("suggested lev: wide stop -> 1x", suggested_leverage(100, 90, 3) == 1)
     chk("liquidation floor at -100", _lev_return(9, -45) == -100.0)
 
+    # ── cost model ───────────────────────────────────────────────────────────
+    chk("round-trip cost = 2 sides fee+slip at 0h", abs(cost_pct(0) - 0.19) < 1e-9)
+    chk("funding accrues with holding time", abs(cost_pct(8) - cost_pct(0) - FUND_PCT) < 1e-9)
+    chk("costs scale with leverage on the margin",
+        abs(net_return(4, 1.0, 0) - 4 * (1.0 - 0.19)) < 1e-9)
+    chk("gross == net when costs disabled", net_return(3, 5.0, 99, costs=False) == 15.0)
+    chk("a flat trade loses money after costs", net_return(1, 0.0, 0) < 0)
+    chk("cost floor still respects liquidation", net_return(20, -50.0, 0) == -100.0)
+    chk("_hours parses ISO", abs(_hours("2026-08-20T00:00+00:00",
+                                       "2026-08-20T06:00+00:00") - 6.0) < 1e-9)
+    chk("_hours is safe on junk", _hours("nope", "also-nope") == 0.0)
+
     # ── concurrency model ────────────────────────────────────────────────────
-    # one trade: 10% margin x 3x x +6% = +1.8% of equity -> 25 -> 25.45
+    # one trade: 10% margin x 3x x +6% = +1.8% of equity -> 25 -> 25.45 (gross)
     one = [_tr("AAA", 100, 99, 6.0, "2026-08-20T00:00", "2026-08-20T01:00")]
-    s = simulate(one, 3)
+    s = simulate(one, 3, costs=False)
     chk("single trade sizes 10% margin", abs(s["equity"] - 25 * (1 + 0.10 * 18 / 100)) < 1e-9)
     chk("margin released on close", s["open_margin"] == 0 and s["still_open"] == 0)
+    sc_ = simulate(one, 3)
+    chk("costs reduce the net result", sc_["equity"] < s["equity"])
+    chk("cost drag is reported in dollars", sc_["cost_usd"] > 0)
+    chk("no cost reported when costs disabled", s["cost_usd"] == 0.0)
 
     # 12 IDENTICAL overlapping trades: only 10 fit (10 x 10% margin = 100%)
     over = [_tr(f"S{i}", 100, 99, 6.0, "2026-08-20T00:00", "2026-08-20T05:00")
@@ -384,7 +439,8 @@ def _selftest() -> int:
     chk("report has both accounts + footer",
         "Capped ≤3×" in msgs2[-1] and "Full (max)" in msgs2[-1] and FOOTER in msgs2[-1])
     chk("report shows capital/drawdown lines",
-        "positions at once" in msgs2[-1] and "Max drawdown" in msgs2[-1])
+        "positions at once" in msgs2[-1] and "Max drawdown" in msgs2[-1]
+        and "Costs paid" in msgs2[-1])
     chk("no telegram markup/session code touched", not hasattr(sys.modules[__name__], "batches"))
 
     print(f"\nPT25 SELFTEST: {sum(ok)}/{len(ok)} passed")
