@@ -268,12 +268,15 @@ def run_scan():
         sent_any |= tg.send_alert(rwa_top, ist_now(), ACCOUNT_SIZE,
                                   category="rwa_perp") is not None
 
-    # Sprint H1: one Hyperliquid no-alert message when the scan ran (had data)
-    # but no real alert was sent — covers no-qualified, all-A2-suppressed, and
-    # all-uncategorized. Skipped on a fetch outage (had_data False ≠ no signal).
+    # NOISE REMOVAL (2026-08-25, user's call): the hourly "no qualified
+    # signals" message is no longer sent. It fired most hours of most days —
+    # ~24 messages a day saying nothing happened — and drowned the ones that
+    # mattered. A channel where most messages are noise is a channel you stop
+    # reading. Silence now means "nothing to report".
+    # The scan still logs it; only the Telegram send is gone.
     had_data = any(data.get(s) for s in symbols)
     if _hl_no_alert_due(sent_any, had_data):
-        tg.send_message(HL_NO_ALERT_MSG)
+        print("[scan] no qualified Hyperliquid signals this run (no message sent)")
 
     selected = crypto_top + rwa_top
     print(f"\nSent {len(crypto_top)} crypto + {len(rwa_top)} rwa/perp signals "

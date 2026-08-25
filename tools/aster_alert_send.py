@@ -229,18 +229,18 @@ def run(send_enabled: bool, get, sender, state: dict, now: datetime,
             messages.append((cat, build_message(cat, to_send, scan_time)))
     no_signal = not messages
     if no_signal:
-        report.append("  no sendable signals this run → "
-                      + ("send 1 no-signal message" if send_enabled
-                         else "would send 1 no-signal message (gated)"))
+        # NOISE REMOVAL (2026-08-25, user's call): the hourly Aster "no
+        # qualified signals" message is no longer sent. Together with the
+        # Hyperliquid one it was ~48 messages a day reporting that nothing
+        # happened, which buries the alerts that matter. Silence now means
+        # "nothing to report". NO_SIGNAL_MSG is kept only so the tests can
+        # assert it is NOT sent.
+        report.append("  no sendable signals this run → nothing sent (message retired)")
     sent = 0
-    if send_enabled:
-        if no_signal:
-            sender(NO_SIGNAL_MSG)                # single no-signal msg; NO markup
-            sent = 1
-        else:
-            for _cat, msg in messages:
-                sender(msg)                      # NO markup → no buttons
-                sent += 1
+    if send_enabled and not no_signal:
+        for _cat, msg in messages:
+            sender(msg)                          # NO markup → no buttons
+            sent += 1
     return messages, new_state, sent, report
 
 
@@ -372,15 +372,12 @@ def _selftest() -> int:
     sent_calls.clear()
     _m, _s, nsent, _r = run(True, None, stub_sender, {"alerted": {}, "calls": {}}, now, "t",
                             gather_fn=none_gather)
-    chk("no signals + gated send → exactly ONE no-signal message",
-        nsent == 1 and len(sent_calls) == 1
-        and sent_calls[0][0] == NO_SIGNAL_MSG)
-    chk("no-signal message: no markup/buttons",
-        sent_calls[0][1] == () and sent_calls[0][2].get("markup") is None)
-    chk("no-signal text: no per-category titles, has scan footer",
-        "Aster Crypto Signals" not in NO_SIGNAL_MSG
-        and "Aster RWA / Perp Signals" not in NO_SIGNAL_MSG
-        and NO_SIGNAL_FOOTER in NO_SIGNAL_MSG and "No qualified Aster signals" in NO_SIGNAL_MSG)
+    # RETIRED 2026-08-25: the hourly no-signal message is no longer sent.
+    # Silence means nothing to report. Asserted so it cannot creep back.
+    chk("no signals + gated send → sends NOTHING (message retired)",
+        nsent == 0 and len(sent_calls) == 0)
+    chk("the retired text is never sent under any path",
+        all(t != NO_SIGNAL_MSG for t, _a, _k in sent_calls))
     # when signals DO exist, the no-signal message must NOT be sent
     sent_calls.clear()
     run(True, None, stub_sender, {"alerted": {}, "calls": {}}, now, "t", gather_fn=fake_gather)
