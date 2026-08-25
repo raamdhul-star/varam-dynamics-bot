@@ -214,6 +214,32 @@ def _selftest() -> int:
                 for m in ("dryrun", "testnet", "mainnet")))
         chk("unknown mode still raises", _raises(lambda: get_backend("nonsense")))
 
+        # ── a GATED-OFF mainnet run must still be able to READ ──────────────
+        # Seen on the first varam-live workflow run: LIVE_MODE=mainnet with the
+        # code gate off resolved to dryrun, looked for the GENERIC address
+        # variable, found none, and skipped the balance read entirely -- hiding
+        # exactly what the preflight exists to show. Reading is harmless.
+        os.environ["LIVE_MODE"] = "mainnet"
+        os.environ["HL_MAINNET_ACCOUNT_ADDRESS"] = "0xMAIN"
+        os.environ.pop("HL_ACCOUNT_ADDRESS", None)
+        chk("mode still downgrades to dryrun (trading stays gated)",
+            C.mode() == "dryrun")
+        chk("but the requested mode is remembered",
+            C.requested_mode() == "mainnet")
+        chk("so a gated-off mainnet run STILL finds the address to read",
+            C.account_address("dryrun") == "0xMAIN")
+        chk("and reads the mainnet endpoint",
+            C.info_url("dryrun") == C.HL_BASE_URL["mainnet"] + "/info")
+        os.environ["LIVE_MODE"] = "testnet"
+        os.environ["HL_TESTNET_ACCOUNT_ADDRESS"] = "0xTEST"
+        chk("a gated-off testnet run reads TESTNET, never mainnet",
+            C.account_address("dryrun") == "0xTEST"
+            and "testnet" in C.info_url("dryrun"))
+        os.environ.pop("LIVE_MODE"); os.environ.pop("HL_MAINNET_ACCOUNT_ADDRESS")
+        os.environ.pop("HL_TESTNET_ACCOUNT_ADDRESS")
+        chk("with nothing requested it falls back to plain dryrun",
+            C.requested_mode() == "dryrun" and C.info_url("") == C.HL_INFO_URL)
+
         # ── live-trade Telegram messages ────────────────────────────────────
         from live import notify
         opened = notify.build_opened(symbol="BTC", direction="long", leverage=3,

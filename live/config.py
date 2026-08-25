@@ -113,27 +113,47 @@ def min_tradable_equity(margin_frac: float = MARGIN_FRAC,
     return min_notional / lev_cap / margin_frac
 
 
+def requested_mode() -> str:
+    """What LIVE_MODE ASKS for, before the gates downgrade it.
+
+    Only for read-only uses. `mode()` is what may act; this is what was
+    intended, which is what a preflight needs in order to show anything useful
+    while trading is still gated off.
+    """
+    m = (os.environ.get("LIVE_MODE", "dryrun") or "dryrun").strip().lower()
+    return m if m in VALID_MODES else "dryrun"
+
+
 def account_address(mode: str = "") -> str:
     """Public wallet address to READ, for the given mode. Never a private key.
 
     Mode matters: reading mainnet balances while trading testnet would size
     testnet orders off real money and reconcile testnet positions against real
     ones. Each network reads its OWN address.
+
+    It also falls back to the REQUESTED mode's address. Otherwise a gated-off
+    mainnet run resolves to dryrun, looks for the generic variable, finds
+    nothing, and skips the balance read entirely — hiding exactly what the
+    preflight exists to show. Reading is harmless: a public address, no key.
     """
-    m = (mode or "").strip().lower()
-    if m in ("mainnet", "testnet"):
-        _, addr = credentials(m)
-        if addr:
-            return addr
+    for m in ((mode or "").strip().lower(), requested_mode()):
+        if m in ("mainnet", "testnet"):
+            _, addr = credentials(m)
+            if addr:
+                return addr
     return (os.environ.get("HL_ACCOUNT_ADDRESS", "") or "").strip()
 
 
 def info_url(mode: str = "") -> str:
     """Read endpoint for the given mode. A live mode must read its OWN network;
-    dryrun reads mainnet, since that is the real market we are simulating."""
-    m = (mode or "").strip().lower()
-    if m in HL_BASE_URL:
-        return HL_BASE_URL[m] + "/info"
+    dryrun reads mainnet, since that is the real market we are simulating.
+
+    Follows the REQUESTED mode too, so a gated-off testnet run still reads
+    testnet rather than silently reporting mainnet prices and balances.
+    """
+    for m in ((mode or "").strip().lower(), requested_mode()):
+        if m in HL_BASE_URL:
+            return HL_BASE_URL[m] + "/info"
     return HL_INFO_URL
 
 
