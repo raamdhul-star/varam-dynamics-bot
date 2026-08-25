@@ -24,6 +24,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from live import config as C
 from live.hl_info import HLReadError, account_state, asset_meta, mids, poster_for
+from live.signals import recent_calls, source_for
 from live.sizing import OrderPlan, floor_to, geometry_ok, is_tight_stop, plan_order, suggested_leverage
 
 STATE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
@@ -43,32 +44,6 @@ SKIP_TEXT = {
     "price_moved_away":         "price drifted too far from the signal — not the setup we scored",
     "bad_mark_price":           "no usable live price for this asset",
 }
-
-
-def recent_calls(path: str = STATE, limit: int = 40) -> list:
-    """Most recent alerted signals, newest first. Read-only; never runs a scan."""
-    try:
-        with open(path) as f:
-            d = json.load(f)
-    except (OSError, ValueError):
-        return []
-    out, seen = [], set()
-    for mid in sorted((d.get("batches") or {}), key=lambda k: str(k), reverse=True):
-        for s in (d["batches"][mid] or {}).get("sigs") or []:
-            try:
-                k = (s["symbol"], s["direction"], s.get("interval"))
-                if k in seen:
-                    continue
-                seen.add(k)
-                out.append({"symbol": s["symbol"], "direction": s["direction"],
-                            "entry": float(s["entry"]), "stop": float(s["sl"]),
-                            "score": float(s.get("score") or 0),
-                            "interval": s.get("interval", "?")})
-            except (KeyError, TypeError, ValueError):
-                continue
-            if len(out) >= limit:
-                return out
-    return out
 
 
 def report() -> int:
@@ -128,7 +103,7 @@ def report() -> int:
         print(f"\n  ** equity is below ${C.min_tradable_equity():.2f} — every order would be "
               f"under the $10 minimum. The bot would open nothing. **")
 
-    calls = recent_calls()
+    calls = recent_calls(source_for(mode))
     print(f"\nWhat-if on the {len(calls)} most recent alerted calls "
           f"(nothing is placed):")
     if not calls:

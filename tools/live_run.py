@@ -26,7 +26,7 @@ from live.reconcile import (ADOPTED, CLOSED_AWAY, EXPIRED, FAIL_CLOSED, HEALTHY,
 from live.runner import run_once
 from live.sizing import plan_order
 from live.trailing import next_stop, plan_stop_move
-from tools.live_preflight import recent_calls
+from live.signals import recent_calls, source_for
 
 
 def main(argv=None) -> int:
@@ -78,7 +78,7 @@ def main(argv=None) -> int:
         print("  mainnet -> HL_MAINNET_ACCOUNT_ADDRESS")
         print("  (public wallet address, never a private key)")
         return 0
-    sigs = recent_calls()
+    sigs = recent_calls(source_for(mode))
     res = run_once(signals=sigs, mode=mode, backend=backend, max_new=cap)
     if res["halted"]:
         print(f"\nHALTED: {res['halted']}")

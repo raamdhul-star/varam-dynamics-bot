@@ -15,6 +15,8 @@ that touches the network, and it is gated by the caller.
 """
 from __future__ import annotations
 
+import os
+
 from .config import TRAIL_STEP, TRAIL_TRIGGER
 
 DISCLAIMER = "⚠️ Live trade · educational only · not financial advice"
@@ -189,14 +191,43 @@ def build_weekly(*, account_value, week_start_value=None, closed: list = (),
     return "\n".join(L)
 
 
+def _stdlib_send(text: str):
+    """Minimal Telegram sender, stdlib only.
+
+    live/ must stand alone: it is destined for its own private repo, where the
+    scanner's telegram/bot.py does not exist. Plain message, no buttons, no
+    markup, no trade flow. The token is read at the moment of use and never
+    logged or returned.
+    """
+    import json as _json
+    import urllib.request as _u
+
+    token = (os.environ.get("TELEGRAM_BOT_TOKEN", "") or "").strip()
+    chat = (os.environ.get("TELEGRAM_CHAT_ID", "") or "").strip()
+    if not token or not chat:
+        raise RuntimeError("TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID not set")
+    body = _json.dumps({"chat_id": chat, "text": text, "parse_mode": "HTML",
+                        "disable_web_page_preview": True}).encode()
+    req = _u.Request(f"https://api.telegram.org/bot{token}/sendMessage",
+                     data=body, headers={"Content-Type": "application/json"})
+    with _u.urlopen(req, timeout=20) as r:
+        return _json.load(r)
+
+
 def send(messages, sender=None) -> int:
-    """Send plain messages — no buttons, no markup, no trade flow. Import of the
-    Telegram sender is lazy so this module stays testable with no network and
-    no bot token present."""
+    """Send plain messages — no buttons, no markup, no trade flow.
+
+    Prefers the scanner repo's sender when running inside it, and falls back to
+    the stdlib one when running standalone. Both are imported lazily so this
+    module stays testable with no network and no bot token present.
+    """
     if not messages:
         return 0
     if sender is None:
-        from telegram.bot import send_message as sender   # noqa: WPS433
+        try:
+            from telegram.bot import send_message as sender   # noqa: WPS433
+        except ImportError:
+            sender = _stdlib_send
     n = 0
     for m in messages:
         if not m:
