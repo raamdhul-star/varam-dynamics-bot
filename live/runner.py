@@ -19,14 +19,24 @@ from __future__ import annotations
 from datetime import datetime, timezone
 
 from . import config as C
-from . import gates, state
+from . import gates, notify, state
 from .backends import get_backend, settle_bracket
-from .hl_info import (HLReadError, account_state, asset_meta, high_low_since,
-                      mids, open_orders, poster_for, resting_stops)
+from .hl_info import (HLReadError, account_state, asset_meta, closing_fill,
+                      high_low_since, mids, open_orders, poster_for,
+                      recent_fills, resting_stops)
 from .orders import build_bracket
 from .reconcile import CLOSED_AWAY, EXPIRED, PROCEED, reconcile, summarize
 from .sizing import plan_order
 from .trailing import plan_stop_move
+
+
+def _margin_of(rec: dict):
+    """Margin behind a recorded position, for the P&L-on-margin line."""
+    try:
+        lev = int(rec.get("leverage") or 1)
+        return abs(float(rec["size"]) * float(rec["entry"])) / max(1, lev)
+    except (KeyError, TypeError, ValueError, ZeroDivisionError):
+        return None
 
 
 def run_once(*, signals: list, mode: str | None = None, backend=None,
@@ -44,7 +54,7 @@ def run_once(*, signals: list, mode: str | None = None, backend=None,
     now = now or datetime.now(timezone.utc)
     mode = mode or C.mode()
     out = {"mode": mode, "placed": [], "skipped": [], "stop_moves": [],
-           "attention": [], "holding": [], "halted": None}
+           "attention": [], "holding": [], "notifications": [], "halted": None}
 
     if gates.halted():
         out["halted"] = "kill_switch_engaged"
@@ -54,10 +64,12 @@ def run_once(*, signals: list, mode: str | None = None, backend=None,
     # ── 2. read the exchange ────────────────────────────────────────────────
     try:
         peaks = None
+        fills = None
         if reader is not None:
             got = reader()
             meta, acct, prices = got[0], got[1], got[2]
             peaks = got[3] if len(got) > 3 else None
+            fills = got[4] if len(got) > 4 else None
         else:
             # Read the SAME network we trade on. A testnet run must never size
             # or reconcile against real-money balances.
@@ -75,6 +87,12 @@ def run_once(*, signals: list, mode: str | None = None, backend=None,
             # this every position looks naked and the "needs attention" alarm
             # fires on every run — which would hide a real naked position.
             acct["resting_stops"] = resting_stops(open_orders(addr, poster=read))
+            # For exit alerts: the exchange's own realised P&L. Non-fatal —
+            # a missing fill costs a number in a message, never a trade.
+            try:
+                fills = recent_fills(addr, poster=read)
+            except HLReadError as e:
+                state.audit(mode, "fills_read_failed", {"error": str(e)}, root, now)
             # high/low since we last looked, for the trailing step below.
             # A failure here is NOT fatal: we fall back to the spot price,
             # which can only ever leave the stop where it already is.
@@ -125,9 +143,26 @@ def run_once(*, signals: list, mode: str | None = None, backend=None,
         state.audit(mode, "reconcile", {"symbol": sym, "outcome": r.outcome,
                                         "detail": r.detail}, root, now)
         if r.outcome in (CLOSED_AWAY, EXPIRED):
+            # A position that closed while we were away is a real event worth
+            # a message. The exchange's own realised P&L is used — never a
+            # figure re-derived from an assumed stop fill.
+            if r.outcome == CLOSED_AWAY and rec:
+                fill = None
+                if fills is not None:
+                    fill = closing_fill(fills, sym)
+                out["notifications"].append(notify.build_closed(
+                    symbol=sym, direction=rec.get("direction", ""),
+                    leverage=rec.get("leverage", 1), entry=rec.get("entry"),
+                    exit_px=(fill or {}).get("price") or rec.get("stop"),
+                    pnl_usd=(fill or {}).get("closed_pnl"),
+                    reason=(fill or {}).get("dir") or "closed on the exchange",
+                    margin=_margin_of(rec), account_value=equity))
             positions.pop(sym, None)              # stale record, drop it
         elif r.outcome == PROCEED:
             positions.pop(sym, None)
+        if r.needs_attention:
+            out["notifications"].append(notify.build_attention(
+                symbol=sym, reason=r.outcome.replace("_", " "), detail=r.detail))
     summary = summarize(resolutions)
     out["attention"] = summary["attention"]
     blocked = set(summary["blocked"])
@@ -274,6 +309,10 @@ def run_once(*, signals: list, mode: str | None = None, backend=None,
             fingerprint=fp, now=now)
         used += plan.margin
         seen.add(fp)
+        out["notifications"].append(notify.build_opened(
+            symbol=sym, direction=plan.direction, leverage=plan.leverage,
+            entry=actual_entry, stop=plan.stop, target=sig.get("tp"),
+            size=plan.size, notional=plan.notional, margin=plan.margin))
         out["placed"].append({"symbol": sym, "size": plan.size, "entry": plan.entry,
                               "stop": plan.stop, "leverage": plan.leverage,
                               "margin": round(plan.margin, 2),

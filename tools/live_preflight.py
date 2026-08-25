@@ -335,7 +335,7 @@ def _selftest() -> int:
     # L1's own guarantee: THIS tool is read-only. It never builds a sending
     # backend and never touches an order path. Arming of the real backend is
     # covered exhaustively by the L2 suite in tools/live_run.py.
-    src = open(os.path.abspath(__file__)).read()
+    src = open(os.path.abspath(__file__), encoding="utf-8").read()
     body = src.split("def _selftest")[0]          # the tool, not its own tests
     chk("the preflight tool never imports the sending module",
         "live.exchange" not in body and "ExchangeBackend" not in body)

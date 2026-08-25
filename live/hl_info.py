@@ -207,6 +207,51 @@ def find_stop_order(orders: list, symbol: str, trigger_px: float | None = None,
     return best
 
 
+def recent_fills(address: str, poster=_post) -> list:
+    """Recent fills, newest first, with the exchange's OWN realised P&L.
+
+    Used for exit alerts. Re-deriving profit from our recorded entry and an
+    assumed stop fill would be a guess: the stop is a market order and fills
+    wherever the book is. `closedPnl` is what actually happened.
+    """
+    if not address or not str(address).strip():
+        raise HLReadError("no account address supplied")
+    raw = poster({"type": "userFills", "user": str(address).strip()})
+    if not isinstance(raw, list):
+        raise HLReadError("userFills: malformed response")
+    out = []
+    for f in raw:
+        if not isinstance(f, dict):
+            continue
+        try:
+            out.append({"symbol": f.get("coin", "?"),
+                        "price": float(f.get("px") or 0),
+                        "size": float(f.get("sz") or 0),
+                        "side": f.get("side"),
+                        "closed_pnl": float(f.get("closedPnl") or 0),
+                        "fee": float(f.get("fee") or 0),
+                        "dir": f.get("dir", ""),
+                        "time_ms": int(f.get("time") or 0)})
+        except (TypeError, ValueError):
+            continue
+    out.sort(key=lambda f: f["time_ms"], reverse=True)
+    return out
+
+
+def closing_fill(fills: list, symbol: str):
+    """The newest fill for `symbol` that actually closed something.
+
+    Hyperliquid labels closing fills in `dir` ("Close Long" / "Close Short");
+    a non-zero closedPnl is the fallback signal.
+    """
+    for f in fills or []:
+        if str(f.get("symbol", "")).upper() != str(symbol).upper():
+            continue
+        if "close" in str(f.get("dir", "")).lower() or f.get("closed_pnl"):
+            return f
+    return None
+
+
 def resting_stops(orders: list) -> dict:
     """{symbol: order_id} for every resting reduce-only stop.
 

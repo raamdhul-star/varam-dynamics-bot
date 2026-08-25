@@ -18,7 +18,7 @@ from datetime import datetime, timedelta, timezone
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from live import config as C
-from live import gates, state
+from live import gates, notify, state
 from live.backends import BackendError, DryRunBackend, FakeBackend, get_backend, settle_bracket
 from live.orders import build_bracket, build_stop, bracket_is_complete, round_px, round_sz
 from live.reconcile import (ADOPTED, CLOSED_AWAY, EXPIRED, FAIL_CLOSED, HEALTHY,
@@ -122,6 +122,20 @@ def main(argv=None) -> int:
         print("CHECK THE EXCHANGE NOW and confirm you hold no position in those.")
         print("Full request and response are in results/live/<mode>/audit.jsonl")
         print("!" * 72)
+    # Telegram only for REAL events on a REAL run. A dry run or a testnet run
+    # must never message, or the alerts become noise again the moment we test.
+    notes = res.get("notifications") or []
+    if notes:
+        if real and mode == "mainnet":
+            print(f"\nSent {notify.send(notes)} Telegram message(s).")
+        else:
+            print(f"\n{len(notes)} Telegram message(s) NOT sent "
+                  f"({mode} — preview only):")
+            for m in notes:
+                print("-" * 62)
+                print(m.replace("<b>", "").replace("</b>", "").replace("&amp;", "&"))
+            print("-" * 62)
+
     if real and not res["placed"] and not flattened:
         print("\nNothing was placed this run — no order reached the exchange.")
     elif real and not res["placed"]:
@@ -199,6 +213,62 @@ def _selftest() -> int:
             all(get_backend(m).places_orders is False
                 for m in ("dryrun", "testnet", "mainnet")))
         chk("unknown mode still raises", _raises(lambda: get_backend("nonsense")))
+
+        # ── live-trade Telegram messages ────────────────────────────────────
+        from live import notify
+        opened = notify.build_opened(symbol="BTC", direction="long", leverage=3,
+                                     entry=79470, stop=78372.5, target=81950,
+                                     size=0.0094, notional=746.0, margin=248.6)
+        chk("open alert names the trade and all three levels",
+            all(x in opened for x in ("TRADE OPENED", "BTC", "LONG", "3×",
+                                      "79,470", "78,372", "81,950")))
+        chk("open alert states the dollar risk, not just a percent",
+            "$10.30" in opened and "if stopped out" in opened)
+        won = notify.build_closed(symbol="BTC", direction="long", leverage=3,
+                                  entry=79470, exit_px=80360, pnl_usd=8.35,
+                                  reason="trailing stop", margin=248.6,
+                                  account_value=1011.56)
+        lost = notify.build_closed(symbol="PENGU", direction="long", leverage=1,
+                                   entry=0.009918, exit_px=0.009368,
+                                   pnl_usd=-13.75, reason="stop hit")
+        chk("a winner reads as PROFIT, a loser as LOSS",
+            "PROFIT" in won and "LOSS" in lost)
+        chk("close alert carries the dollar P&L and the account value",
+            "+$8.35" in won and "$1,011.56" in won)
+        chk("a loss shows a minus, never a bare number", "-$13.75" in lost)
+        chk("prices keep sane precision at both ends of the book",
+            "79,470" in won and "0.009918" in lost)
+        chk("the P&L sign follows the exchange figure, not our arithmetic",
+            "PROFIT" in notify.build_closed(
+                symbol="X", direction="long", leverage=1, entry=100,
+                exit_px=99, pnl_usd=5.0))
+        chk("no message leaks an address or a key",
+            not any(x in (opened + won + lost).lower()
+                    for x in ("0x", "private", "key")))
+        att = notify.build_attention(symbol="ZEC", reason="needs attention",
+                                     detail="no stop on the exchange")
+        chk("attention alert is loud and says entries are blocked",
+            "NEEDS ATTENTION" in att and "blocked" in att)
+        wk = notify.build_weekly(account_value=1011.56, week_start_value=999.0,
+                                 closed=[{"pnl_usd": 8.35}, {"pnl_usd": -4.1}],
+                                 holding=[{"symbol": "BTC", "direction": "long",
+                                           "pnl_pct": 2.9, "protected": True}],
+                                 runs=166, expected_runs=168, label="25 Aug")
+        chk("weekly shows account, W/L, P&L and open positions",
+            all(x in wk for x in ("LIVE WEEKLY", "$1,011.56", "1W / 1L", "BTC")))
+        chk("weekly carries the LIVENESS line — silence must stay trustworthy",
+            "166 of ~168" in wk and "✅" in wk)
+        bad = notify.build_weekly(account_value=980.0, runs=94, expected_runs=168,
+                                  holding=[{"symbol": "ZEC", "direction": "short",
+                                            "protected": False}])
+        chk("missed runs warn, and an unprotected position is flagged",
+            "⚠️" in bad and "NO STOP" in bad)
+        # a failed send must never break a trading run
+        def _boom(_m):
+            raise RuntimeError("telegram down")
+        chk("a failed notification cannot break the run",
+            notify.send(["x"], sender=_boom) == 0)
+        chk("nothing to say sends nothing", notify.send([], sender=_boom) == 0)
 
         # ── the preflight and the runner must AGREE on the same signals ─────
         # They disagreed twice: once on mark pricing, once because
@@ -739,16 +809,17 @@ def _selftest() -> int:
         # credentials are named. Everything else must mention neither.
         others = [f for f in os.listdir(live_dir)
                   if f.endswith(".py") and f not in ("exchange.py", "config.py")]
-        rest = "".join(open(os.path.join(live_dir, f)).read() for f in others)
+        rest = "".join(open(os.path.join(live_dir, f), encoding="utf-8").read()
+                       for f in others)
         chk("no module except exchange.py can sign or send",
             not any(x in rest for x in ("eth_account", "hyperliquid.exchange",
                                         "bulk_orders", "market_close")))
         chk("credentials are named in config only, never elsewhere",
             ("PRIVATE" + "_KEY") not in rest)
-        cfg_src = open(os.path.join(live_dir, "config.py")).read()
+        cfg_src = open(os.path.join(live_dir, "config.py"), encoding="utf-8").read()
         chk("config only READS credentials, never logs or defaults them",
             "print(" not in cfg_src and ("PRIVATE" + "_KEY\"") not in cfg_src.split("os.environ.get")[0])
-        ex_src = open(os.path.join(live_dir, "exchange.py")).read()
+        ex_src = open(os.path.join(live_dir, "exchange.py"), encoding="utf-8").read()
         nl = chr(10)
         chk("the signing SDK is imported lazily, inside a function",
             "def _sdk" in ex_src
