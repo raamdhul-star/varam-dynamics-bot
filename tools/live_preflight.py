@@ -24,7 +24,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from live import config as C
 from live.hl_info import HLReadError, account_state, asset_meta, mids, poster_for
-from live.signals import recent_calls, source_for
+from live.signals import describe_source, recent_calls, source_for
 from live.sizing import OrderPlan, floor_to, geometry_ok, is_tight_stop, plan_order, suggested_leverage
 
 STATE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),

@@ -26,7 +26,7 @@ from live.reconcile import (ADOPTED, CLOSED_AWAY, EXPIRED, FAIL_CLOSED, HEALTHY,
 from live.runner import run_once
 from live.sizing import plan_order
 from live.trailing import next_stop, plan_stop_move
-from live.signals import recent_calls, source_for
+from live.signals import describe_source, recent_calls, source_for
 
 
 def main(argv=None) -> int:
@@ -78,7 +78,9 @@ def main(argv=None) -> int:
         print("  mainnet -> HL_MAINNET_ACCOUNT_ADDRESS")
         print("  (public wallet address, never a private key)")
         return 0
-    sigs = recent_calls(source_for(mode))
+    src = source_for(mode)
+    sigs = recent_calls(src)
+    print(f"signals: {describe_source(src)} -> {len(sigs)} actionable")
     res = run_once(signals=sigs, mode=mode, backend=backend, max_new=cap)
     if res["halted"]:
         print(f"\nHALTED: {res['halted']}")
@@ -213,6 +215,40 @@ def _selftest() -> int:
             all(get_backend(m).places_orders is False
                 for m in ("dryrun", "testnet", "mainnet")))
         chk("unknown mode still raises", _raises(lambda: get_backend("nonsense")))
+
+        # ── signal FRESHNESS ────────────────────────────────────────────────
+        # Measured live: `batches` held calls 16-28 HOURS old, and every run
+        # re-evaluated them. They all failed the 1% drift check, so the run
+        # reported "price moved" when the truth was "this is yesterday's call".
+        import json as _json
+        from live import signals as _sig
+        fresh_iso = (now - timedelta(minutes=10)).isoformat()
+        stale_iso = (now - timedelta(hours=20)).isoformat()
+        blob = {"batches": {
+            "1": {"time": stale_iso, "sigs": [{"symbol": "OLD", "direction": "long",
+                                               "entry": 10.0, "sl": 9.8, "tp": 10.6,
+                                               "score": 8.0, "interval": "1h"}]},
+            "2": {"time": fresh_iso, "sigs": [{"symbol": "NEW", "direction": "long",
+                                               "entry": 10.0, "sl": 9.8, "tp": 10.6,
+                                               "score": 8.0, "interval": "1h"}]},
+            "3": {"sigs": [{"symbol": "UNDATED", "direction": "long", "entry": 10.0,
+                            "sl": 9.8, "tp": 10.6, "score": 8.0, "interval": "1h"}]}}}
+        blob_path = os.path.join(tmp, "state.json")
+        with open(blob_path, "w", encoding="utf-8") as fh:
+            _json.dump(blob, fh)
+        got = _sig.recent_calls(blob_path, now=now)
+        chk("only FRESH calls are actionable",
+            [c["symbol"] for c in got] == ["NEW"])
+        chk("an undated signal is treated as too old — cannot date, cannot trust",
+            all(c["symbol"] != "UNDATED" for c in got))
+        chk("age filtering can be turned off deliberately",
+            len(_sig.recent_calls(blob_path, max_age_min=None, now=now)) == 3)
+        chk("the freshness window is ~90 min", _sig.MAX_SIGNAL_AGE_MIN == 90.0)
+        desc = _sig.describe_source(blob_path, now=now)
+        chk("an empty run explains itself instead of looking broken",
+            "batches" in desc and "min old" in desc and "freshness window" in desc)
+        chk("both stop and sl are emitted for the same number",
+            got and got[0]["stop"] == got[0]["sl"] == 9.8)
 
         # ── a GATED-OFF mainnet run must still be able to READ ──────────────
         # Seen on the first varam-live workflow run: LIVE_MODE=mainnet with the
