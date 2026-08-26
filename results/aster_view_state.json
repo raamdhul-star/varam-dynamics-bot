@@ -954,7 +954,8 @@
     "aster|BTCUSDT|short|1h|2026-08-26 14:00:00+00:00": "2026-08-26T16:33:04.929001+00:00",
     "aster|SOLUSDT|short|1h|2026-08-26 14:00:00+00:00": "2026-08-26T16:33:04.929001+00:00",
     "aster|XAUUSDT|short|4h|2026-08-26 12:00:00+00:00": "2026-08-26T16:33:04.929001+00:00",
-    "aster|ANTHROPICUSDT|short|4h|2026-08-26 12:00:00+00:00": "2026-08-26T16:33:04.929001+00:00"
+    "aster|ANTHROPICUSDT|short|4h|2026-08-26 12:00:00+00:00": "2026-08-26T16:33:04.929001+00:00",
+    "aster|BTCUSDT|long|1h|2026-08-26 17:00:00+00:00": "2026-08-26T19:16:40.745780+00:00"
   },
   "calls": {
     "aster|ETHUSDT|long|4h": {
@@ -1303,19 +1304,19 @@
       "symbol": "BTCUSDT",
       "direction": "long",
       "interval": "1h",
-      "first_seen": "2026-08-24T03:14:26.409621+00:00",
-      "last_seen": "2026-08-24T15:52:57.499431+00:00",
-      "last_bar_time": "2026-08-24 14:00:00+00:00",
-      "entry": 79474.3,
-      "target": 81838.23571428,
-      "stop": 78292.33214286,
-      "score": 7.88,
+      "first_seen": "2026-08-26T19:16:40.745780+00:00",
+      "last_seen": "2026-08-26T19:16:40.745780+00:00",
+      "last_bar_time": "2026-08-26 17:00:00+00:00",
+      "entry": 78402.4,
+      "target": 80001.55,
+      "stop": 77602.825,
+      "score": 7.08,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
-      "lifecycle_label": "continuing",
-      "last_alerted_at": "2026-08-24T15:52:57.499431+00:00",
-      "alert_count": 25
+      "lifecycle_label": "new",
+      "last_alerted_at": "2026-08-26T19:16:40.745780+00:00",
+      "alert_count": 26
     },
     "aster|SPCXUSDT|short|1h": {
       "symbol": "SPCXUSDT",
