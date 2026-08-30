@@ -983,7 +983,9 @@
     "aster|MSTRUSDT|long|1h|2026-08-30 16:00:00+00:00": "2026-08-30T17:26:06.816096+00:00",
     "aster|ANTHROPICUSDT|short|1h|2026-08-30 13:00:00+00:00": "2026-08-30T17:26:06.816096+00:00",
     "aster|HYPEUSDT|short|1h|2026-08-30 17:00:00+00:00": "2026-08-30T21:01:15.861291+00:00",
-    "aster|SPXUSDT|short|1h|2026-08-30 19:00:00+00:00": "2026-08-30T21:01:15.861291+00:00"
+    "aster|SPXUSDT|short|1h|2026-08-30 19:00:00+00:00": "2026-08-30T21:01:15.861291+00:00",
+    "aster|HYPEUSDT|short|1h|2026-08-30 22:00:00+00:00": "2026-08-30T23:27:30.606035+00:00",
+    "aster|SPXUSDT|short|1h|2026-08-30 21:00:00+00:00": "2026-08-30T23:27:30.606035+00:00"
   },
   "calls": {
     "aster|ETHUSDT|long|4h": {
@@ -1045,18 +1047,18 @@
       "direction": "short",
       "interval": "1h",
       "first_seen": "2026-08-30T21:01:15.861291+00:00",
-      "last_seen": "2026-08-30T21:01:15.861291+00:00",
-      "last_bar_time": "2026-08-30 19:00:00+00:00",
-      "entry": 0.5653,
-      "target": 0.54895,
-      "stop": 0.573475,
-      "score": 6.58,
+      "last_seen": "2026-08-30T23:27:30.606035+00:00",
+      "last_bar_time": "2026-08-30 21:00:00+00:00",
+      "entry": 0.5542,
+      "target": 0.53727142,
+      "stop": 0.56266429,
+      "score": 6.18,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
-      "lifecycle_label": "new",
-      "last_alerted_at": "2026-08-30T21:01:15.861291+00:00",
-      "alert_count": 54
+      "lifecycle_label": "continuing",
+      "last_alerted_at": "2026-08-30T23:27:30.606035+00:00",
+      "alert_count": 55
     },
     "aster|SPCXUSDT|long|4h": {
       "symbol": "SPCXUSDT",
@@ -1117,18 +1119,18 @@
       "direction": "short",
       "interval": "1h",
       "first_seen": "2026-08-30T21:01:15.861291+00:00",
-      "last_seen": "2026-08-30T21:01:15.861291+00:00",
-      "last_bar_time": "2026-08-30 17:00:00+00:00",
-      "entry": 83.307,
-      "target": 81.25028572,
-      "stop": 84.33535714,
-      "score": 6.28,
+      "last_seen": "2026-08-30T23:27:30.606035+00:00",
+      "last_bar_time": "2026-08-30 22:00:00+00:00",
+      "entry": 80.849,
+      "target": 78.4187857,
+      "stop": 82.06410715,
+      "score": 7.68,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
-      "lifecycle_label": "new",
-      "last_alerted_at": "2026-08-30T21:01:15.861291+00:00",
-      "alert_count": 29
+      "lifecycle_label": "upgraded",
+      "last_alerted_at": "2026-08-30T23:27:30.606035+00:00",
+      "alert_count": 30
     },
     "aster|SPXUSDT|long|1h": {
       "symbol": "SPXUSDT",
