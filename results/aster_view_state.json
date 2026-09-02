@@ -1011,7 +1011,8 @@
     "aster|BTCUSDT|short|4h|2026-09-01 16:00:00+00:00": "2026-09-01T21:44:52.871614+00:00",
     "aster|ETHUSDT|short|4h|2026-09-01 16:00:00+00:00": "2026-09-01T21:44:52.871614+00:00",
     "aster|AAPLUSDT|long|1d|2026-09-01 00:00:00+00:00": "2026-09-02T00:09:19.187873+00:00",
-    "aster|NVDAUSDT|long|4h|2026-09-01 12:00:00+00:00": "2026-09-02T04:27:17.881327+00:00"
+    "aster|NVDAUSDT|long|4h|2026-09-01 12:00:00+00:00": "2026-09-02T04:27:17.881327+00:00",
+    "aster|MSTRUSDT|short|1d|2026-09-01 00:00:00+00:00": "2026-09-02T09:34:27.134524+00:00"
   },
   "calls": {
     "aster|ETHUSDT|long|4h": {
@@ -2668,6 +2669,24 @@
       "status": "active",
       "lifecycle_label": "new",
       "last_alerted_at": "2026-08-24T01:55:33.973774+00:00",
+      "alert_count": 1
+    },
+    "aster|MSTRUSDT|short|1d": {
+      "symbol": "MSTRUSDT",
+      "direction": "short",
+      "interval": "1d",
+      "first_seen": "2026-09-02T09:34:27.134524+00:00",
+      "last_seen": "2026-09-02T09:34:27.134524+00:00",
+      "last_bar_time": "2026-09-01 00:00:00+00:00",
+      "entry": 125.04,
+      "target": 96.48857142,
+      "stop": 139.31571429,
+      "score": 6.31,
+      "rr": 2.0,
+      "risk_emoji": "\ud83d\udfe1",
+      "status": "active",
+      "lifecycle_label": "new",
+      "last_alerted_at": "2026-09-02T09:34:27.134524+00:00",
       "alert_count": 1
     }
   }
