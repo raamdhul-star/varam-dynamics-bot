@@ -1066,7 +1066,9 @@
     "aster|SPXUSDT|short|1h|2026-09-07 15:00:00+00:00": "2026-09-07T19:55:45.590758+00:00",
     "aster|BTCUSDT|short|4h|2026-09-07 12:00:00+00:00": "2026-09-07T22:48:21.041967+00:00",
     "aster|ANTHROPICUSDT|long|1h|2026-09-08 04:00:00+00:00": "2026-09-08T05:55:55.172477+00:00",
-    "aster|SPXUSDT|short|1h|2026-09-08 01:00:00+00:00": "2026-09-08T05:55:55.172477+00:00"
+    "aster|SPXUSDT|short|1h|2026-09-08 01:00:00+00:00": "2026-09-08T05:55:55.172477+00:00",
+    "aster|BTCUSDT|long|1h|2026-09-08 09:00:00+00:00": "2026-09-08T11:12:43.750611+00:00",
+    "aster|XAUUSDT|short|4h|2026-09-08 04:00:00+00:00": "2026-09-08T11:12:43.750611+00:00"
   },
   "calls": {
     "aster|ETHUSDT|long|4h": {
@@ -1415,19 +1417,19 @@
       "symbol": "BTCUSDT",
       "direction": "long",
       "interval": "1h",
-      "first_seen": "2026-09-02T14:27:06.617520+00:00",
-      "last_seen": "2026-09-02T14:27:06.617520+00:00",
-      "last_bar_time": "2026-09-02 13:00:00+00:00",
-      "entry": 77114.8,
-      "target": 78571.77142858,
-      "stop": 76386.31428571,
+      "first_seen": "2026-09-08T11:12:43.750611+00:00",
+      "last_seen": "2026-09-08T11:12:43.750611+00:00",
+      "last_bar_time": "2026-09-08 09:00:00+00:00",
+      "entry": 78721.7,
+      "target": 79710.41428572,
+      "stop": 78227.34285714,
       "score": 6.78,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-09-02T14:27:06.617520+00:00",
-      "alert_count": 27
+      "last_alerted_at": "2026-09-08T11:12:43.750611+00:00",
+      "alert_count": 28
     },
     "aster|SPCXUSDT|short|1h": {
       "symbol": "SPCXUSDT",
@@ -1631,19 +1633,19 @@
       "symbol": "XAUUSDT",
       "direction": "short",
       "interval": "4h",
-      "first_seen": "2026-08-26T16:33:04.929001+00:00",
-      "last_seen": "2026-08-26T16:33:04.929001+00:00",
-      "last_bar_time": "2026-08-26 12:00:00+00:00",
-      "entry": 4600.95,
-      "target": 4488.40071428,
-      "stop": 4657.22464286,
-      "score": 7.77,
+      "first_seen": "2026-09-08T11:12:43.750611+00:00",
+      "last_seen": "2026-09-08T11:12:43.750611+00:00",
+      "last_bar_time": "2026-09-08 04:00:00+00:00",
+      "entry": 4397.09,
+      "target": 4333.24357142,
+      "stop": 4429.01321429,
+      "score": 7.19,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-08-26T16:33:04.929001+00:00",
-      "alert_count": 11
+      "last_alerted_at": "2026-09-08T11:12:43.750611+00:00",
+      "alert_count": 12
     },
     "aster|SPXUSDT|long|1d": {
       "symbol": "SPXUSDT",
