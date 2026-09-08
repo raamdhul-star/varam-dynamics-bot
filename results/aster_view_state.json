@@ -1064,7 +1064,9 @@
     "aster|BTCUSDT|short|1h|2026-09-07 15:00:00+00:00": "2026-09-07T19:55:45.590758+00:00",
     "aster|HYPEUSDT|short|4h|2026-09-07 12:00:00+00:00": "2026-09-07T19:55:45.590758+00:00",
     "aster|SPXUSDT|short|1h|2026-09-07 15:00:00+00:00": "2026-09-07T19:55:45.590758+00:00",
-    "aster|BTCUSDT|short|4h|2026-09-07 12:00:00+00:00": "2026-09-07T22:48:21.041967+00:00"
+    "aster|BTCUSDT|short|4h|2026-09-07 12:00:00+00:00": "2026-09-07T22:48:21.041967+00:00",
+    "aster|ANTHROPICUSDT|long|1h|2026-09-08 04:00:00+00:00": "2026-09-08T05:55:55.172477+00:00",
+    "aster|SPXUSDT|short|1h|2026-09-08 01:00:00+00:00": "2026-09-08T05:55:55.172477+00:00"
   },
   "calls": {
     "aster|ETHUSDT|long|4h": {
@@ -1126,18 +1128,18 @@
       "direction": "short",
       "interval": "1h",
       "first_seen": "2026-09-07T10:13:15.398845+00:00",
-      "last_seen": "2026-09-07T19:55:45.590758+00:00",
-      "last_bar_time": "2026-09-07 15:00:00+00:00",
-      "entry": 0.5431,
-      "target": 0.53000712,
-      "stop": 0.54964644,
+      "last_seen": "2026-09-08T05:55:55.172477+00:00",
+      "last_bar_time": "2026-09-08 01:00:00+00:00",
+      "entry": 0.5346,
+      "target": 0.51987858,
+      "stop": 0.54196071,
       "score": 7.08,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "continuing",
-      "last_alerted_at": "2026-09-07T19:55:45.590758+00:00",
-      "alert_count": 60
+      "last_alerted_at": "2026-09-08T05:55:55.172477+00:00",
+      "alert_count": 61
     },
     "aster|SPCXUSDT|long|4h": {
       "symbol": "SPCXUSDT",
@@ -2061,19 +2063,19 @@
       "symbol": "ANTHROPICUSDT",
       "direction": "long",
       "interval": "1h",
-      "first_seen": "2026-09-03T00:12:31.748877+00:00",
-      "last_seen": "2026-09-03T00:12:31.748877+00:00",
-      "last_bar_time": "2026-09-02 23:00:00+00:00",
-      "entry": 1976.66,
-      "target": 2019.78071428,
-      "stop": 1955.09964286,
-      "score": 7.38,
+      "first_seen": "2026-09-08T05:55:55.172477+00:00",
+      "last_seen": "2026-09-08T05:55:55.172477+00:00",
+      "last_bar_time": "2026-09-08 04:00:00+00:00",
+      "entry": 2029.0,
+      "target": 2062.66214288,
+      "stop": 2012.16892856,
+      "score": 7.08,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-09-03T00:12:31.748877+00:00",
-      "alert_count": 18
+      "last_alerted_at": "2026-09-08T05:55:55.172477+00:00",
+      "alert_count": 19
     },
     "aster|SOLUSDT|long|4h": {
       "symbol": "SOLUSDT",
