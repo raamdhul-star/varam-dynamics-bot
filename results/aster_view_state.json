@@ -1095,7 +1095,9 @@
     "aster|BTCUSDT|short|4h|2026-09-09 12:00:00+00:00": "2026-09-09T18:33:08.419295+00:00",
     "aster|MSTRUSDT|short|4h|2026-09-09 12:00:00+00:00": "2026-09-09T18:33:08.419295+00:00",
     "aster|TSLAUSDT|long|4h|2026-09-09 12:00:00+00:00": "2026-09-09T18:33:08.419295+00:00",
-    "aster|SPCXUSDT|short|1h|2026-09-09 14:00:00+00:00": "2026-09-09T18:33:08.419295+00:00"
+    "aster|SPCXUSDT|short|1h|2026-09-09 14:00:00+00:00": "2026-09-09T18:33:08.419295+00:00",
+    "aster|SOLUSDT|short|4h|2026-09-09 12:00:00+00:00": "2026-09-09T21:40:22.323406+00:00",
+    "aster|SPXUSDT|long|1h|2026-09-09 17:00:00+00:00": "2026-09-09T21:40:22.323406+00:00"
   },
   "calls": {
     "aster|ETHUSDT|long|4h": {
@@ -1247,18 +1249,18 @@
       "direction": "long",
       "interval": "1h",
       "first_seen": "2026-09-09T09:40:58.270263+00:00",
-      "last_seen": "2026-09-09T09:40:58.270263+00:00",
-      "last_bar_time": "2026-09-09 08:00:00+00:00",
-      "entry": 0.5405,
-      "target": 0.54647858,
-      "stop": 0.53751071,
-      "score": 6.78,
+      "last_seen": "2026-09-09T21:40:22.323406+00:00",
+      "last_bar_time": "2026-09-09 17:00:00+00:00",
+      "entry": 0.5213,
+      "target": 0.54009288,
+      "stop": 0.51190356,
+      "score": 6.28,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
-      "lifecycle_label": "new",
-      "last_alerted_at": "2026-09-09T09:40:58.270263+00:00",
-      "alert_count": 67
+      "lifecycle_label": "continuing",
+      "last_alerted_at": "2026-09-09T21:40:22.323406+00:00",
+      "alert_count": 68
     },
     "aster|OPENAIUSDT|long|1h": {
       "symbol": "OPENAIUSDT",
@@ -1642,19 +1644,19 @@
       "symbol": "SOLUSDT",
       "direction": "short",
       "interval": "4h",
-      "first_seen": "2026-09-07T19:55:45.590758+00:00",
-      "last_seen": "2026-09-07T19:55:45.590758+00:00",
-      "last_bar_time": "2026-09-07 12:00:00+00:00",
-      "entry": 103.2,
-      "target": 97.64357142,
-      "stop": 105.97821429,
-      "score": 7.87,
+      "first_seen": "2026-09-09T21:40:22.323406+00:00",
+      "last_seen": "2026-09-09T21:40:22.323406+00:00",
+      "last_bar_time": "2026-09-09 12:00:00+00:00",
+      "entry": 103.01,
+      "target": 97.95071428,
+      "stop": 105.53964286,
+      "score": 7.29,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-09-07T19:55:45.590758+00:00",
-      "alert_count": 14
+      "last_alerted_at": "2026-09-09T21:40:22.323406+00:00",
+      "alert_count": 15
     },
     "aster|XAUUSDT|short|4h": {
       "symbol": "XAUUSDT",
