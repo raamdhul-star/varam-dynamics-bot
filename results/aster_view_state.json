@@ -1212,7 +1212,8 @@
     "aster|NVDAUSDT|long|1h|2026-09-18 19:00:00+00:00": "2026-09-18T21:38:48.993482+00:00",
     "aster|ETHUSDT|long|1d|2026-09-18 00:00:00+00:00": "2026-09-19T00:17:15.829100+00:00",
     "aster|BTCUSDT|long|1d|2026-09-18 00:00:00+00:00": "2026-09-19T00:17:15.829100+00:00",
-    "aster|ANTHROPICUSDT|short|1h|2026-09-18 22:00:00+00:00": "2026-09-19T00:17:15.829100+00:00"
+    "aster|ANTHROPICUSDT|short|1h|2026-09-18 22:00:00+00:00": "2026-09-19T00:17:15.829100+00:00",
+    "aster|ANTHROPICUSDT|short|4h|2026-09-18 20:00:00+00:00": "2026-09-19T05:50:08.887330+00:00"
   },
   "calls": {
     "aster|ETHUSDT|long|4h": {
@@ -1957,19 +1958,19 @@
       "symbol": "ANTHROPICUSDT",
       "direction": "short",
       "interval": "4h",
-      "first_seen": "2026-08-26T16:33:04.929001+00:00",
-      "last_seen": "2026-08-26T16:33:04.929001+00:00",
-      "last_bar_time": "2026-08-26 12:00:00+00:00",
-      "entry": 1963.95,
-      "target": 1848.9,
-      "stop": 2021.475,
-      "score": 6.67,
+      "first_seen": "2026-09-19T05:50:08.887330+00:00",
+      "last_seen": "2026-09-19T05:50:08.887330+00:00",
+      "last_bar_time": "2026-09-18 20:00:00+00:00",
+      "entry": 2104.52,
+      "target": 2045.10714288,
+      "stop": 2134.22642856,
+      "score": 6.39,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-08-26T16:33:04.929001+00:00",
-      "alert_count": 12
+      "last_alerted_at": "2026-09-19T05:50:08.887330+00:00",
+      "alert_count": 13
     },
     "aster|SOLUSDT|long|1h": {
       "symbol": "SOLUSDT",
