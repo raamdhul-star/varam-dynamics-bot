@@ -2,40 +2,27 @@
   "offset": 262981543,
   "sigs": [
     {
-      "symbol": "ONDO",
+      "symbol": "ENA",
       "direction": "long",
       "interval": "1h",
-      "score": 8.18,
-      "entry": 0.55048,
-      "sl": 0.53944,
-      "tp": 0.57256,
-      "sl_pct": 2.006,
+      "score": 7.98,
+      "entry": 0.27982,
+      "sl": 0.27189356,
+      "tp": 0.29567288,
+      "sl_pct": 2.833,
       "rr": 2.0,
-      "bar_time": "2026-09-27 13:00:00+00:00",
+      "bar_time": "2026-09-27 17:00:00+00:00",
       "source": "hyperliquid"
     },
     {
-      "symbol": "WLD",
-      "direction": "long",
-      "interval": "1h",
-      "score": 7.68,
-      "entry": 0.57871,
-      "sl": 0.55775179,
-      "tp": 0.62062642,
-      "sl_pct": 3.622,
-      "rr": 2.0,
-      "bar_time": "2026-09-27 11:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "VVV",
+      "symbol": "XPL",
       "direction": "short",
-      "interval": "1h",
-      "score": 7.68,
-      "entry": 30.398,
-      "sl": 31.19482144,
-      "tp": 28.80435712,
-      "sl_pct": 2.621,
+      "interval": "4h",
+      "score": 7.87,
+      "entry": 0.10493,
+      "sl": 0.11570106,
+      "tp": 0.08338788,
+      "sl_pct": 10.265,
       "rr": 2.0,
       "bar_time": "2026-09-27 12:00:00+00:00",
       "source": "hyperliquid"
@@ -312,9 +299,42 @@
     "SEI_long_1h_2026-09-27 05:00:00+00:00": "2026-09-27T08:38:12.259311+00:00",
     "ONDO_long_1h_2026-09-27 13:00:00+00:00": "2026-09-27T14:22:29.785179+00:00",
     "WLD_long_1h_2026-09-27 11:00:00+00:00": "2026-09-27T14:22:29.785179+00:00",
-    "VVV_short_1h_2026-09-27 12:00:00+00:00": "2026-09-27T14:22:29.785179+00:00"
+    "VVV_short_1h_2026-09-27 12:00:00+00:00": "2026-09-27T14:22:29.785179+00:00",
+    "ENA_long_1h_2026-09-27 17:00:00+00:00": "2026-09-27T18:43:27.801866+00:00",
+    "XPL_short_4h_2026-09-27 12:00:00+00:00": "2026-09-27T18:43:27.801866+00:00"
   },
   "batches": {
+    "3384": {
+      "time": "2026-09-27T18:43:27.801866+00:00",
+      "sigs": [
+        {
+          "symbol": "ENA",
+          "direction": "long",
+          "interval": "1h",
+          "score": 7.98,
+          "entry": 0.27982,
+          "sl": 0.27189356,
+          "tp": 0.29567288,
+          "sl_pct": 2.833,
+          "rr": 2.0,
+          "bar_time": "2026-09-27 17:00:00+00:00",
+          "source": "hyperliquid"
+        },
+        {
+          "symbol": "XPL",
+          "direction": "short",
+          "interval": "4h",
+          "score": 7.87,
+          "entry": 0.10493,
+          "sl": 0.11570106,
+          "tp": 0.08338788,
+          "sl_pct": 10.265,
+          "rr": 2.0,
+          "bar_time": "2026-09-27 12:00:00+00:00",
+          "source": "hyperliquid"
+        }
+      ]
+    },
     "3380": {
       "time": "2026-09-27T14:22:29.785179+00:00",
       "sigs": [
@@ -694,50 +714,6 @@
           "source": "hyperliquid"
         }
       ]
-    },
-    "3348": {
-      "time": "2026-09-24T23:38:18.322871+00:00",
-      "sigs": [
-        {
-          "symbol": "XMR",
-          "direction": "long",
-          "interval": "1h",
-          "score": 8.6,
-          "entry": 568.98,
-          "sl": 555.27428571,
-          "tp": 596.39142858,
-          "sl_pct": 2.409,
-          "rr": 2.0,
-          "bar_time": "2026-09-24 20:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "TRUMP",
-          "direction": "short",
-          "interval": "1h",
-          "score": 7.88,
-          "entry": 2.0788,
-          "sl": 2.13582144,
-          "tp": 1.96475712,
-          "sl_pct": 2.743,
-          "rr": 2.0,
-          "bar_time": "2026-09-24 22:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "FET",
-          "direction": "long",
-          "interval": "4h",
-          "score": 7.82,
-          "entry": 0.22382,
-          "sl": 0.20925179,
-          "tp": 0.25295642,
-          "sl_pct": 6.509,
-          "rr": 2.0,
-          "bar_time": "2026-09-24 12:00:00+00:00",
-          "source": "hyperliquid"
-        }
-      ]
     }
   },
   "calls": {
@@ -745,19 +721,19 @@
       "symbol": "ENA",
       "direction": "long",
       "interval": "1h",
-      "first_seen": "2026-09-19T05:14:32.262853+00:00",
-      "last_seen": "2026-09-19T05:14:32.262853+00:00",
-      "last_bar_time": "2026-09-19 03:00:00+00:00",
-      "entry": 0.1836,
-      "target": 0.19715358,
-      "stop": 0.17682321,
-      "score": 7.87,
+      "first_seen": "2026-09-27T18:43:27.801866+00:00",
+      "last_seen": "2026-09-27T18:43:27.801866+00:00",
+      "last_bar_time": "2026-09-27 17:00:00+00:00",
+      "entry": 0.27982,
+      "target": 0.29567288,
+      "stop": 0.27189356,
+      "score": 7.98,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-09-19T05:14:32.262853+00:00",
-      "alert_count": 23
+      "last_alerted_at": "2026-09-27T18:43:27.801866+00:00",
+      "alert_count": 24
     },
     "WLD|long|1h": {
       "symbol": "WLD",
@@ -5245,19 +5221,19 @@
       "symbol": "XPL",
       "direction": "short",
       "interval": "4h",
-      "first_seen": "2026-08-11T08:53:20.024300+00:00",
-      "last_seen": "2026-08-11T08:53:20.024300+00:00",
-      "last_bar_time": "2026-08-10 16:00:00+00:00",
-      "entry": 0.077997,
-      "target": 0.07285136,
-      "stop": 0.08056982,
-      "score": 5.49,
+      "first_seen": "2026-09-27T18:43:27.801866+00:00",
+      "last_seen": "2026-09-27T18:43:27.801866+00:00",
+      "last_bar_time": "2026-09-27 12:00:00+00:00",
+      "entry": 0.10493,
+      "target": 0.08338788,
+      "stop": 0.11570106,
+      "score": 7.87,
       "rr": 2.0,
-      "risk_emoji": "\ud83d\udfe0",
+      "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-08-11T08:53:20.024300+00:00",
-      "alert_count": 6
+      "last_alerted_at": "2026-09-27T18:43:27.801866+00:00",
+      "alert_count": 7
     },
     "ASTER|long|4h": {
       "symbol": "ASTER",
