@@ -2,16 +2,16 @@
   "offset": 262981543,
   "sigs": [
     {
-      "symbol": "SUI",
-      "direction": "long",
+      "symbol": "LDO",
+      "direction": "short",
       "interval": "4h",
-      "score": 7.52,
-      "entry": 1.186,
-      "sl": 1.11989286,
-      "tp": 1.31821428,
-      "sl_pct": 5.574,
+      "score": 8.0,
+      "entry": 0.44531,
+      "sl": 0.47758035,
+      "tp": 0.3807693,
+      "sl_pct": 7.247,
       "rr": 2.0,
-      "bar_time": "2026-09-30 12:00:00+00:00",
+      "bar_time": "2026-10-01 00:00:00+00:00",
       "source": "hyperliquid"
     }
   ],
@@ -306,9 +306,28 @@
     "ZEC_long_1h_2026-09-30 12:00:00+00:00": "2026-09-30T13:07:05.176661+00:00",
     "NEAR_long_1h_2026-09-30 10:00:00+00:00": "2026-09-30T13:07:05.176661+00:00",
     "HYPE_long_1h_2026-09-30 15:00:00+00:00": "2026-09-30T18:40:07.476370+00:00",
-    "SUI_long_4h_2026-09-30 12:00:00+00:00": "2026-09-30T22:42:29.381458+00:00"
+    "SUI_long_4h_2026-09-30 12:00:00+00:00": "2026-09-30T22:42:29.381458+00:00",
+    "LDO_short_4h_2026-10-01 00:00:00+00:00": "2026-10-01T07:54:28.009943+00:00"
   },
   "batches": {
+    "3429": {
+      "time": "2026-10-01T07:54:28.009943+00:00",
+      "sigs": [
+        {
+          "symbol": "LDO",
+          "direction": "short",
+          "interval": "4h",
+          "score": 8.0,
+          "entry": 0.44531,
+          "sl": 0.47758035,
+          "tp": 0.3807693,
+          "sl_pct": 7.247,
+          "rr": 2.0,
+          "bar_time": "2026-10-01 00:00:00+00:00",
+          "source": "hyperliquid"
+        }
+      ]
+    },
     "3425": {
       "time": "2026-09-30T22:42:29.381458+00:00",
       "sigs": [
@@ -737,89 +756,6 @@
           "sl_pct": 3.351,
           "rr": 2.0,
           "bar_time": "2026-09-28 08:00:00+00:00",
-          "source": "hyperliquid"
-        }
-      ]
-    },
-    "3391": {
-      "time": "2026-09-28T06:02:10.563581+00:00",
-      "sigs": [
-        {
-          "symbol": "GRASS",
-          "direction": "long",
-          "interval": "4h",
-          "score": 8.1,
-          "entry": 0.6508,
-          "sl": 0.58261214,
-          "tp": 0.78717572,
-          "sl_pct": 10.478,
-          "rr": 2.0,
-          "bar_time": "2026-09-27 20:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "XPL",
-          "direction": "short",
-          "interval": "1h",
-          "score": 7.87,
-          "entry": 0.10368,
-          "sl": 0.10855071,
-          "tp": 0.09393858,
-          "sl_pct": 4.698,
-          "rr": 2.0,
-          "bar_time": "2026-09-28 01:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "FARTCOIN",
-          "direction": "short",
-          "interval": "4h",
-          "score": 7.87,
-          "entry": 0.18369,
-          "sl": 0.19448356,
-          "tp": 0.16210288,
-          "sl_pct": 5.876,
-          "rr": 2.0,
-          "bar_time": "2026-09-28 00:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "HYPE",
-          "direction": "short",
-          "interval": "4h",
-          "score": 7.69,
-          "entry": 89.481,
-          "sl": 91.55153571,
-          "tp": 85.33992858,
-          "sl_pct": 2.314,
-          "rr": 2.0,
-          "bar_time": "2026-09-28 00:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "INJ",
-          "direction": "short",
-          "interval": "1h",
-          "score": 7.58,
-          "entry": 7.5903,
-          "sl": 7.77391071,
-          "tp": 7.22307858,
-          "sl_pct": 2.419,
-          "rr": 2.0,
-          "bar_time": "2026-09-28 05:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "PUMP",
-          "direction": "long",
-          "interval": "4h",
-          "score": 7.57,
-          "entry": 0.005164,
-          "sl": 0.0048505,
-          "tp": 0.005791,
-          "sl_pct": 6.071,
-          "rr": 2.0,
-          "bar_time": "2026-09-27 20:00:00+00:00",
           "source": "hyperliquid"
         }
       ]
@@ -6890,6 +6826,24 @@
       "status": "active",
       "lifecycle_label": "new",
       "last_alerted_at": "2026-09-29T00:01:54.066587+00:00",
+      "alert_count": 1
+    },
+    "LDO|short|4h": {
+      "symbol": "LDO",
+      "direction": "short",
+      "interval": "4h",
+      "first_seen": "2026-10-01T07:54:28.009943+00:00",
+      "last_seen": "2026-10-01T07:54:28.009943+00:00",
+      "last_bar_time": "2026-10-01 00:00:00+00:00",
+      "entry": 0.44531,
+      "target": 0.3807693,
+      "stop": 0.47758035,
+      "score": 8.0,
+      "rr": 2.0,
+      "risk_emoji": "\ud83d\udfe2",
+      "status": "active",
+      "lifecycle_label": "new",
+      "last_alerted_at": "2026-10-01T07:54:28.009943+00:00",
       "alert_count": 1
     }
   }
