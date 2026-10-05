@@ -1363,7 +1363,8 @@
     "aster|BTCUSDT|long|1h|2026-10-04 22:00:00+00:00": "2026-10-04T23:05:24.674705+00:00",
     "aster|ETHUSDT|long|1h|2026-10-04 22:00:00+00:00": "2026-10-04T23:05:24.674705+00:00",
     "aster|SOLUSDT|long|1h|2026-10-04 22:00:00+00:00": "2026-10-04T23:05:24.674705+00:00",
-    "aster|MSTRUSDT|long|1h|2026-10-04 22:00:00+00:00": "2026-10-04T23:05:24.674705+00:00"
+    "aster|MSTRUSDT|long|1h|2026-10-04 22:00:00+00:00": "2026-10-04T23:05:24.674705+00:00",
+    "aster|NVDAUSDT|long|1w|2026-09-28 00:00:00+00:00": "2026-10-05T01:57:12.317718+00:00"
   },
   "calls": {
     "aster|ETHUSDT|long|4h": {
@@ -3110,6 +3111,24 @@
       "status": "active",
       "lifecycle_label": "new",
       "last_alerted_at": "2026-09-24T04:43:39.015166+00:00",
+      "alert_count": 1
+    },
+    "aster|NVDAUSDT|long|1w": {
+      "symbol": "NVDAUSDT",
+      "direction": "long",
+      "interval": "1w",
+      "first_seen": "2026-10-05T01:57:12.317718+00:00",
+      "last_seen": "2026-10-05T01:57:12.317718+00:00",
+      "last_bar_time": "2026-09-28 00:00:00+00:00",
+      "entry": 235.41,
+      "target": 286.09928572,
+      "stop": 210.06535714,
+      "score": 6.82,
+      "rr": 2.0,
+      "risk_emoji": "\ud83d\udfe1",
+      "status": "active",
+      "lifecycle_label": "new",
+      "last_alerted_at": "2026-10-05T01:57:12.317718+00:00",
       "alert_count": 1
     }
   }
