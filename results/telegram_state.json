@@ -2,68 +2,16 @@
   "offset": 262981543,
   "sigs": [
     {
-      "symbol": "ZRO",
+      "symbol": "RENDER",
       "direction": "long",
-      "interval": "1h",
-      "score": 9.3,
-      "entry": 2.0469,
-      "sl": 1.98331071,
-      "tp": 2.17407858,
-      "sl_pct": 3.107,
-      "rr": 2.0,
-      "bar_time": "2026-10-05 15:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "LINK",
-      "direction": "short",
-      "interval": "1h",
-      "score": 7.87,
-      "entry": 13.798,
-      "sl": 13.99375,
-      "tp": 13.4065,
-      "sl_pct": 1.419,
-      "rr": 2.0,
-      "bar_time": "2026-10-05 14:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "BTC",
-      "direction": "short",
       "interval": "4h",
-      "score": 7.77,
-      "entry": 85233.0,
-      "sl": 86153.89285714,
-      "tp": 83391.21428572,
-      "sl_pct": 1.08,
+      "score": 7.62,
+      "entry": 2.0175,
+      "sl": 1.95235714,
+      "tp": 2.14778572,
+      "sl_pct": 3.229,
       "rr": 2.0,
-      "bar_time": "2026-10-05 12:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "AVAX",
-      "direction": "short",
-      "interval": "4h",
-      "score": 7.77,
-      "entry": 10.948,
-      "sl": 11.197,
-      "tp": 10.45,
-      "sl_pct": 2.274,
-      "rr": 2.0,
-      "bar_time": "2026-10-05 00:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "ICP",
-      "direction": "long",
-      "interval": "1h",
-      "score": 7.7,
-      "entry": 3.4914,
-      "sl": 3.41338929,
-      "tp": 3.64742142,
-      "sl_pct": 2.234,
-      "rr": 2.0,
-      "bar_time": "2026-10-05 17:00:00+00:00",
+      "bar_time": "2026-10-05 16:00:00+00:00",
       "source": "hyperliquid"
     }
   ],
@@ -394,9 +342,28 @@
     "LINK_short_1h_2026-10-05 14:00:00+00:00": "2026-10-05T18:54:48.789701+00:00",
     "BTC_short_4h_2026-10-05 12:00:00+00:00": "2026-10-05T18:54:48.789701+00:00",
     "AVAX_short_4h_2026-10-05 00:00:00+00:00": "2026-10-05T18:54:48.789701+00:00",
-    "ICP_long_1h_2026-10-05 17:00:00+00:00": "2026-10-05T18:54:48.789701+00:00"
+    "ICP_long_1h_2026-10-05 17:00:00+00:00": "2026-10-05T18:54:48.789701+00:00",
+    "RENDER_long_4h_2026-10-05 16:00:00+00:00": "2026-10-06T00:26:44.096636+00:00"
   },
   "batches": {
+    "3487": {
+      "time": "2026-10-06T00:26:44.096636+00:00",
+      "sigs": [
+        {
+          "symbol": "RENDER",
+          "direction": "long",
+          "interval": "4h",
+          "score": 7.62,
+          "entry": 2.0175,
+          "sl": 1.95235714,
+          "tp": 2.14778572,
+          "sl_pct": 3.229,
+          "rr": 2.0,
+          "bar_time": "2026-10-05 16:00:00+00:00",
+          "source": "hyperliquid"
+        }
+      ]
+    },
     "3485": {
       "time": "2026-10-05T18:54:48.789701+00:00",
       "sigs": [
@@ -841,24 +808,6 @@
           "source": "hyperliquid"
         }
       ]
-    },
-    "3453": {
-      "time": "2026-10-03T00:04:18.199483+00:00",
-      "sigs": [
-        {
-          "symbol": "WLD",
-          "direction": "long",
-          "interval": "1d",
-          "score": 7.63,
-          "entry": 0.55684,
-          "sl": 0.46139929,
-          "tp": 0.74772142,
-          "sl_pct": 17.14,
-          "rr": 2.0,
-          "bar_time": "2026-10-02 00:00:00+00:00",
-          "source": "hyperliquid"
-        }
-      ]
     }
   },
   "calls": {
@@ -1118,19 +1067,19 @@
       "symbol": "RENDER",
       "direction": "long",
       "interval": "4h",
-      "first_seen": "2026-06-13T22:00:32.037002+00:00",
-      "last_seen": "2026-06-13T22:00:32.037002+00:00",
-      "last_bar_time": "2026-06-13 04:00:00+00:00",
-      "entry": 1.7346,
-      "target": 1.89375,
-      "stop": 1.655025,
-      "score": 6.69,
+      "first_seen": "2026-10-06T00:26:44.096636+00:00",
+      "last_seen": "2026-10-06T00:26:44.096636+00:00",
+      "last_bar_time": "2026-10-05 16:00:00+00:00",
+      "entry": 2.0175,
+      "target": 2.14778572,
+      "stop": 1.95235714,
+      "score": 7.62,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-06-13T22:00:32.037002+00:00",
-      "alert_count": 1
+      "last_alerted_at": "2026-10-06T00:26:44.096636+00:00",
+      "alert_count": 2
     },
     "FET|long|1h": {
       "symbol": "FET",
