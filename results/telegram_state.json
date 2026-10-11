@@ -2,42 +2,29 @@
   "offset": 262981543,
   "sigs": [
     {
-      "symbol": "TAO",
-      "direction": "long",
-      "interval": "1h",
-      "score": 8.0,
-      "entry": 286.26,
-      "sl": 282.34392856,
-      "tp": 294.09214288,
-      "sl_pct": 1.368,
-      "rr": 2.0,
-      "bar_time": "2026-10-10 18:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "INJ",
-      "direction": "long",
-      "interval": "4h",
-      "score": 7.82,
-      "entry": 7.5647,
-      "sl": 7.17733571,
-      "tp": 8.33942858,
-      "sl_pct": 5.121,
-      "rr": 2.0,
-      "bar_time": "2026-10-10 16:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
       "symbol": "TIA",
       "direction": "long",
       "interval": "1h",
-      "score": 7.7,
-      "entry": 0.54475,
-      "sl": 0.52616285,
-      "tp": 0.5819243,
-      "sl_pct": 3.412,
+      "score": 8.51,
+      "entry": 0.59563,
+      "sl": 0.57074929,
+      "tp": 0.64539142,
+      "sl_pct": 4.177,
       "rr": 2.0,
-      "bar_time": "2026-10-10 18:00:00+00:00",
+      "bar_time": "2026-10-10 22:00:00+00:00",
+      "source": "hyperliquid"
+    },
+    {
+      "symbol": "CHIP",
+      "direction": "long",
+      "interval": "4h",
+      "score": 8.07,
+      "entry": 0.066417,
+      "sl": 0.06182164,
+      "tp": 0.07560772,
+      "sl_pct": 6.919,
+      "rr": 2.0,
+      "bar_time": "2026-10-10 16:00:00+00:00",
       "source": "hyperliquid"
     }
   ],
@@ -46,7 +33,6 @@
   "setup": null,
   "trades": {},
   "alerted": {
-    "ARB_long_4h_2026-09-05 16:00:00+00:00": "2026-09-05T22:24:47.162243+00:00",
     "ZEC_long_1h_2026-09-06 01:00:00+00:00": "2026-09-06T05:13:00.193892+00:00",
     "JUP_long_4h_2026-09-06 00:00:00+00:00": "2026-09-06T09:45:51.291002+00:00",
     "TAO_long_4h_2026-09-06 08:00:00+00:00": "2026-09-06T20:55:36.018966+00:00",
@@ -362,9 +348,42 @@
     "INJ_long_1h_2026-10-10 16:00:00+00:00": "2026-10-10T18:07:19.344811+00:00",
     "TAO_long_1h_2026-10-10 18:00:00+00:00": "2026-10-10T22:05:27.261036+00:00",
     "INJ_long_4h_2026-10-10 16:00:00+00:00": "2026-10-10T22:05:27.261036+00:00",
-    "TIA_long_1h_2026-10-10 18:00:00+00:00": "2026-10-10T22:05:27.261036+00:00"
+    "TIA_long_1h_2026-10-10 18:00:00+00:00": "2026-10-10T22:05:27.261036+00:00",
+    "TIA_long_1h_2026-10-10 22:00:00+00:00": "2026-10-11T01:23:25.151104+00:00",
+    "CHIP_long_4h_2026-10-10 16:00:00+00:00": "2026-10-11T01:23:25.151104+00:00"
   },
   "batches": {
+    "3529": {
+      "time": "2026-10-11T01:23:25.151104+00:00",
+      "sigs": [
+        {
+          "symbol": "TIA",
+          "direction": "long",
+          "interval": "1h",
+          "score": 8.51,
+          "entry": 0.59563,
+          "sl": 0.57074929,
+          "tp": 0.64539142,
+          "sl_pct": 4.177,
+          "rr": 2.0,
+          "bar_time": "2026-10-10 22:00:00+00:00",
+          "source": "hyperliquid"
+        },
+        {
+          "symbol": "CHIP",
+          "direction": "long",
+          "interval": "4h",
+          "score": 8.07,
+          "entry": 0.066417,
+          "sl": 0.06182164,
+          "tp": 0.07560772,
+          "sl_pct": 6.919,
+          "rr": 2.0,
+          "bar_time": "2026-10-10 16:00:00+00:00",
+          "source": "hyperliquid"
+        }
+      ]
+    },
     "3527": {
       "time": "2026-10-10T22:05:27.261036+00:00",
       "sigs": [
@@ -845,37 +864,6 @@
           "sl_pct": 2.292,
           "rr": 2.0,
           "bar_time": "2026-10-06 17:00:00+00:00",
-          "source": "hyperliquid"
-        }
-      ]
-    },
-    "3488": {
-      "time": "2026-10-06T13:45:21.804304+00:00",
-      "sigs": [
-        {
-          "symbol": "XRP",
-          "direction": "long",
-          "interval": "4h",
-          "score": 7.92,
-          "entry": 1.5135,
-          "sl": 1.48605,
-          "tp": 1.5684,
-          "sl_pct": 1.814,
-          "rr": 2.0,
-          "bar_time": "2026-10-06 08:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "RENDER",
-          "direction": "long",
-          "interval": "1h",
-          "score": 7.89,
-          "entry": 2.1655,
-          "sl": 2.11342857,
-          "tp": 2.26964286,
-          "sl_pct": 2.405,
-          "rr": 2.0,
-          "bar_time": "2026-10-06 11:00:00+00:00",
           "source": "hyperliquid"
         }
       ]
@@ -4145,18 +4133,18 @@
       "direction": "long",
       "interval": "1h",
       "first_seen": "2026-10-10T22:05:27.261036+00:00",
-      "last_seen": "2026-10-10T22:05:27.261036+00:00",
-      "last_bar_time": "2026-10-10 18:00:00+00:00",
-      "entry": 0.54475,
-      "target": 0.5819243,
-      "stop": 0.52616285,
-      "score": 7.7,
+      "last_seen": "2026-10-11T01:23:25.151104+00:00",
+      "last_bar_time": "2026-10-10 22:00:00+00:00",
+      "entry": 0.59563,
+      "target": 0.64539142,
+      "stop": 0.57074929,
+      "score": 8.51,
       "rr": 2.0,
-      "risk_emoji": "\ud83d\udfe1",
+      "risk_emoji": "\ud83d\udfe2",
       "status": "active",
-      "lifecycle_label": "new",
-      "last_alerted_at": "2026-10-10T22:05:27.261036+00:00",
-      "alert_count": 6
+      "lifecycle_label": "upgraded",
+      "last_alerted_at": "2026-10-11T01:23:25.151104+00:00",
+      "alert_count": 7
     },
     "TRUMP|long|1h": {
       "symbol": "TRUMP",
@@ -5062,19 +5050,19 @@
       "symbol": "CHIP",
       "direction": "long",
       "interval": "4h",
-      "first_seen": "2026-09-04T01:30:00.330277+00:00",
-      "last_seen": "2026-09-04T01:30:00.330277+00:00",
-      "last_bar_time": "2026-09-03 12:00:00+00:00",
-      "entry": 0.055788,
-      "target": 0.066891,
-      "stop": 0.0502365,
-      "score": 7.6,
+      "first_seen": "2026-10-11T01:23:25.151104+00:00",
+      "last_seen": "2026-10-11T01:23:25.151104+00:00",
+      "last_bar_time": "2026-10-10 16:00:00+00:00",
+      "entry": 0.066417,
+      "target": 0.07560772,
+      "stop": 0.06182164,
+      "score": 8.07,
       "rr": 2.0,
-      "risk_emoji": "\ud83d\udfe1",
+      "risk_emoji": "\ud83d\udfe2",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-09-04T01:30:00.330277+00:00",
-      "alert_count": 6
+      "last_alerted_at": "2026-10-11T01:23:25.151104+00:00",
+      "alert_count": 7
     },
     "MORPHO|long|1d": {
       "symbol": "MORPHO",
