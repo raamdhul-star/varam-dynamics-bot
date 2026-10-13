@@ -2,16 +2,55 @@
   "offset": 262981543,
   "sigs": [
     {
-      "symbol": "XRP",
+      "symbol": "VVV",
+      "direction": "short",
+      "interval": "4h",
+      "score": 8.0,
+      "entry": 22.361,
+      "sl": 23.63760714,
+      "tp": 19.80778572,
+      "sl_pct": 5.709,
+      "rr": 2.0,
+      "bar_time": "2026-10-12 20:00:00+00:00",
+      "source": "hyperliquid"
+    },
+    {
+      "symbol": "SOL",
+      "direction": "short",
+      "interval": "4h",
+      "score": 7.99,
+      "entry": 105.69,
+      "sl": 108.23785714,
+      "tp": 100.59428572,
+      "sl_pct": 2.411,
+      "rr": 2.0,
+      "bar_time": "2026-10-12 20:00:00+00:00",
+      "source": "hyperliquid"
+    },
+    {
+      "symbol": "BTC",
       "direction": "short",
       "interval": "1h",
-      "score": 7.68,
-      "entry": 1.358,
-      "sl": 1.37620357,
-      "tp": 1.32159286,
-      "sl_pct": 1.34,
+      "score": 7.97,
+      "entry": 82536.0,
+      "sl": 83186.46428571,
+      "tp": 81235.07142858,
+      "sl_pct": 0.788,
       "rr": 2.0,
-      "bar_time": "2026-10-12 16:00:00+00:00",
+      "bar_time": "2026-10-12 21:00:00+00:00",
+      "source": "hyperliquid"
+    },
+    {
+      "symbol": "ETH",
+      "direction": "short",
+      "interval": "4h",
+      "score": 7.69,
+      "entry": 2445.6,
+      "sl": 2487.28928571,
+      "tp": 2362.22142858,
+      "sl_pct": 1.705,
+      "rr": 2.0,
+      "bar_time": "2026-10-12 20:00:00+00:00",
       "source": "hyperliquid"
     }
   ],
@@ -327,9 +366,70 @@
     "PUMP_long_1h_2026-10-11 10:00:00+00:00": "2026-10-11T14:26:53.942131+00:00",
     "FET_long_1h_2026-10-11 12:00:00+00:00": "2026-10-11T14:26:53.942131+00:00",
     "TAO_long_4h_2026-10-12 04:00:00+00:00": "2026-10-12T09:52:21.626392+00:00",
-    "XRP_short_1h_2026-10-12 16:00:00+00:00": "2026-10-12T19:27:38.385101+00:00"
+    "XRP_short_1h_2026-10-12 16:00:00+00:00": "2026-10-12T19:27:38.385101+00:00",
+    "VVV_short_4h_2026-10-12 20:00:00+00:00": "2026-10-13T01:42:01.299651+00:00",
+    "SOL_short_4h_2026-10-12 20:00:00+00:00": "2026-10-13T01:42:01.299651+00:00",
+    "BTC_short_1h_2026-10-12 21:00:00+00:00": "2026-10-13T01:42:01.299651+00:00",
+    "ETH_short_4h_2026-10-12 20:00:00+00:00": "2026-10-13T01:42:01.299651+00:00"
   },
   "batches": {
+    "3552": {
+      "time": "2026-10-13T01:42:01.299651+00:00",
+      "sigs": [
+        {
+          "symbol": "VVV",
+          "direction": "short",
+          "interval": "4h",
+          "score": 8.0,
+          "entry": 22.361,
+          "sl": 23.63760714,
+          "tp": 19.80778572,
+          "sl_pct": 5.709,
+          "rr": 2.0,
+          "bar_time": "2026-10-12 20:00:00+00:00",
+          "source": "hyperliquid"
+        },
+        {
+          "symbol": "SOL",
+          "direction": "short",
+          "interval": "4h",
+          "score": 7.99,
+          "entry": 105.69,
+          "sl": 108.23785714,
+          "tp": 100.59428572,
+          "sl_pct": 2.411,
+          "rr": 2.0,
+          "bar_time": "2026-10-12 20:00:00+00:00",
+          "source": "hyperliquid"
+        },
+        {
+          "symbol": "BTC",
+          "direction": "short",
+          "interval": "1h",
+          "score": 7.97,
+          "entry": 82536.0,
+          "sl": 83186.46428571,
+          "tp": 81235.07142858,
+          "sl_pct": 0.788,
+          "rr": 2.0,
+          "bar_time": "2026-10-12 21:00:00+00:00",
+          "source": "hyperliquid"
+        },
+        {
+          "symbol": "ETH",
+          "direction": "short",
+          "interval": "4h",
+          "score": 7.69,
+          "entry": 2445.6,
+          "sl": 2487.28928571,
+          "tp": 2362.22142858,
+          "sl_pct": 1.705,
+          "rr": 2.0,
+          "bar_time": "2026-10-12 20:00:00+00:00",
+          "source": "hyperliquid"
+        }
+      ]
+    },
     "3548": {
       "time": "2026-10-12T19:27:38.385101+00:00",
       "sigs": [
@@ -719,24 +819,6 @@
           "sl_pct": 2.956,
           "rr": 2.0,
           "bar_time": "2026-10-08 15:00:00+00:00",
-          "source": "hyperliquid"
-        }
-      ]
-    },
-    "3502": {
-      "time": "2026-10-07T17:06:00.104087+00:00",
-      "sigs": [
-        {
-          "symbol": "HYPE",
-          "direction": "short",
-          "interval": "4h",
-          "score": 8.07,
-          "entry": 90.778,
-          "sl": 93.32167856,
-          "tp": 85.69064288,
-          "sl_pct": 2.802,
-          "rr": 2.0,
-          "bar_time": "2026-10-07 00:00:00+00:00",
           "source": "hyperliquid"
         }
       ]
@@ -2313,19 +2395,19 @@
       "symbol": "BTC",
       "direction": "short",
       "interval": "1h",
-      "first_seen": "2026-10-08T17:02:40.299675+00:00",
-      "last_seen": "2026-10-08T17:02:40.299675+00:00",
-      "last_bar_time": "2026-10-08 15:00:00+00:00",
-      "entry": 81009.0,
-      "target": 79133.14285712,
-      "stop": 81946.92857144,
-      "score": 7.88,
+      "first_seen": "2026-10-13T01:42:01.299651+00:00",
+      "last_seen": "2026-10-13T01:42:01.299651+00:00",
+      "last_bar_time": "2026-10-12 21:00:00+00:00",
+      "entry": 82536.0,
+      "target": 81235.07142858,
+      "stop": 83186.46428571,
+      "score": 7.97,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-10-08T17:02:40.299675+00:00",
-      "alert_count": 24
+      "last_alerted_at": "2026-10-13T01:42:01.299651+00:00",
+      "alert_count": 25
     },
     "XMR|short|1h": {
       "symbol": "XMR",
@@ -2565,19 +2647,19 @@
       "symbol": "ETH",
       "direction": "short",
       "interval": "4h",
-      "first_seen": "2026-10-07T09:26:22.840891+00:00",
-      "last_seen": "2026-10-07T09:26:22.840891+00:00",
-      "last_bar_time": "2026-10-07 00:00:00+00:00",
-      "entry": 2610.5,
-      "target": 2513.55714288,
-      "stop": 2658.97142856,
-      "score": 7.99,
+      "first_seen": "2026-10-13T01:42:01.299651+00:00",
+      "last_seen": "2026-10-13T01:42:01.299651+00:00",
+      "last_bar_time": "2026-10-12 20:00:00+00:00",
+      "entry": 2445.6,
+      "target": 2362.22142858,
+      "stop": 2487.28928571,
+      "score": 7.69,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-10-07T09:26:22.840891+00:00",
-      "alert_count": 13
+      "last_alerted_at": "2026-10-13T01:42:01.299651+00:00",
+      "alert_count": 14
     },
     "WLD|short|1h": {
       "symbol": "WLD",
@@ -2673,19 +2755,19 @@
       "symbol": "SOL",
       "direction": "short",
       "interval": "4h",
-      "first_seen": "2026-09-15T19:20:37.645620+00:00",
-      "last_seen": "2026-09-15T19:20:37.645620+00:00",
-      "last_bar_time": "2026-09-15 12:00:00+00:00",
-      "entry": 99.329,
-      "target": 94.13321428,
-      "stop": 101.92689286,
-      "score": 8.57,
+      "first_seen": "2026-10-13T01:42:01.299651+00:00",
+      "last_seen": "2026-10-13T01:42:01.299651+00:00",
+      "last_bar_time": "2026-10-12 20:00:00+00:00",
+      "entry": 105.69,
+      "target": 100.59428572,
+      "stop": 108.23785714,
+      "score": 7.99,
       "rr": 2.0,
-      "risk_emoji": "\ud83d\udfe2",
+      "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-09-15T19:20:37.645620+00:00",
-      "alert_count": 14
+      "last_alerted_at": "2026-10-13T01:42:01.299651+00:00",
+      "alert_count": 15
     },
     "SUI|short|4h": {
       "symbol": "SUI",
@@ -6363,19 +6445,19 @@
       "symbol": "VVV",
       "direction": "short",
       "interval": "4h",
-      "first_seen": "2026-08-15T05:14:17.220259+00:00",
-      "last_seen": "2026-08-15T05:14:17.220259+00:00",
-      "last_bar_time": "2026-08-15 00:00:00+00:00",
-      "entry": 11.78,
-      "target": 10.69014288,
-      "stop": 12.32492856,
-      "score": 5.49,
+      "first_seen": "2026-10-13T01:42:01.299651+00:00",
+      "last_seen": "2026-10-13T01:42:01.299651+00:00",
+      "last_bar_time": "2026-10-12 20:00:00+00:00",
+      "entry": 22.361,
+      "target": 19.80778572,
+      "stop": 23.63760714,
+      "score": 8.0,
       "rr": 2.0,
-      "risk_emoji": "\ud83d\udfe0",
+      "risk_emoji": "\ud83d\udfe2",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-08-15T05:14:17.220259+00:00",
-      "alert_count": 1
+      "last_alerted_at": "2026-10-13T01:42:01.299651+00:00",
+      "alert_count": 2
     },
     "AVAX|short|1d": {
       "symbol": "AVAX",
