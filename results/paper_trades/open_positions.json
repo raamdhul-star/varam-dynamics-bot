@@ -182,8 +182,8 @@
     "open_time": "2026-09-13T12:22:48.029375+00:00",
     "status": "open",
     "peak_pnl_pct": 0.10419813946092069,
-    "current_price": 2503.1,
-    "current_pnl_pct": -0.489
+    "current_price": 2532.7,
+    "current_pnl_pct": 0.688
   },
   {
     "id": "BTC_1h_fixed_pct_2026-09-18",
@@ -202,8 +202,8 @@
     "open_time": "2026-09-18T17:57:46.717754+00:00",
     "status": "open",
     "peak_pnl_pct": 0.084148336893119,
-    "current_price": 83197.0,
-    "current_pnl_pct": 3.917
+    "current_price": 83899.0,
+    "current_pnl_pct": 4.794
   },
   {
     "id": "PAXG_4h_fixed_pct_2026-09-24",
@@ -222,8 +222,8 @@
     "open_time": "2026-09-24T01:46:04.389733+00:00",
     "status": "open",
     "peak_pnl_pct": 0.037797152941726635,
-    "current_price": 4179.2,
-    "current_pnl_pct": 2.312
+    "current_price": 4194.5,
+    "current_pnl_pct": 1.954
   },
   {
     "id": "PAXG_4h_trailing_2026-09-24",
@@ -242,8 +242,8 @@
     "open_time": "2026-09-24T01:46:04.389733+00:00",
     "status": "open",
     "peak_pnl_pct": 0.037797152941726635,
-    "current_price": 4179.2,
-    "current_pnl_pct": 2.312
+    "current_price": 4194.5,
+    "current_pnl_pct": 1.954
   },
   {
     "id": "AVAX_1w_cpr_target_2026-09-24",
@@ -282,8 +282,8 @@
     "open_time": "2026-09-24T20:51:40.252208+00:00",
     "status": "open",
     "peak_pnl_pct": 0.17493448363830327,
-    "current_price": 0.36709,
-    "current_pnl_pct": 14.866
+    "current_price": 0.36713,
+    "current_pnl_pct": 14.857
   },
   {
     "id": "LIT_4h_cpr_target_2026-09-30",
@@ -302,8 +302,8 @@
     "open_time": "2026-09-30T00:50:29.293085+00:00",
     "status": "open",
     "peak_pnl_pct": 0.16215460484506472,
-    "current_price": 3.4273,
-    "current_pnl_pct": 12.878
+    "current_price": 3.4238,
+    "current_pnl_pct": 12.967
   },
   {
     "id": "WLD_1d_cpr_target_2026-10-03",
@@ -322,8 +322,8 @@
     "open_time": "2026-10-03T00:04:18.762441+00:00",
     "status": "open",
     "peak_pnl_pct": 0.0926118813303642,
-    "current_price": 0.51597,
-    "current_pnl_pct": -7.34
+    "current_price": 0.51806,
+    "current_pnl_pct": -6.964
   },
   {
     "id": "HYPE_1h_fixed_pct_2026-10-07",
@@ -342,8 +342,8 @@
     "open_time": "2026-10-07T02:49:42.370364+00:00",
     "status": "open",
     "peak_pnl_pct": 0.09856847093209915,
-    "current_price": 82.554,
-    "current_pnl_pct": 8.601
+    "current_price": 83.245,
+    "current_pnl_pct": 7.836
   },
   {
     "id": "LINK_4h_fixed_pct_2026-10-07",
@@ -362,68 +362,8 @@
     "open_time": "2026-10-07T09:26:23.600127+00:00",
     "status": "open",
     "peak_pnl_pct": 0.09551427942148154,
-    "current_price": 12.918,
-    "current_pnl_pct": 5.161
-  },
-  {
-    "id": "XRP_1h_fixed_pct_2026-10-12",
-    "symbol": "XRP",
-    "interval": "1h",
-    "direction": "short",
-    "exit_style": "fixed_pct",
-    "entry_price": 1.358,
-    "sl_price": 1.37620357,
-    "tp_price": 1.32159286,
-    "current_sl": 1.37620357,
-    "score": 7.68,
-    "risk_label": "Low-Medium Risk",
-    "cpr_width": 0.0339,
-    "cpr_type": "Narrow",
-    "open_time": "2026-10-12T19:27:39.059754+00:00",
-    "status": "open",
-    "peak_pnl_pct": 0.01045655375552282,
-    "current_price": 1.3683,
-    "current_pnl_pct": -0.758
-  },
-  {
-    "id": "XRP_1h_cpr_target_2026-10-12",
-    "symbol": "XRP",
-    "interval": "1h",
-    "direction": "short",
-    "exit_style": "cpr_target",
-    "entry_price": 1.358,
-    "sl_price": 1.37620357,
-    "tp_price": 1.32159286,
-    "current_sl": 1.37620357,
-    "score": 7.68,
-    "risk_label": "Low-Medium Risk",
-    "cpr_width": 0.0339,
-    "cpr_type": "Narrow",
-    "open_time": "2026-10-12T19:27:39.059754+00:00",
-    "status": "open",
-    "peak_pnl_pct": 0.01045655375552282,
-    "current_price": 1.3683,
-    "current_pnl_pct": -0.758
-  },
-  {
-    "id": "XRP_1h_trailing_2026-10-12",
-    "symbol": "XRP",
-    "interval": "1h",
-    "direction": "short",
-    "exit_style": "trailing",
-    "entry_price": 1.358,
-    "sl_price": 1.37620357,
-    "tp_price": 1.32159286,
-    "current_sl": 1.37620357,
-    "score": 7.68,
-    "risk_label": "Low-Medium Risk",
-    "cpr_width": 0.0339,
-    "cpr_type": "Narrow",
-    "open_time": "2026-10-12T19:27:39.059754+00:00",
-    "status": "open",
-    "peak_pnl_pct": 0.01045655375552282,
-    "current_price": 1.3683,
-    "current_pnl_pct": -0.758
+    "current_price": 13.015,
+    "current_pnl_pct": 4.449
   },
   {
     "id": "VVV_4h_fixed_pct_2026-10-13",
@@ -442,8 +382,8 @@
     "open_time": "2026-10-13T01:42:01.857699+00:00",
     "status": "open",
     "peak_pnl_pct": 0.007736684405885328,
-    "current_price": 22.511,
-    "current_pnl_pct": -0.671
+    "current_price": 23.167,
+    "current_pnl_pct": -3.604
   },
   {
     "id": "VVV_4h_cpr_target_2026-10-13",
@@ -462,8 +402,8 @@
     "open_time": "2026-10-13T01:42:01.857699+00:00",
     "status": "open",
     "peak_pnl_pct": 0.007736684405885328,
-    "current_price": 22.511,
-    "current_pnl_pct": -0.671
+    "current_price": 23.167,
+    "current_pnl_pct": -3.604
   },
   {
     "id": "VVV_4h_trailing_2026-10-13",
@@ -482,67 +422,7 @@
     "open_time": "2026-10-13T01:42:01.857699+00:00",
     "status": "open",
     "peak_pnl_pct": 0.007736684405885328,
-    "current_price": 22.511,
-    "current_pnl_pct": -0.671
-  },
-  {
-    "id": "SOL_4h_fixed_pct_2026-10-13",
-    "symbol": "SOL",
-    "interval": "4h",
-    "direction": "short",
-    "exit_style": "fixed_pct",
-    "entry_price": 105.69,
-    "sl_price": 108.23785714,
-    "tp_price": 100.59428572,
-    "current_sl": 108.23785714,
-    "score": 7.99,
-    "risk_label": "Low-Medium Risk",
-    "cpr_width": 0.0801,
-    "cpr_type": "Narrow",
-    "open_time": "2026-10-13T01:42:01.858457+00:00",
-    "status": "open",
-    "peak_pnl_pct": 0.0067177594852871015,
-    "current_price": 107.32,
-    "current_pnl_pct": -1.542
-  },
-  {
-    "id": "SOL_4h_cpr_target_2026-10-13",
-    "symbol": "SOL",
-    "interval": "4h",
-    "direction": "short",
-    "exit_style": "cpr_target",
-    "entry_price": 105.69,
-    "sl_price": 108.23785714,
-    "tp_price": 100.59428572,
-    "current_sl": 108.23785714,
-    "score": 7.99,
-    "risk_label": "Low-Medium Risk",
-    "cpr_width": 0.0801,
-    "cpr_type": "Narrow",
-    "open_time": "2026-10-13T01:42:01.858457+00:00",
-    "status": "open",
-    "peak_pnl_pct": 0.0067177594852871015,
-    "current_price": 107.32,
-    "current_pnl_pct": -1.542
-  },
-  {
-    "id": "SOL_4h_trailing_2026-10-13",
-    "symbol": "SOL",
-    "interval": "4h",
-    "direction": "short",
-    "exit_style": "trailing",
-    "entry_price": 105.69,
-    "sl_price": 108.23785714,
-    "tp_price": 100.59428572,
-    "current_sl": 108.23785714,
-    "score": 7.99,
-    "risk_label": "Low-Medium Risk",
-    "cpr_width": 0.0801,
-    "cpr_type": "Narrow",
-    "open_time": "2026-10-13T01:42:01.858457+00:00",
-    "status": "open",
-    "peak_pnl_pct": 0.0067177594852871015,
-    "current_price": 107.32,
-    "current_pnl_pct": -1.542
+    "current_price": 23.167,
+    "current_pnl_pct": -3.604
   }
 ]
