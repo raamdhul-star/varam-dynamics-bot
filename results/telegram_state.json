@@ -4,14 +4,27 @@
     {
       "symbol": "OP",
       "direction": "long",
-      "interval": "1h",
-      "score": 8.39,
-      "entry": 0.1426,
-      "sl": 0.13808286,
-      "tp": 0.15163428,
-      "sl_pct": 3.168,
+      "interval": "4h",
+      "score": 8.22,
+      "entry": 0.14202,
+      "sl": 0.13424894,
+      "tp": 0.15756212,
+      "sl_pct": 5.472,
       "rr": 2.0,
-      "bar_time": "2026-10-13 14:00:00+00:00",
+      "bar_time": "2026-10-13 12:00:00+00:00",
+      "source": "hyperliquid"
+    },
+    {
+      "symbol": "FET",
+      "direction": "long",
+      "interval": "1h",
+      "score": 7.7,
+      "entry": 0.21573,
+      "sl": 0.21059356,
+      "tp": 0.22600288,
+      "sl_pct": 2.381,
+      "rr": 2.0,
+      "bar_time": "2026-10-13 21:00:00+00:00",
       "source": "hyperliquid"
     }
   ],
@@ -333,9 +346,42 @@
     "BTC_short_1h_2026-10-12 21:00:00+00:00": "2026-10-13T01:42:01.299651+00:00",
     "ETH_short_4h_2026-10-12 20:00:00+00:00": "2026-10-13T01:42:01.299651+00:00",
     "BTC_long_4h_2026-10-13 00:00:00+00:00": "2026-10-13T08:35:16.925532+00:00",
-    "OP_long_1h_2026-10-13 14:00:00+00:00": "2026-10-13T16:32:07.112147+00:00"
+    "OP_long_1h_2026-10-13 14:00:00+00:00": "2026-10-13T16:32:07.112147+00:00",
+    "OP_long_4h_2026-10-13 12:00:00+00:00": "2026-10-14T00:42:18.154414+00:00",
+    "FET_long_1h_2026-10-13 21:00:00+00:00": "2026-10-14T00:42:18.154414+00:00"
   },
   "batches": {
+    "3562": {
+      "time": "2026-10-14T00:42:18.154414+00:00",
+      "sigs": [
+        {
+          "symbol": "OP",
+          "direction": "long",
+          "interval": "4h",
+          "score": 8.22,
+          "entry": 0.14202,
+          "sl": 0.13424894,
+          "tp": 0.15756212,
+          "sl_pct": 5.472,
+          "rr": 2.0,
+          "bar_time": "2026-10-13 12:00:00+00:00",
+          "source": "hyperliquid"
+        },
+        {
+          "symbol": "FET",
+          "direction": "long",
+          "interval": "1h",
+          "score": 7.7,
+          "entry": 0.21573,
+          "sl": 0.21059356,
+          "tp": 0.22600288,
+          "sl_pct": 2.381,
+          "rr": 2.0,
+          "bar_time": "2026-10-13 21:00:00+00:00",
+          "source": "hyperliquid"
+        }
+      ]
+    },
     "3559": {
       "time": "2026-10-13T16:32:07.112147+00:00",
       "sigs": [
@@ -637,37 +683,6 @@
           "source": "hyperliquid"
         }
       ]
-    },
-    "3513": {
-      "time": "2026-10-09T01:33:18.575270+00:00",
-      "sigs": [
-        {
-          "symbol": "XMR",
-          "direction": "long",
-          "interval": "1h",
-          "score": 8.1,
-          "entry": 545.89,
-          "sl": 533.91357144,
-          "tp": 569.84285712,
-          "sl_pct": 2.194,
-          "rr": 2.0,
-          "bar_time": "2026-10-09 00:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "BCH",
-          "direction": "short",
-          "interval": "1h",
-          "score": 7.77,
-          "entry": 271.1,
-          "sl": 279.15392856,
-          "tp": 254.99214288,
-          "sl_pct": 2.971,
-          "rr": 2.0,
-          "bar_time": "2026-10-08 23:00:00+00:00",
-          "source": "hyperliquid"
-        }
-      ]
     }
   },
   "calls": {
@@ -945,19 +960,19 @@
       "symbol": "FET",
       "direction": "long",
       "interval": "1h",
-      "first_seen": "2026-10-11T14:26:53.942131+00:00",
-      "last_seen": "2026-10-11T14:26:53.942131+00:00",
-      "last_bar_time": "2026-10-11 12:00:00+00:00",
-      "entry": 0.22945,
-      "target": 0.23916572,
-      "stop": 0.22459214,
+      "first_seen": "2026-10-14T00:42:18.154414+00:00",
+      "last_seen": "2026-10-14T00:42:18.154414+00:00",
+      "last_bar_time": "2026-10-13 21:00:00+00:00",
+      "entry": 0.21573,
+      "target": 0.22600288,
+      "stop": 0.21059356,
       "score": 7.7,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-10-11T14:26:53.942131+00:00",
-      "alert_count": 7
+      "last_alerted_at": "2026-10-14T00:42:18.154414+00:00",
+      "alert_count": 8
     },
     "INJ|long|1w": {
       "symbol": "INJ",
@@ -6789,6 +6804,24 @@
       "status": "active",
       "lifecycle_label": "new",
       "last_alerted_at": "2026-10-07T09:26:22.840891+00:00",
+      "alert_count": 1
+    },
+    "OP|long|4h": {
+      "symbol": "OP",
+      "direction": "long",
+      "interval": "4h",
+      "first_seen": "2026-10-14T00:42:18.154414+00:00",
+      "last_seen": "2026-10-14T00:42:18.154414+00:00",
+      "last_bar_time": "2026-10-13 12:00:00+00:00",
+      "entry": 0.14202,
+      "target": 0.15756212,
+      "stop": 0.13424894,
+      "score": 8.22,
+      "rr": 2.0,
+      "risk_emoji": "\ud83d\udfe2",
+      "status": "active",
+      "lifecycle_label": "new",
+      "last_alerted_at": "2026-10-14T00:42:18.154414+00:00",
       "alert_count": 1
     }
   }
