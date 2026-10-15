@@ -1455,7 +1455,9 @@
     "aster|ETHUSDT|short|4h|2026-10-15 00:00:00+00:00": "2026-10-15T07:22:31.312085+00:00",
     "aster|BTCUSDT|short|1h|2026-10-15 05:00:00+00:00": "2026-10-15T07:22:31.312085+00:00",
     "aster|OPENAIUSDT|short|1h|2026-10-15 06:00:00+00:00": "2026-10-15T07:22:31.312085+00:00",
-    "aster|NVDAUSDT|short|4h|2026-10-14 20:00:00+00:00": "2026-10-15T07:22:31.312085+00:00"
+    "aster|NVDAUSDT|short|4h|2026-10-14 20:00:00+00:00": "2026-10-15T07:22:31.312085+00:00",
+    "aster|HYPEUSDT|short|1h|2026-10-15 12:00:00+00:00": "2026-10-15T13:22:32.777073+00:00",
+    "aster|QQQUSDT|short|1d|2026-10-14 00:00:00+00:00": "2026-10-15T13:22:32.777073+00:00"
   },
   "calls": {
     "aster|ETHUSDT|long|4h": {
@@ -1588,19 +1590,19 @@
       "symbol": "HYPEUSDT",
       "direction": "short",
       "interval": "1h",
-      "first_seen": "2026-10-14T15:05:11.838590+00:00",
-      "last_seen": "2026-10-14T15:05:11.838590+00:00",
-      "last_bar_time": "2026-10-14 12:00:00+00:00",
-      "entry": 80.709,
-      "target": 78.62142858,
-      "stop": 81.75278571,
+      "first_seen": "2026-10-15T13:22:32.777073+00:00",
+      "last_seen": "2026-10-15T13:22:32.777073+00:00",
+      "last_bar_time": "2026-10-15 12:00:00+00:00",
+      "entry": 78.286,
+      "target": 75.244,
+      "stop": 79.807,
       "score": 7.38,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-10-14T15:05:11.838590+00:00",
-      "alert_count": 43
+      "last_alerted_at": "2026-10-15T13:22:32.777073+00:00",
+      "alert_count": 44
     },
     "aster|SPXUSDT|long|1h": {
       "symbol": "SPXUSDT",
@@ -2830,19 +2832,19 @@
       "symbol": "QQQUSDT",
       "direction": "short",
       "interval": "1d",
-      "first_seen": "2026-10-09T00:19:51.500565+00:00",
-      "last_seen": "2026-10-09T00:19:51.500565+00:00",
-      "last_bar_time": "2026-10-08 00:00:00+00:00",
-      "entry": 748.75,
-      "target": 724.43714288,
-      "stop": 760.90642856,
-      "score": 6.71,
+      "first_seen": "2026-10-15T13:22:32.777073+00:00",
+      "last_seen": "2026-10-15T13:22:32.777073+00:00",
+      "last_bar_time": "2026-10-14 00:00:00+00:00",
+      "entry": 723.72,
+      "target": 697.49785712,
+      "stop": 736.83107144,
+      "score": 7.01,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-10-09T00:19:51.500565+00:00",
-      "alert_count": 2
+      "last_alerted_at": "2026-10-15T13:22:32.777073+00:00",
+      "alert_count": 3
     },
     "aster|ANTHROPICUSDT|long|4h": {
       "symbol": "ANTHROPICUSDT",
