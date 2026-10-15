@@ -2,53 +2,14 @@
   "offset": 262981543,
   "sigs": [
     {
-      "symbol": "kPEPE",
-      "direction": "short",
-      "interval": "4h",
-      "score": 8.37,
-      "entry": 0.003905,
-      "sl": 0.0041254,
-      "tp": 0.0034642,
-      "sl_pct": 5.644,
-      "rr": 2.0,
-      "bar_time": "2026-10-15 00:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "PUMP",
-      "direction": "short",
-      "interval": "4h",
-      "score": 7.97,
-      "entry": 0.004354,
-      "sl": 0.00469696,
-      "tp": 0.00366808,
-      "sl_pct": 7.877,
-      "rr": 2.0,
-      "bar_time": "2026-10-15 00:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "JTO",
-      "direction": "short",
-      "interval": "1h",
-      "score": 7.77,
-      "entry": 0.47058,
-      "sl": 0.48504214,
-      "tp": 0.44165572,
-      "sl_pct": 3.073,
-      "rr": 2.0,
-      "bar_time": "2026-10-15 02:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "ETH",
+      "symbol": "XRP",
       "direction": "short",
       "interval": "4h",
       "score": 7.69,
-      "entry": 2359.0,
-      "sl": 2436.625,
-      "tp": 2203.75,
-      "sl_pct": 3.291,
+      "entry": 1.3031,
+      "sl": 1.34546429,
+      "tp": 1.21837142,
+      "sl_pct": 3.251,
       "rr": 2.0,
       "bar_time": "2026-10-15 00:00:00+00:00",
       "source": "hyperliquid"
@@ -382,9 +343,28 @@
     "kPEPE_short_4h_2026-10-15 00:00:00+00:00": "2026-10-15T05:34:48.556196+00:00",
     "PUMP_short_4h_2026-10-15 00:00:00+00:00": "2026-10-15T05:34:48.556196+00:00",
     "JTO_short_1h_2026-10-15 02:00:00+00:00": "2026-10-15T05:34:48.556196+00:00",
-    "ETH_short_4h_2026-10-15 00:00:00+00:00": "2026-10-15T05:34:48.556196+00:00"
+    "ETH_short_4h_2026-10-15 00:00:00+00:00": "2026-10-15T05:34:48.556196+00:00",
+    "XRP_short_4h_2026-10-15 00:00:00+00:00": "2026-10-15T10:26:41.837052+00:00"
   },
   "batches": {
+    "3581": {
+      "time": "2026-10-15T10:26:41.837052+00:00",
+      "sigs": [
+        {
+          "symbol": "XRP",
+          "direction": "short",
+          "interval": "4h",
+          "score": 7.69,
+          "entry": 1.3031,
+          "sl": 1.34546429,
+          "tp": 1.21837142,
+          "sl_pct": 3.251,
+          "rr": 2.0,
+          "bar_time": "2026-10-15 00:00:00+00:00",
+          "source": "hyperliquid"
+        }
+      ]
+    },
     "3577": {
       "time": "2026-10-15T05:34:48.556196+00:00",
       "sigs": [
@@ -826,37 +806,6 @@
           "sl_pct": 2.117,
           "rr": 2.0,
           "bar_time": "2026-10-11 12:00:00+00:00",
-          "source": "hyperliquid"
-        }
-      ]
-    },
-    "3529": {
-      "time": "2026-10-11T01:23:25.151104+00:00",
-      "sigs": [
-        {
-          "symbol": "TIA",
-          "direction": "long",
-          "interval": "1h",
-          "score": 8.51,
-          "entry": 0.59563,
-          "sl": 0.57074929,
-          "tp": 0.64539142,
-          "sl_pct": 4.177,
-          "rr": 2.0,
-          "bar_time": "2026-10-10 22:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "CHIP",
-          "direction": "long",
-          "interval": "4h",
-          "score": 8.07,
-          "entry": 0.066417,
-          "sl": 0.06182164,
-          "tp": 0.07560772,
-          "sl_pct": 6.919,
-          "rr": 2.0,
-          "bar_time": "2026-10-10 16:00:00+00:00",
           "source": "hyperliquid"
         }
       ]
@@ -3873,19 +3822,19 @@
       "symbol": "XRP",
       "direction": "short",
       "interval": "4h",
-      "first_seen": "2026-08-18T04:22:52.493241+00:00",
-      "last_seen": "2026-08-18T04:22:52.493241+00:00",
-      "last_bar_time": "2026-08-18 00:00:00+00:00",
-      "entry": 0.99057,
-      "target": 0.96735428,
-      "stop": 1.00217786,
-      "score": 7.29,
+      "first_seen": "2026-10-15T10:26:41.837052+00:00",
+      "last_seen": "2026-10-15T10:26:41.837052+00:00",
+      "last_bar_time": "2026-10-15 00:00:00+00:00",
+      "entry": 1.3031,
+      "target": 1.21837142,
+      "stop": 1.34546429,
+      "score": 7.69,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-08-18T04:22:52.493241+00:00",
-      "alert_count": 7
+      "last_alerted_at": "2026-10-15T10:26:41.837052+00:00",
+      "alert_count": 8
     },
     "ICP|short|4h": {
       "symbol": "ICP",
