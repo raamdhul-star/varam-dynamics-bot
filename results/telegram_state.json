@@ -2,29 +2,29 @@
   "offset": 262981543,
   "sigs": [
     {
-      "symbol": "BTC",
+      "symbol": "ARB",
       "direction": "long",
       "interval": "4h",
-      "score": 7.69,
-      "entry": 82387.0,
-      "sl": 80744.5,
-      "tp": 85672.0,
-      "sl_pct": 1.994,
+      "score": 8.0,
+      "entry": 0.18984,
+      "sl": 0.17909144,
+      "tp": 0.21133712,
+      "sl_pct": 5.662,
       "rr": 2.0,
       "bar_time": "2026-10-15 12:00:00+00:00",
       "source": "hyperliquid"
     },
     {
-      "symbol": "FET",
+      "symbol": "TIA",
       "direction": "long",
-      "interval": "4h",
-      "score": 7.62,
-      "entry": 0.2093,
-      "sl": 0.19618356,
-      "tp": 0.23553288,
-      "sl_pct": 6.267,
+      "interval": "1d",
+      "score": 7.93,
+      "entry": 0.59071,
+      "sl": 0.4868575,
+      "tp": 0.798415,
+      "sl_pct": 17.581,
       "rr": 2.0,
-      "bar_time": "2026-10-15 12:00:00+00:00",
+      "bar_time": "2026-10-15 00:00:00+00:00",
       "source": "hyperliquid"
     }
   ],
@@ -373,9 +373,42 @@
     "WLD_long_4h_2026-10-15 12:00:00+00:00": "2026-10-15T19:32:15.977288+00:00",
     "SUI_long_4h_2026-10-15 12:00:00+00:00": "2026-10-15T19:32:15.977288+00:00",
     "BTC_long_4h_2026-10-15 12:00:00+00:00": "2026-10-15T22:44:53.421709+00:00",
-    "FET_long_4h_2026-10-15 12:00:00+00:00": "2026-10-15T22:44:53.421709+00:00"
+    "FET_long_4h_2026-10-15 12:00:00+00:00": "2026-10-15T22:44:53.421709+00:00",
+    "ARB_long_4h_2026-10-15 12:00:00+00:00": "2026-10-16T00:53:07.262128+00:00",
+    "TIA_long_1d_2026-10-15 00:00:00+00:00": "2026-10-16T00:53:07.262128+00:00"
   },
   "batches": {
+    "3593": {
+      "time": "2026-10-16T00:53:07.262128+00:00",
+      "sigs": [
+        {
+          "symbol": "ARB",
+          "direction": "long",
+          "interval": "4h",
+          "score": 8.0,
+          "entry": 0.18984,
+          "sl": 0.17909144,
+          "tp": 0.21133712,
+          "sl_pct": 5.662,
+          "rr": 2.0,
+          "bar_time": "2026-10-15 12:00:00+00:00",
+          "source": "hyperliquid"
+        },
+        {
+          "symbol": "TIA",
+          "direction": "long",
+          "interval": "1d",
+          "score": 7.93,
+          "entry": 0.59071,
+          "sl": 0.4868575,
+          "tp": 0.798415,
+          "sl_pct": 17.581,
+          "rr": 2.0,
+          "bar_time": "2026-10-15 00:00:00+00:00",
+          "source": "hyperliquid"
+        }
+      ]
+    },
     "3592": {
       "time": "2026-10-15T22:44:53.421709+00:00",
       "sigs": [
@@ -986,63 +1019,6 @@
           "sl_pct": 1.431,
           "rr": 2.0,
           "bar_time": "2026-10-13 00:00:00+00:00",
-          "source": "hyperliquid"
-        }
-      ]
-    },
-    "3552": {
-      "time": "2026-10-13T01:42:01.299651+00:00",
-      "sigs": [
-        {
-          "symbol": "VVV",
-          "direction": "short",
-          "interval": "4h",
-          "score": 8.0,
-          "entry": 22.361,
-          "sl": 23.63760714,
-          "tp": 19.80778572,
-          "sl_pct": 5.709,
-          "rr": 2.0,
-          "bar_time": "2026-10-12 20:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "SOL",
-          "direction": "short",
-          "interval": "4h",
-          "score": 7.99,
-          "entry": 105.69,
-          "sl": 108.23785714,
-          "tp": 100.59428572,
-          "sl_pct": 2.411,
-          "rr": 2.0,
-          "bar_time": "2026-10-12 20:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "BTC",
-          "direction": "short",
-          "interval": "1h",
-          "score": 7.97,
-          "entry": 82536.0,
-          "sl": 83186.46428571,
-          "tp": 81235.07142858,
-          "sl_pct": 0.788,
-          "rr": 2.0,
-          "bar_time": "2026-10-12 21:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "ETH",
-          "direction": "short",
-          "interval": "4h",
-          "score": 7.69,
-          "entry": 2445.6,
-          "sl": 2487.28928571,
-          "tp": 2362.22142858,
-          "sl_pct": 1.705,
-          "rr": 2.0,
-          "bar_time": "2026-10-12 20:00:00+00:00",
           "source": "hyperliquid"
         }
       ]
@@ -2727,19 +2703,19 @@
       "symbol": "ARB",
       "direction": "long",
       "interval": "4h",
-      "first_seen": "2026-09-05T22:24:47.162243+00:00",
-      "last_seen": "2026-09-05T22:24:47.162243+00:00",
-      "last_bar_time": "2026-09-05 16:00:00+00:00",
-      "entry": 0.14963,
-      "target": 0.1737907,
-      "stop": 0.13754965,
-      "score": 8.32,
+      "first_seen": "2026-10-16T00:53:07.262128+00:00",
+      "last_seen": "2026-10-16T00:53:07.262128+00:00",
+      "last_bar_time": "2026-10-15 12:00:00+00:00",
+      "entry": 0.18984,
+      "target": 0.21133712,
+      "stop": 0.17909144,
+      "score": 8.0,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe2",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-09-05T22:24:47.162243+00:00",
-      "alert_count": 7
+      "last_alerted_at": "2026-10-16T00:53:07.262128+00:00",
+      "alert_count": 8
     },
     "ONDO|short|1h": {
       "symbol": "ONDO",
@@ -7185,6 +7161,24 @@
       "status": "active",
       "lifecycle_label": "new",
       "last_alerted_at": "2026-10-14T00:42:18.154414+00:00",
+      "alert_count": 1
+    },
+    "TIA|long|1d": {
+      "symbol": "TIA",
+      "direction": "long",
+      "interval": "1d",
+      "first_seen": "2026-10-16T00:53:07.262128+00:00",
+      "last_seen": "2026-10-16T00:53:07.262128+00:00",
+      "last_bar_time": "2026-10-15 00:00:00+00:00",
+      "entry": 0.59071,
+      "target": 0.798415,
+      "stop": 0.4868575,
+      "score": 7.93,
+      "rr": 2.0,
+      "risk_emoji": "\ud83d\udfe1",
+      "status": "active",
+      "lifecycle_label": "new",
+      "last_alerted_at": "2026-10-16T00:53:07.262128+00:00",
       "alert_count": 1
     }
   }
