@@ -2,16 +2,29 @@
   "offset": 262981543,
   "sigs": [
     {
-      "symbol": "TIA",
-      "direction": "long",
+      "symbol": "ENA",
+      "direction": "short",
       "interval": "1h",
-      "score": 8.91,
-      "entry": 0.73405,
-      "sl": 0.69707179,
-      "tp": 0.80800642,
-      "sl_pct": 5.038,
+      "score": 7.68,
+      "entry": 0.18914,
+      "sl": 0.19222036,
+      "tp": 0.18297928,
+      "sl_pct": 1.629,
       "rr": 2.0,
-      "bar_time": "2026-10-17 03:00:00+00:00",
+      "bar_time": "2026-10-17 15:00:00+00:00",
+      "source": "hyperliquid"
+    },
+    {
+      "symbol": "LIT",
+      "direction": "short",
+      "interval": "1h",
+      "score": 7.68,
+      "entry": 3.0931,
+      "sl": 3.15734286,
+      "tp": 2.96461428,
+      "sl_pct": 2.077,
+      "rr": 2.0,
+      "bar_time": "2026-10-17 15:00:00+00:00",
       "source": "hyperliquid"
     }
   ],
@@ -362,9 +375,42 @@
     "INJ_short_1h_2026-10-16 16:00:00+00:00": "2026-10-16T19:06:01.674920+00:00",
     "XPL_long_1d_2026-10-15 00:00:00+00:00": "2026-10-16T19:06:01.674920+00:00",
     "XMR_long_1h_2026-10-16 19:00:00+00:00": "2026-10-16T22:16:39.404726+00:00",
-    "TIA_long_1h_2026-10-17 03:00:00+00:00": "2026-10-17T05:07:48.327582+00:00"
+    "TIA_long_1h_2026-10-17 03:00:00+00:00": "2026-10-17T05:07:48.327582+00:00",
+    "ENA_short_1h_2026-10-17 15:00:00+00:00": "2026-10-17T16:42:23.386320+00:00",
+    "LIT_short_1h_2026-10-17 15:00:00+00:00": "2026-10-17T16:42:23.386320+00:00"
   },
   "batches": {
+    "3610": {
+      "time": "2026-10-17T16:42:23.386320+00:00",
+      "sigs": [
+        {
+          "symbol": "ENA",
+          "direction": "short",
+          "interval": "1h",
+          "score": 7.68,
+          "entry": 0.18914,
+          "sl": 0.19222036,
+          "tp": 0.18297928,
+          "sl_pct": 1.629,
+          "rr": 2.0,
+          "bar_time": "2026-10-17 15:00:00+00:00",
+          "source": "hyperliquid"
+        },
+        {
+          "symbol": "LIT",
+          "direction": "short",
+          "interval": "1h",
+          "score": 7.68,
+          "entry": 3.0931,
+          "sl": 3.15734286,
+          "tp": 2.96461428,
+          "sl_pct": 2.077,
+          "rr": 2.0,
+          "bar_time": "2026-10-17 15:00:00+00:00",
+          "source": "hyperliquid"
+        }
+      ]
+    },
     "3607": {
       "time": "2026-10-17T05:07:48.327582+00:00",
       "sigs": [
@@ -830,63 +876,6 @@
           "sl": 1.34546429,
           "tp": 1.21837142,
           "sl_pct": 3.251,
-          "rr": 2.0,
-          "bar_time": "2026-10-15 00:00:00+00:00",
-          "source": "hyperliquid"
-        }
-      ]
-    },
-    "3577": {
-      "time": "2026-10-15T05:34:48.556196+00:00",
-      "sigs": [
-        {
-          "symbol": "kPEPE",
-          "direction": "short",
-          "interval": "4h",
-          "score": 8.37,
-          "entry": 0.003905,
-          "sl": 0.0041254,
-          "tp": 0.0034642,
-          "sl_pct": 5.644,
-          "rr": 2.0,
-          "bar_time": "2026-10-15 00:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "PUMP",
-          "direction": "short",
-          "interval": "4h",
-          "score": 7.97,
-          "entry": 0.004354,
-          "sl": 0.00469696,
-          "tp": 0.00366808,
-          "sl_pct": 7.877,
-          "rr": 2.0,
-          "bar_time": "2026-10-15 00:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "JTO",
-          "direction": "short",
-          "interval": "1h",
-          "score": 7.77,
-          "entry": 0.47058,
-          "sl": 0.48504214,
-          "tp": 0.44165572,
-          "sl_pct": 3.073,
-          "rr": 2.0,
-          "bar_time": "2026-10-15 02:00:00+00:00",
-          "source": "hyperliquid"
-        },
-        {
-          "symbol": "ETH",
-          "direction": "short",
-          "interval": "4h",
-          "score": 7.69,
-          "entry": 2359.0,
-          "sl": 2436.625,
-          "tp": 2203.75,
-          "sl_pct": 3.291,
           "rr": 2.0,
           "bar_time": "2026-10-15 00:00:00+00:00",
           "source": "hyperliquid"
@@ -1565,19 +1554,19 @@
       "symbol": "ENA",
       "direction": "short",
       "interval": "1h",
-      "first_seen": "2026-10-08T17:02:40.299675+00:00",
-      "last_seen": "2026-10-08T17:02:40.299675+00:00",
-      "last_bar_time": "2026-10-08 15:00:00+00:00",
-      "entry": 0.20409,
-      "target": 0.19038212,
-      "stop": 0.21094394,
+      "first_seen": "2026-10-17T16:42:23.386320+00:00",
+      "last_seen": "2026-10-17T16:42:23.386320+00:00",
+      "last_bar_time": "2026-10-17 15:00:00+00:00",
+      "entry": 0.18914,
+      "target": 0.18297928,
+      "stop": 0.19222036,
       "score": 7.68,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-10-08T17:02:40.299675+00:00",
-      "alert_count": 17
+      "last_alerted_at": "2026-10-17T16:42:23.386320+00:00",
+      "alert_count": 18
     },
     "XPL|short|1h": {
       "symbol": "XPL",
@@ -2645,19 +2634,19 @@
       "symbol": "LIT",
       "direction": "short",
       "interval": "1h",
-      "first_seen": "2026-10-02T20:22:08.297296+00:00",
-      "last_seen": "2026-10-02T20:22:08.297296+00:00",
-      "last_bar_time": "2026-10-02 18:00:00+00:00",
-      "entry": 3.6052,
-      "target": 3.36978572,
-      "stop": 3.72290714,
+      "first_seen": "2026-10-17T16:42:23.386320+00:00",
+      "last_seen": "2026-10-17T16:42:23.386320+00:00",
+      "last_bar_time": "2026-10-17 15:00:00+00:00",
+      "entry": 3.0931,
+      "target": 2.96461428,
+      "stop": 3.15734286,
       "score": 7.68,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-10-02T20:22:08.297296+00:00",
-      "alert_count": 18
+      "last_alerted_at": "2026-10-17T16:42:23.386320+00:00",
+      "alert_count": 19
     },
     "ETHFI|long|1d": {
       "symbol": "ETHFI",
