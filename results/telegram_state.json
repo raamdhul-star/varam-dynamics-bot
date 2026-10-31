@@ -2,68 +2,16 @@
   "offset": 262981543,
   "sigs": [
     {
-      "symbol": "BTC",
-      "direction": "short",
-      "interval": "1d",
-      "score": 7.81,
-      "entry": 77947.0,
-      "sl": 80913.89285714,
-      "tp": 72013.21428572,
-      "sl_pct": 3.806,
-      "rr": 2.0,
-      "bar_time": "2026-10-29 00:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "HYPE",
+      "symbol": "STX",
       "direction": "long",
-      "interval": "1d",
-      "score": 7.81,
-      "entry": 88.957,
-      "sl": 81.96217856,
-      "tp": 102.94664288,
-      "sl_pct": 7.863,
+      "interval": "4h",
+      "score": 8.12,
+      "entry": 0.31279,
+      "sl": 0.295225,
+      "tp": 0.34792,
+      "sl_pct": 5.616,
       "rr": 2.0,
-      "bar_time": "2026-10-29 00:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "XPL",
-      "direction": "short",
-      "interval": "1d",
-      "score": 7.61,
-      "entry": 0.0727,
-      "sl": 0.08158846,
-      "tp": 0.05492308,
-      "sl_pct": 12.226,
-      "rr": 2.0,
-      "bar_time": "2026-10-29 00:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "ADA",
-      "direction": "short",
-      "interval": "1d",
-      "score": 7.61,
-      "entry": 0.19028,
-      "sl": 0.20708644,
-      "tp": 0.15666712,
-      "sl_pct": 8.832,
-      "rr": 2.0,
-      "bar_time": "2026-10-29 00:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "AVAX",
-      "direction": "short",
-      "interval": "1d",
-      "score": 7.61,
-      "entry": 8.2736,
-      "sl": 9.00827856,
-      "tp": 6.80424288,
-      "sl_pct": 8.88,
-      "rr": 2.0,
-      "bar_time": "2026-10-29 00:00:00+00:00",
+      "bar_time": "2026-10-31 08:00:00+00:00",
       "source": "hyperliquid"
     }
   ],
@@ -395,9 +343,28 @@
     "HYPE_long_1d_2026-10-29 00:00:00+00:00": "2026-10-30T07:50:12.903687+00:00",
     "XPL_short_1d_2026-10-29 00:00:00+00:00": "2026-10-30T07:50:12.903687+00:00",
     "ADA_short_1d_2026-10-29 00:00:00+00:00": "2026-10-30T07:50:12.903687+00:00",
-    "AVAX_short_1d_2026-10-29 00:00:00+00:00": "2026-10-30T07:50:12.903687+00:00"
+    "AVAX_short_1d_2026-10-29 00:00:00+00:00": "2026-10-30T07:50:12.903687+00:00",
+    "STX_long_4h_2026-10-31 08:00:00+00:00": "2026-10-31T19:00:24.606163+00:00"
   },
   "batches": {
+    "3764": {
+      "time": "2026-10-31T19:00:24.606163+00:00",
+      "sigs": [
+        {
+          "symbol": "STX",
+          "direction": "long",
+          "interval": "4h",
+          "score": 8.12,
+          "entry": 0.31279,
+          "sl": 0.295225,
+          "tp": 0.34792,
+          "sl_pct": 5.616,
+          "rr": 2.0,
+          "bar_time": "2026-10-31 08:00:00+00:00",
+          "source": "hyperliquid"
+        }
+      ]
+    },
     "3753": {
       "time": "2026-10-30T07:50:12.903687+00:00",
       "sigs": [
@@ -1060,24 +1027,6 @@
           "sl_pct": 2.769,
           "rr": 2.0,
           "bar_time": "2026-10-26 14:00:00+00:00",
-          "source": "hyperliquid"
-        }
-      ]
-    },
-    "3714": {
-      "time": "2026-10-26T05:30:32.585317+00:00",
-      "sigs": [
-        {
-          "symbol": "BTC",
-          "direction": "short",
-          "interval": "1h",
-          "score": 7.58,
-          "entry": 79715.0,
-          "sl": 80260.46428571,
-          "tp": 78624.07142858,
-          "sl_pct": 0.684,
-          "rr": 2.0,
-          "bar_time": "2026-10-26 01:00:00+00:00",
           "source": "hyperliquid"
         }
       ]
@@ -7310,6 +7259,24 @@
       "status": "active",
       "lifecycle_label": "new",
       "last_alerted_at": "2026-10-30T07:50:12.903687+00:00",
+      "alert_count": 1
+    },
+    "STX|long|4h": {
+      "symbol": "STX",
+      "direction": "long",
+      "interval": "4h",
+      "first_seen": "2026-10-31T19:00:24.606163+00:00",
+      "last_seen": "2026-10-31T19:00:24.606163+00:00",
+      "last_bar_time": "2026-10-31 08:00:00+00:00",
+      "entry": 0.31279,
+      "target": 0.34792,
+      "stop": 0.295225,
+      "score": 8.12,
+      "rr": 2.0,
+      "risk_emoji": "\ud83d\udfe2",
+      "status": "active",
+      "lifecycle_label": "new",
+      "last_alerted_at": "2026-10-31T19:00:24.606163+00:00",
       "alert_count": 1
     }
   }
