@@ -1,12 +1,12 @@
 {
-  "timestamp": 1795132545.890132,
-  "fetched_at": "2026-11-19T23:55:45.890134+00:00",
+  "timestamp": 1795149353.5852737,
+  "fetched_at": "2026-11-20T04:35:53.585277+00:00",
   "assets": [
     {
       "symbol": "BTC",
       "max_leverage": 40,
       "sz_decimals": 5,
-      "volume_usd": 4769446759.622402,
+      "volume_usd": 5103711068.59671,
       "tier": 1,
       "liquidity_score": 1.0
     },
@@ -14,7 +14,7 @@
       "symbol": "ETH",
       "max_leverage": 25,
       "sz_decimals": 4,
-      "volume_usd": 821651121.1231,
+      "volume_usd": 914236124.5055296,
       "tier": 1,
       "liquidity_score": 1.0
     },
@@ -22,7 +22,7 @@
       "symbol": "HYPE",
       "max_leverage": 10,
       "sz_decimals": 2,
-      "volume_usd": 589102173.5456398,
+      "volume_usd": 650338354.4335607,
       "tier": 1,
       "liquidity_score": 1.0
     },
@@ -30,7 +30,7 @@
       "symbol": "ZEC",
       "max_leverage": 10,
       "sz_decimals": 2,
-      "volume_usd": 228943603.8272,
+      "volume_usd": 245499705.69020003,
       "tier": 1,
       "liquidity_score": 1.0
     },
@@ -38,23 +38,23 @@
       "symbol": "SOL",
       "max_leverage": 20,
       "sz_decimals": 2,
-      "volume_usd": 165522084.74008006,
+      "volume_usd": 187428198.0936801,
       "tier": 1,
       "liquidity_score": 1.0
-    },
-    {
-      "symbol": "XRP",
-      "max_leverage": 20,
-      "sz_decimals": 0,
-      "volume_usd": 71483611.88787004,
-      "tier": 2,
-      "liquidity_score": 0.8
     },
     {
       "symbol": "NEAR",
       "max_leverage": 10,
       "sz_decimals": 1,
-      "volume_usd": 56860282.915659994,
+      "volume_usd": 64210368.63678,
+      "tier": 2,
+      "liquidity_score": 0.8
+    },
+    {
+      "symbol": "XRP",
+      "max_leverage": 20,
+      "sz_decimals": 0,
+      "volume_usd": 60964816.97737998,
       "tier": 2,
       "liquidity_score": 0.8
     },
@@ -62,7 +62,7 @@
       "symbol": "XMR",
       "max_leverage": 5,
       "sz_decimals": 3,
-      "volume_usd": 33045702.46163999,
+      "volume_usd": 35834553.393709995,
       "tier": 2,
       "liquidity_score": 0.8
     },
@@ -70,23 +70,7 @@
       "symbol": "PUMP",
       "max_leverage": 10,
       "sz_decimals": 0,
-      "volume_usd": 30321132.04717999,
-      "tier": 2,
-      "liquidity_score": 0.8
-    },
-    {
-      "symbol": "LIT",
-      "max_leverage": 5,
-      "sz_decimals": 0,
-      "volume_usd": 17286297.4211,
-      "tier": 2,
-      "liquidity_score": 0.8
-    },
-    {
-      "symbol": "VVV",
-      "max_leverage": 3,
-      "sz_decimals": 2,
-      "volume_usd": 14825425.545809995,
+      "volume_usd": 30331203.499344997,
       "tier": 2,
       "liquidity_score": 0.8
     },
@@ -94,15 +78,23 @@
       "symbol": "kPEPE",
       "max_leverage": 10,
       "sz_decimals": 0,
-      "volume_usd": 14238003.779870003,
+      "volume_usd": 24817481.691474017,
       "tier": 2,
       "liquidity_score": 0.8
     },
     {
-      "symbol": "SKY",
-      "max_leverage": 3,
+      "symbol": "LIT",
+      "max_leverage": 5,
       "sz_decimals": 0,
-      "volume_usd": 12024361.618249997,
+      "volume_usd": 18966061.312399995,
+      "tier": 2,
+      "liquidity_score": 0.8
+    },
+    {
+      "symbol": "VVV",
+      "max_leverage": 3,
+      "sz_decimals": 2,
+      "volume_usd": 15254568.72306,
       "tier": 2,
       "liquidity_score": 0.8
     },
@@ -110,7 +102,15 @@
       "symbol": "UNI",
       "max_leverage": 10,
       "sz_decimals": 1,
-      "volume_usd": 10348862.593650002,
+      "volume_usd": 12786231.0012,
+      "tier": 2,
+      "liquidity_score": 0.8
+    },
+    {
+      "symbol": "SKY",
+      "max_leverage": 3,
+      "sz_decimals": 0,
+      "volume_usd": 11764938.656706002,
       "tier": 2,
       "liquidity_score": 0.8
     },
@@ -118,55 +118,15 @@
       "symbol": "ENA",
       "max_leverage": 10,
       "sz_decimals": 0,
-      "volume_usd": 9673454.116260001,
-      "tier": 3,
-      "liquidity_score": 0.5
-    },
-    {
-      "symbol": "AAVE",
-      "max_leverage": 10,
-      "sz_decimals": 2,
-      "volume_usd": 8291237.183799998,
-      "tier": 3,
-      "liquidity_score": 0.5
+      "volume_usd": 11130758.385880003,
+      "tier": 2,
+      "liquidity_score": 0.8
     },
     {
       "symbol": "WLD",
       "max_leverage": 10,
       "sz_decimals": 1,
-      "volume_usd": 7698630.036149002,
-      "tier": 3,
-      "liquidity_score": 0.5
-    },
-    {
-      "symbol": "MON",
-      "max_leverage": 5,
-      "sz_decimals": 0,
-      "volume_usd": 7612699.072773999,
-      "tier": 3,
-      "liquidity_score": 0.5
-    },
-    {
-      "symbol": "ASTER",
-      "max_leverage": 5,
-      "sz_decimals": 0,
-      "volume_usd": 7599876.378549997,
-      "tier": 3,
-      "liquidity_score": 0.5
-    },
-    {
-      "symbol": "LINK",
-      "max_leverage": 10,
-      "sz_decimals": 1,
-      "volume_usd": 5350458.268639999,
-      "tier": 3,
-      "liquidity_score": 0.5
-    },
-    {
-      "symbol": "STRK",
-      "max_leverage": 5,
-      "sz_decimals": 1,
-      "volume_usd": 5234789.730722,
+      "volume_usd": 9068811.359767007,
       "tier": 3,
       "liquidity_score": 0.5
     },
@@ -174,15 +134,31 @@
       "symbol": "PAXG",
       "max_leverage": 10,
       "sz_decimals": 3,
-      "volume_usd": 5166292.061699999,
+      "volume_usd": 8847158.5005,
       "tier": 3,
       "liquidity_score": 0.5
     },
     {
-      "symbol": "TRUMP",
-      "max_leverage": 10,
+      "symbol": "MON",
+      "max_leverage": 5,
+      "sz_decimals": 0,
+      "volume_usd": 7300364.576165,
+      "tier": 3,
+      "liquidity_score": 0.5
+    },
+    {
+      "symbol": "STRK",
+      "max_leverage": 5,
       "sz_decimals": 1,
-      "volume_usd": 5067889.941085999,
+      "volume_usd": 7291506.67005,
+      "tier": 3,
+      "liquidity_score": 0.5
+    },
+    {
+      "symbol": "AAVE",
+      "max_leverage": 10,
+      "sz_decimals": 2,
+      "volume_usd": 7128603.078200001,
       "tier": 3,
       "liquidity_score": 0.5
     },
@@ -190,87 +166,79 @@
       "symbol": "AVAX",
       "max_leverage": 10,
       "sz_decimals": 2,
-      "volume_usd": 4964377.4557179995,
-      "tier": 4,
-      "liquidity_score": 0.2
+      "volume_usd": 6134013.734403001,
+      "tier": 3,
+      "liquidity_score": 0.5
     },
     {
-      "symbol": "JUP",
-      "max_leverage": 10,
+      "symbol": "ASTER",
+      "max_leverage": 5,
       "sz_decimals": 0,
-      "volume_usd": 4948538.841670002,
-      "tier": 4,
-      "liquidity_score": 0.2
+      "volume_usd": 5786000.855369998,
+      "tier": 3,
+      "liquidity_score": 0.5
     },
     {
-      "symbol": "XPL",
+      "symbol": "LINK",
       "max_leverage": 10,
-      "sz_decimals": 0,
-      "volume_usd": 4832285.067803999,
-      "tier": 4,
-      "liquidity_score": 0.2
+      "sz_decimals": 1,
+      "volume_usd": 5709213.2754500015,
+      "tier": 3,
+      "liquidity_score": 0.5
     },
     {
       "symbol": "DOGE",
       "max_leverage": 10,
       "sz_decimals": 0,
-      "volume_usd": 4693341.541493001,
-      "tier": 4,
-      "liquidity_score": 0.2
-    },
-    {
-      "symbol": "ZRO",
-      "max_leverage": 5,
-      "sz_decimals": 1,
-      "volume_usd": 4293013.03281,
-      "tier": 4,
-      "liquidity_score": 0.2
-    },
-    {
-      "symbol": "CRV",
-      "max_leverage": 10,
-      "sz_decimals": 1,
-      "volume_usd": 3897345.752363,
-      "tier": 4,
-      "liquidity_score": 0.2
-    },
-    {
-      "symbol": "kLUNC",
-      "max_leverage": 3,
-      "sz_decimals": 0,
-      "volume_usd": 3742571.717798,
-      "tier": 4,
-      "liquidity_score": 0.2
+      "volume_usd": 5667542.167622,
+      "tier": 3,
+      "liquidity_score": 0.5
     },
     {
       "symbol": "BNB",
       "max_leverage": 10,
       "sz_decimals": 3,
-      "volume_usd": 3697641.334759999,
-      "tier": 4,
-      "liquidity_score": 0.2
+      "volume_usd": 5516380.222309999,
+      "tier": 3,
+      "liquidity_score": 0.5
     },
     {
-      "symbol": "SUI",
+      "symbol": "XPL",
       "max_leverage": 10,
+      "sz_decimals": 0,
+      "volume_usd": 5432224.801195998,
+      "tier": 3,
+      "liquidity_score": 0.5
+    },
+    {
+      "symbol": "ZRO",
+      "max_leverage": 5,
       "sz_decimals": 1,
-      "volume_usd": 3662598.467,
-      "tier": 4,
-      "liquidity_score": 0.2
+      "volume_usd": 5138794.026620001,
+      "tier": 3,
+      "liquidity_score": 0.5
     },
     {
       "symbol": "FARTCOIN",
       "max_leverage": 10,
       "sz_decimals": 1,
-      "volume_usd": 3632528.695321001,
+      "volume_usd": 5113319.2173069995,
+      "tier": 3,
+      "liquidity_score": 0.5
+    },
+    {
+      "symbol": "JUP",
+      "max_leverage": 10,
+      "sz_decimals": 0,
+      "volume_usd": 4742113.36759,
       "tier": 4,
       "liquidity_score": 0.2
     },
     {
-      "symbol": "ARB",
+      "symbol": "TRUMP",
       "max_leverage": 10,
       "sz_decimals": 1,
-      "volume_usd": 3497644.3675479987,
+      "volume_usd": 4615319.945537,
       "tier": 4,
       "liquidity_score": 0.2
     },
@@ -278,23 +246,31 @@
       "symbol": "INJ",
       "max_leverage": 5,
       "sz_decimals": 1,
-      "volume_usd": 3445484.13347,
+      "volume_usd": 4577007.048400001,
       "tier": 4,
       "liquidity_score": 0.2
     },
     {
-      "symbol": "INIT",
+      "symbol": "kLUNC",
       "max_leverage": 3,
       "sz_decimals": 0,
-      "volume_usd": 3193031.3835330014,
+      "volume_usd": 4371142.541538001,
       "tier": 4,
       "liquidity_score": 0.2
     },
     {
-      "symbol": "GRAM",
-      "max_leverage": 5,
-      "sz_decimals": 0,
-      "volume_usd": 3174494.3893,
+      "symbol": "CRV",
+      "max_leverage": 10,
+      "sz_decimals": 1,
+      "volume_usd": 4113850.0433690003,
+      "tier": 4,
+      "liquidity_score": 0.2
+    },
+    {
+      "symbol": "SUI",
+      "max_leverage": 10,
+      "sz_decimals": 1,
+      "volume_usd": 3961891.2662080005,
       "tier": 4,
       "liquidity_score": 0.2
     },
@@ -302,55 +278,15 @@
       "symbol": "TAO",
       "max_leverage": 5,
       "sz_decimals": 3,
-      "volume_usd": 3113514.72783,
+      "volume_usd": 3684763.943820001,
       "tier": 4,
       "liquidity_score": 0.2
     },
     {
-      "symbol": "ADA",
+      "symbol": "ARB",
       "max_leverage": 10,
-      "sz_decimals": 0,
-      "volume_usd": 3032882.3121100003,
-      "tier": 4,
-      "liquidity_score": 0.2
-    },
-    {
-      "symbol": "ONDO",
-      "max_leverage": 10,
-      "sz_decimals": 0,
-      "volume_usd": 2597881.7091399995,
-      "tier": 4,
-      "liquidity_score": 0.2
-    },
-    {
-      "symbol": "SOPH",
-      "max_leverage": 3,
-      "sz_decimals": 0,
-      "volume_usd": 2285812.178488999,
-      "tier": 4,
-      "liquidity_score": 0.2
-    },
-    {
-      "symbol": "ETHFI",
-      "max_leverage": 5,
       "sz_decimals": 1,
-      "volume_usd": 2280800.002120999,
-      "tier": 4,
-      "liquidity_score": 0.2
-    },
-    {
-      "symbol": "TRX",
-      "max_leverage": 10,
-      "sz_decimals": 0,
-      "volume_usd": 2166741.3602199997,
-      "tier": 4,
-      "liquidity_score": 0.2
-    },
-    {
-      "symbol": "USELESS",
-      "max_leverage": 3,
-      "sz_decimals": 0,
-      "volume_usd": 2159176.9284619996,
+      "volume_usd": 3508846.574721001,
       "tier": 4,
       "liquidity_score": 0.2
     },
@@ -358,7 +294,31 @@
       "symbol": "LTC",
       "max_leverage": 10,
       "sz_decimals": 2,
-      "volume_usd": 2150650.0990500003,
+      "volume_usd": 3465848.4126,
+      "tier": 4,
+      "liquidity_score": 0.2
+    },
+    {
+      "symbol": "INIT",
+      "max_leverage": 3,
+      "sz_decimals": 0,
+      "volume_usd": 3270516.1385120023,
+      "tier": 4,
+      "liquidity_score": 0.2
+    },
+    {
+      "symbol": "ADA",
+      "max_leverage": 10,
+      "sz_decimals": 0,
+      "volume_usd": 3221311.2176300017,
+      "tier": 4,
+      "liquidity_score": 0.2
+    },
+    {
+      "symbol": "GRAM",
+      "max_leverage": 5,
+      "sz_decimals": 0,
+      "volume_usd": 2551022.4744999995,
       "tier": 4,
       "liquidity_score": 0.2
     },
@@ -366,31 +326,31 @@
       "symbol": "CHIP",
       "max_leverage": 3,
       "sz_decimals": 0,
-      "volume_usd": 2128935.8887870004,
+      "volume_usd": 2441336.954580001,
       "tier": 4,
       "liquidity_score": 0.2
     },
     {
-      "symbol": "PENDLE",
-      "max_leverage": 5,
-      "sz_decimals": 0,
-      "volume_usd": 1813225.752599999,
-      "tier": 4,
-      "liquidity_score": 0.2
-    },
-    {
-      "symbol": "ETC",
-      "max_leverage": 5,
-      "sz_decimals": 2,
-      "volume_usd": 1618862.838388,
-      "tier": 4,
-      "liquidity_score": 0.2
-    },
-    {
-      "symbol": "AERO",
+      "symbol": "USELESS",
       "max_leverage": 3,
       "sz_decimals": 0,
-      "volume_usd": 1601507.787899999,
+      "volume_usd": 2350751.923904001,
+      "tier": 4,
+      "liquidity_score": 0.2
+    },
+    {
+      "symbol": "ONDO",
+      "max_leverage": 10,
+      "sz_decimals": 0,
+      "volume_usd": 2285609.6948699993,
+      "tier": 4,
+      "liquidity_score": 0.2
+    },
+    {
+      "symbol": "TRX",
+      "max_leverage": 10,
+      "sz_decimals": 0,
+      "volume_usd": 2151456.9305599993,
       "tier": 4,
       "liquidity_score": 0.2
     },
@@ -398,63 +358,7 @@
       "symbol": "MEGA",
       "max_leverage": 3,
       "sz_decimals": 0,
-      "volume_usd": 1581874.770409,
-      "tier": 4,
-      "liquidity_score": 0.2
-    },
-    {
-      "symbol": "GRASS",
-      "max_leverage": 3,
-      "sz_decimals": 1,
-      "volume_usd": 1515373.094517,
-      "tier": 4,
-      "liquidity_score": 0.2
-    },
-    {
-      "symbol": "DOT",
-      "max_leverage": 10,
-      "sz_decimals": 1,
-      "volume_usd": 1459312.4443750002,
-      "tier": 4,
-      "liquidity_score": 0.2
-    },
-    {
-      "symbol": "PONS",
-      "max_leverage": 3,
-      "sz_decimals": 0,
-      "volume_usd": 1445413.1283199992,
-      "tier": 4,
-      "liquidity_score": 0.2
-    },
-    {
-      "symbol": "CASHCAT",
-      "max_leverage": 3,
-      "sz_decimals": 0,
-      "volume_usd": 1332276.644463,
-      "tier": 4,
-      "liquidity_score": 0.2
-    },
-    {
-      "symbol": "BCH",
-      "max_leverage": 10,
-      "sz_decimals": 3,
-      "volume_usd": 1197246.7772599997,
-      "tier": 4,
-      "liquidity_score": 0.2
-    },
-    {
-      "symbol": "ICP",
-      "max_leverage": 5,
-      "sz_decimals": 1,
-      "volume_usd": 1194010.7205400004,
-      "tier": 4,
-      "liquidity_score": 0.2
-    },
-    {
-      "symbol": "APT",
-      "max_leverage": 10,
-      "sz_decimals": 2,
-      "volume_usd": 1172498.203976,
+      "volume_usd": 2126892.270763,
       "tier": 4,
       "liquidity_score": 0.2
     },
@@ -462,15 +366,95 @@
       "symbol": "XLM",
       "max_leverage": 5,
       "sz_decimals": 0,
-      "volume_usd": 1157896.9482399998,
+      "volume_usd": 2121936.6042899997,
       "tier": 4,
       "liquidity_score": 0.2
     },
     {
-      "symbol": "PURR",
+      "symbol": "SOPH",
       "max_leverage": 3,
       "sz_decimals": 0,
-      "volume_usd": 1116273.363285,
+      "volume_usd": 2030958.3344819993,
+      "tier": 4,
+      "liquidity_score": 0.2
+    },
+    {
+      "symbol": "ETHFI",
+      "max_leverage": 5,
+      "sz_decimals": 1,
+      "volume_usd": 1845216.0926099995,
+      "tier": 4,
+      "liquidity_score": 0.2
+    },
+    {
+      "symbol": "PENDLE",
+      "max_leverage": 5,
+      "sz_decimals": 0,
+      "volume_usd": 1782243.2377999986,
+      "tier": 4,
+      "liquidity_score": 0.2
+    },
+    {
+      "symbol": "DOT",
+      "max_leverage": 10,
+      "sz_decimals": 1,
+      "volume_usd": 1683819.373654,
+      "tier": 4,
+      "liquidity_score": 0.2
+    },
+    {
+      "symbol": "ETC",
+      "max_leverage": 5,
+      "sz_decimals": 2,
+      "volume_usd": 1644066.924486,
+      "tier": 4,
+      "liquidity_score": 0.2
+    },
+    {
+      "symbol": "AERO",
+      "max_leverage": 3,
+      "sz_decimals": 0,
+      "volume_usd": 1627389.8641099986,
+      "tier": 4,
+      "liquidity_score": 0.2
+    },
+    {
+      "symbol": "PONS",
+      "max_leverage": 3,
+      "sz_decimals": 0,
+      "volume_usd": 1609165.0352599998,
+      "tier": 4,
+      "liquidity_score": 0.2
+    },
+    {
+      "symbol": "GRASS",
+      "max_leverage": 3,
+      "sz_decimals": 1,
+      "volume_usd": 1436141.2797969999,
+      "tier": 4,
+      "liquidity_score": 0.2
+    },
+    {
+      "symbol": "CASHCAT",
+      "max_leverage": 3,
+      "sz_decimals": 0,
+      "volume_usd": 1344189.044423,
+      "tier": 4,
+      "liquidity_score": 0.2
+    },
+    {
+      "symbol": "ICP",
+      "max_leverage": 5,
+      "sz_decimals": 1,
+      "volume_usd": 1268824.2638899996,
+      "tier": 4,
+      "liquidity_score": 0.2
+    },
+    {
+      "symbol": "APT",
+      "max_leverage": 10,
+      "sz_decimals": 2,
+      "volume_usd": 1264219.5878330003,
       "tier": 4,
       "liquidity_score": 0.2
     },
@@ -478,7 +462,7 @@
       "symbol": "EIGEN",
       "max_leverage": 5,
       "sz_decimals": 2,
-      "volume_usd": 1115593.0280419989,
+      "volume_usd": 1122501.3301439998,
       "tier": 4,
       "liquidity_score": 0.2
     },
@@ -486,7 +470,15 @@
       "symbol": "HBAR",
       "max_leverage": 5,
       "sz_decimals": 0,
-      "volume_usd": 1081759.2615990003,
+      "volume_usd": 1101190.171319,
+      "tier": 4,
+      "liquidity_score": 0.2
+    },
+    {
+      "symbol": "BCH",
+      "max_leverage": 10,
+      "sz_decimals": 3,
+      "volume_usd": 1092657.1677599999,
       "tier": 4,
       "liquidity_score": 0.2
     }
