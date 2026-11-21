@@ -68,8 +68,8 @@
     "open_time": "2026-07-10T08:14:52.070018+00:00",
     "status": "open",
     "peak_pnl_pct": 0.5381790123456789,
-    "current_price": 0.23484,
-    "current_pnl_pct": -27.519
+    "current_price": 0.23624,
+    "current_pnl_pct": -27.086
   },
   {
     "id": "FARTCOIN_1d_cpr_target_2026-11-15",
@@ -88,8 +88,8 @@
     "open_time": "2026-11-15T08:31:21.648162+00:00",
     "status": "open",
     "peak_pnl_pct": 0.15621890547263687,
-    "current_price": 0.07698,
-    "current_pnl_pct": 14.892
+    "current_price": 0.07808,
+    "current_pnl_pct": 13.676
   },
   {
     "id": "BTC_4h_fixed_pct_2026-11-15",
@@ -108,8 +108,8 @@
     "open_time": "2026-11-15T15:56:37.862150+00:00",
     "status": "open",
     "peak_pnl_pct": 0.0892361436012601,
-    "current_price": 58712.0,
-    "current_pnl_pct": 8.437
+    "current_price": 58698.0,
+    "current_pnl_pct": 8.459
   },
   {
     "id": "BTC_4h_trailing_2026-11-15",
@@ -128,8 +128,8 @@
     "open_time": "2026-11-15T15:56:37.862150+00:00",
     "status": "open",
     "peak_pnl_pct": 0.0892361436012601,
-    "current_price": 58712.0,
-    "current_pnl_pct": 8.437
+    "current_price": 58698.0,
+    "current_pnl_pct": 8.459
   },
   {
     "id": "ETH_4h_fixed_pct_2026-11-15",
@@ -148,8 +148,8 @@
     "open_time": "2026-11-15T15:56:37.862948+00:00",
     "status": "open",
     "peak_pnl_pct": 0.09575791855203618,
-    "current_price": 1613.7,
-    "current_pnl_pct": 8.727
+    "current_price": 1618.4,
+    "current_pnl_pct": 8.462
   },
   {
     "id": "ETH_4h_trailing_2026-11-15",
@@ -168,8 +168,8 @@
     "open_time": "2026-11-15T15:56:37.862948+00:00",
     "status": "open",
     "peak_pnl_pct": 0.09575791855203618,
-    "current_price": 1613.7,
-    "current_pnl_pct": 8.727
+    "current_price": 1618.4,
+    "current_pnl_pct": 8.462
   },
   {
     "id": "PENGU_1d_cpr_target_2026-11-16",
@@ -188,28 +188,8 @@
     "open_time": "2026-11-16T07:24:47.679668+00:00",
     "status": "open",
     "peak_pnl_pct": 0.13574938574938583,
-    "current_price": 0.004264,
-    "current_pnl_pct": 12.695
-  },
-  {
-    "id": "PENGU_1d_trailing_2026-11-16",
-    "symbol": "PENGU",
-    "interval": "1d",
-    "direction": "short",
-    "exit_style": "trailing",
-    "entry_price": 0.004884,
-    "sl_price": 0.00567546,
-    "tp_price": 0.00330108,
-    "current_sl": 0.00430542,
-    "score": 7.58,
-    "risk_label": "Low-Medium Risk",
-    "cpr_width": 0.3795,
-    "cpr_type": "Narrow",
-    "open_time": "2026-11-16T07:24:47.679668+00:00",
-    "status": "open",
-    "peak_pnl_pct": 0.13574938574938583,
-    "current_price": 0.004264,
-    "current_pnl_pct": 12.695
+    "current_price": 0.004339,
+    "current_pnl_pct": 11.159
   },
   {
     "id": "ENA_1h_trailing_2026-11-17",
@@ -228,8 +208,8 @@
     "open_time": "2026-11-17T18:48:56.506064+00:00",
     "status": "open",
     "peak_pnl_pct": 0.16291978423525325,
-    "current_price": 0.09713,
-    "current_pnl_pct": 15.495
+    "current_price": 0.09685,
+    "current_pnl_pct": 15.739
   },
   {
     "id": "HYPE_1h_trailing_2026-11-19",
@@ -240,36 +220,16 @@
     "entry_price": 67.872,
     "sl_price": 69.00375,
     "tp_price": 65.6085,
-    "current_sl": 61.593720000000005,
+    "current_sl": 61.02252,
     "score": 7.88,
     "risk_label": "Low-Medium Risk",
     "cpr_width": 0.0387,
     "cpr_type": "Narrow",
     "open_time": "2026-11-19T17:46:45.491272+00:00",
     "status": "open",
-    "peak_pnl_pct": 0.11029585101367276,
-    "current_price": 60.678,
-    "current_pnl_pct": 10.599
-  },
-  {
-    "id": "JUP_4h_trailing_2026-11-19",
-    "symbol": "JUP",
-    "interval": "4h",
-    "direction": "short",
-    "exit_style": "trailing",
-    "entry_price": 0.2593,
-    "sl_price": 0.2746525,
-    "tp_price": 0.228595,
-    "current_sl": 0.225471,
-    "score": 7.7,
-    "risk_label": "Low-Medium Risk",
-    "cpr_width": 0.2264,
-    "cpr_type": "Narrow",
-    "open_time": "2026-11-19T17:46:45.492187+00:00",
-    "status": "open",
-    "peak_pnl_pct": 0.1475125337446972,
-    "current_price": 0.22188,
-    "current_pnl_pct": 14.431
+    "peak_pnl_pct": 0.11854667609618104,
+    "current_price": 59.826,
+    "current_pnl_pct": 11.855
   },
   {
     "id": "XPL_1h_fixed_pct_2026-11-19",
@@ -288,28 +248,8 @@
     "open_time": "2026-11-19T17:46:45.493115+00:00",
     "status": "open",
     "peak_pnl_pct": 0.05485159572183327,
-    "current_price": 0.044315,
-    "current_pnl_pct": 4.826
-  },
-  {
-    "id": "XPL_1h_trailing_2026-11-19",
-    "symbol": "XPL",
-    "interval": "1h",
-    "direction": "short",
-    "exit_style": "trailing",
-    "entry_price": 0.046562,
-    "sl_price": 0.04768068,
-    "tp_price": 0.04432464,
-    "current_sl": 0.044888159999999996,
-    "score": 7.7,
-    "risk_label": "Low-Medium Risk",
-    "cpr_width": 0.014,
-    "cpr_type": "Narrow",
-    "open_time": "2026-11-19T17:46:45.493115+00:00",
-    "status": "open",
-    "peak_pnl_pct": 0.05485159572183327,
-    "current_price": 0.044315,
-    "current_pnl_pct": 4.826
+    "current_price": 0.045107,
+    "current_pnl_pct": 3.125
   },
   {
     "id": "WLD_4h_trailing_2026-11-20",
@@ -320,16 +260,16 @@
     "entry_price": 0.25297,
     "sl_price": 0.26393929,
     "tp_price": 0.23103142,
-    "current_sl": 0.2306424,
+    "current_sl": 0.23052,
     "score": 7.92,
     "risk_label": "Low-Medium Risk",
     "cpr_width": 0.077,
     "cpr_type": "Narrow",
     "open_time": "2026-11-20T04:37:36.308037+00:00",
     "status": "open",
-    "peak_pnl_pct": 0.10613906787366086,
-    "current_price": 0.22845,
-    "current_pnl_pct": 9.693
+    "peak_pnl_pct": 0.10661343242281682,
+    "current_price": 0.226,
+    "current_pnl_pct": 10.661
   },
   {
     "id": "kPEPE_4h_fixed_pct_2026-11-20",
@@ -348,8 +288,8 @@
     "open_time": "2026-11-20T04:37:36.309246+00:00",
     "status": "open",
     "peak_pnl_pct": 0.05585032113934658,
-    "current_price": 0.003419,
-    "current_pnl_pct": 4.524
+    "current_price": 0.003432,
+    "current_pnl_pct": 4.161
   },
   {
     "id": "kPEPE_4h_cpr_target_2026-11-20",
@@ -368,8 +308,8 @@
     "open_time": "2026-11-20T04:37:36.309246+00:00",
     "status": "open",
     "peak_pnl_pct": 0.05585032113934658,
-    "current_price": 0.003419,
-    "current_pnl_pct": 4.524
+    "current_price": 0.003432,
+    "current_pnl_pct": 4.161
   },
   {
     "id": "kPEPE_4h_trailing_2026-11-20",
@@ -388,8 +328,8 @@
     "open_time": "2026-11-20T04:37:36.309246+00:00",
     "status": "open",
     "peak_pnl_pct": 0.05585032113934658,
-    "current_price": 0.003419,
-    "current_pnl_pct": 4.524
+    "current_price": 0.003432,
+    "current_pnl_pct": 4.161
   },
   {
     "id": "BNB_4h_fixed_pct_2026-11-20",
@@ -408,8 +348,8 @@
     "open_time": "2026-11-20T13:41:30.892106+00:00",
     "status": "open",
     "peak_pnl_pct": 0.07088272668720738,
-    "current_price": 536.92,
-    "current_pnl_pct": 6.536
+    "current_price": 534.95,
+    "current_pnl_pct": 6.879
   },
   {
     "id": "BNB_4h_trailing_2026-11-20",
@@ -428,8 +368,8 @@
     "open_time": "2026-11-20T13:41:30.892106+00:00",
     "status": "open",
     "peak_pnl_pct": 0.07088272668720738,
-    "current_price": 536.92,
-    "current_pnl_pct": 6.536
+    "current_price": 534.95,
+    "current_pnl_pct": 6.879
   },
   {
     "id": "AVAX_4h_fixed_pct_2026-11-20",
@@ -448,8 +388,8 @@
     "open_time": "2026-11-20T13:41:30.893265+00:00",
     "status": "open",
     "peak_pnl_pct": 0.0685298677214181,
-    "current_price": 6.491,
-    "current_pnl_pct": 5.956
+    "current_price": 6.4562,
+    "current_pnl_pct": 6.46
   },
   {
     "id": "AVAX_4h_cpr_target_2026-11-20",
@@ -468,8 +408,8 @@
     "open_time": "2026-11-20T13:41:30.893265+00:00",
     "status": "open",
     "peak_pnl_pct": 0.0685298677214181,
-    "current_price": 6.491,
-    "current_pnl_pct": 5.956
+    "current_price": 6.4562,
+    "current_pnl_pct": 6.46
   },
   {
     "id": "AVAX_4h_trailing_2026-11-20",
@@ -488,7 +428,7 @@
     "open_time": "2026-11-20T13:41:30.893265+00:00",
     "status": "open",
     "peak_pnl_pct": 0.0685298677214181,
-    "current_price": 6.491,
-    "current_pnl_pct": 5.956
+    "current_price": 6.4562,
+    "current_pnl_pct": 6.46
   }
 ]
