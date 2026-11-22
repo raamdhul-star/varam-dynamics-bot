@@ -70,8 +70,8 @@
     "open_time": "2026-11-15T08:31:21.648162+00:00",
     "status": "open",
     "peak_pnl_pct": 0.16981757877280262,
-    "current_price": 0.07677,
-    "current_pnl_pct": 15.124
+    "current_price": 0.07843,
+    "current_pnl_pct": 13.289
   },
   {
     "id": "BTC_4h_fixed_pct_2026-11-15",
@@ -90,8 +90,8 @@
     "open_time": "2026-11-15T15:56:37.862150+00:00",
     "status": "open",
     "peak_pnl_pct": 0.097111755715667,
-    "current_price": 59403.0,
-    "current_pnl_pct": 7.359
+    "current_price": 60868.0,
+    "current_pnl_pct": 5.075
   },
   {
     "id": "ETH_4h_fixed_pct_2026-11-15",
@@ -110,8 +110,8 @@
     "open_time": "2026-11-15T15:56:37.862948+00:00",
     "status": "open",
     "peak_pnl_pct": 0.09575791855203618,
-    "current_price": 1664.0,
-    "current_pnl_pct": 5.882
+    "current_price": 1708.5,
+    "current_pnl_pct": 3.365
   },
   {
     "id": "PENGU_1d_cpr_target_2026-11-16",
@@ -170,8 +170,8 @@
     "open_time": "2026-11-20T04:37:36.309246+00:00",
     "status": "open",
     "peak_pnl_pct": 0.07986595922926551,
-    "current_price": 0.003369,
-    "current_pnl_pct": 5.92
+    "current_price": 0.0034,
+    "current_pnl_pct": 5.054
   },
   {
     "id": "kPEPE_4h_cpr_target_2026-11-20",
@@ -190,8 +190,8 @@
     "open_time": "2026-11-20T04:37:36.309246+00:00",
     "status": "open",
     "peak_pnl_pct": 0.07986595922926551,
-    "current_price": 0.003369,
-    "current_pnl_pct": 5.92
+    "current_price": 0.0034,
+    "current_pnl_pct": 5.054
   },
   {
     "id": "BNB_4h_fixed_pct_2026-11-20",
@@ -210,8 +210,8 @@
     "open_time": "2026-11-20T13:41:30.892106+00:00",
     "status": "open",
     "peak_pnl_pct": 0.08916044353926232,
-    "current_price": 541.67,
-    "current_pnl_pct": 5.71
+    "current_price": 553.23,
+    "current_pnl_pct": 3.697
   },
   {
     "id": "AVAX_4h_fixed_pct_2026-11-20",
@@ -230,8 +230,8 @@
     "open_time": "2026-11-20T13:41:30.893265+00:00",
     "status": "open",
     "peak_pnl_pct": 0.07809217484533688,
-    "current_price": 6.5148,
-    "current_pnl_pct": 5.611
+    "current_price": 6.677,
+    "current_pnl_pct": 3.261
   },
   {
     "id": "VVV_1h_trailing_2026-11-21",
@@ -242,15 +242,75 @@
     "entry_price": 22.017,
     "sl_price": 20.87892856,
     "tp_price": 24.29314288,
-    "current_sl": 24.50882,
+    "current_sl": 25.03312,
     "score": 8.07,
     "risk_label": "Low Risk",
     "cpr_width": 0.1997,
     "cpr_type": "Narrow",
     "open_time": "2026-11-21T10:20:33.979452+00:00",
     "status": "open",
-    "peak_pnl_pct": 0.1358949902348186,
-    "current_price": 24.844,
-    "current_pnl_pct": 12.84
+    "peak_pnl_pct": 0.16019439524004184,
+    "current_price": 25.544,
+    "current_pnl_pct": 16.019
+  },
+  {
+    "id": "AAVE_1h_fixed_pct_2026-11-22",
+    "symbol": "AAVE",
+    "interval": "1h",
+    "direction": "long",
+    "exit_style": "fixed_pct",
+    "entry_price": 96.549,
+    "sl_price": 95.03442857,
+    "tp_price": 99.57814286,
+    "current_sl": 95.03442857,
+    "score": 7.68,
+    "risk_label": "Low-Medium Risk",
+    "cpr_width": 0.0108,
+    "cpr_type": "Narrow",
+    "open_time": "2026-11-22T10:25:10.828998+00:00",
+    "status": "open",
+    "peak_pnl_pct": 0.008876321867652687,
+    "current_price": 97.406,
+    "current_pnl_pct": 0.888
+  },
+  {
+    "id": "AAVE_1h_cpr_target_2026-11-22",
+    "symbol": "AAVE",
+    "interval": "1h",
+    "direction": "long",
+    "exit_style": "cpr_target",
+    "entry_price": 96.549,
+    "sl_price": 95.03442857,
+    "tp_price": 99.57814286,
+    "current_sl": 95.03442857,
+    "score": 7.68,
+    "risk_label": "Low-Medium Risk",
+    "cpr_width": 0.0108,
+    "cpr_type": "Narrow",
+    "open_time": "2026-11-22T10:25:10.828998+00:00",
+    "status": "open",
+    "peak_pnl_pct": 0.008876321867652687,
+    "current_price": 97.406,
+    "current_pnl_pct": 0.888
+  },
+  {
+    "id": "AAVE_1h_trailing_2026-11-22",
+    "symbol": "AAVE",
+    "interval": "1h",
+    "direction": "long",
+    "exit_style": "trailing",
+    "entry_price": 96.549,
+    "sl_price": 95.03442857,
+    "tp_price": 99.57814286,
+    "current_sl": 95.03442857,
+    "score": 7.68,
+    "risk_label": "Low-Medium Risk",
+    "cpr_width": 0.0108,
+    "cpr_type": "Narrow",
+    "open_time": "2026-11-22T10:25:10.828998+00:00",
+    "status": "open",
+    "peak_pnl_pct": 0.008876321867652687,
+    "current_price": 97.406,
+    "current_pnl_pct": 0.888
   }
 ]
