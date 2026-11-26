@@ -2,42 +2,42 @@
   "offset": 262981543,
   "sigs": [
     {
-      "symbol": "AVAX",
-      "direction": "short",
-      "interval": "1h",
-      "score": 8.0,
-      "entry": 6.3287,
-      "sl": 6.42374644,
-      "tp": 6.13860712,
-      "sl_pct": 1.502,
+      "symbol": "ENA",
+      "direction": "long",
+      "interval": "4h",
+      "score": 7.79,
+      "entry": 0.099325,
+      "sl": 0.09281906,
+      "tp": 0.11233688,
+      "sl_pct": 6.55,
       "rr": 2.0,
-      "bar_time": "2026-11-25 13:00:00+00:00",
+      "bar_time": "2026-11-25 16:00:00+00:00",
       "source": "hyperliquid"
     },
     {
-      "symbol": "LIT",
-      "direction": "short",
+      "symbol": "HYPE",
+      "direction": "long",
+      "interval": "4h",
+      "score": 7.69,
+      "entry": 61.024,
+      "sl": 57.47789286,
+      "tp": 68.11621428,
+      "sl_pct": 5.811,
+      "rr": 2.0,
+      "bar_time": "2026-11-25 16:00:00+00:00",
+      "source": "hyperliquid"
+    },
+    {
+      "symbol": "VVV",
+      "direction": "long",
       "interval": "1h",
       "score": 7.68,
-      "entry": 2.223,
-      "sl": 2.27893929,
-      "tp": 2.11112142,
-      "sl_pct": 2.516,
+      "entry": 29.298,
+      "sl": 27.82928571,
+      "tp": 32.23542858,
+      "sl_pct": 5.013,
       "rr": 2.0,
-      "bar_time": "2026-11-25 13:00:00+00:00",
-      "source": "hyperliquid"
-    },
-    {
-      "symbol": "BNB",
-      "direction": "short",
-      "interval": "1h",
-      "score": 7.5,
-      "entry": 533.61,
-      "sl": 540.2025,
-      "tp": 520.425,
-      "sl_pct": 1.235,
-      "rr": 2.0,
-      "bar_time": "2026-11-25 13:00:00+00:00",
+      "bar_time": "2026-11-25 23:00:00+00:00",
       "source": "hyperliquid"
     }
   ],
@@ -259,9 +259,56 @@
     "AVAX_short_4h_2026-11-24 12:00:00+00:00": "2026-11-25T05:06:24.350010+00:00",
     "AVAX_short_1h_2026-11-25 13:00:00+00:00": "2026-11-25T16:13:23.426460+00:00",
     "LIT_short_1h_2026-11-25 13:00:00+00:00": "2026-11-25T16:13:23.426460+00:00",
-    "BNB_short_1h_2026-11-25 13:00:00+00:00": "2026-11-25T16:13:23.426460+00:00"
+    "BNB_short_1h_2026-11-25 13:00:00+00:00": "2026-11-25T16:13:23.426460+00:00",
+    "ENA_long_4h_2026-11-25 16:00:00+00:00": "2026-11-26T00:45:01.539968+00:00",
+    "HYPE_long_4h_2026-11-25 16:00:00+00:00": "2026-11-26T00:45:01.539968+00:00",
+    "VVV_long_1h_2026-11-25 23:00:00+00:00": "2026-11-26T00:45:01.539968+00:00"
   },
   "batches": {
+    "3997": {
+      "time": "2026-11-26T00:45:01.539968+00:00",
+      "sigs": [
+        {
+          "symbol": "ENA",
+          "direction": "long",
+          "interval": "4h",
+          "score": 7.79,
+          "entry": 0.099325,
+          "sl": 0.09281906,
+          "tp": 0.11233688,
+          "sl_pct": 6.55,
+          "rr": 2.0,
+          "bar_time": "2026-11-25 16:00:00+00:00",
+          "source": "hyperliquid"
+        },
+        {
+          "symbol": "HYPE",
+          "direction": "long",
+          "interval": "4h",
+          "score": 7.69,
+          "entry": 61.024,
+          "sl": 57.47789286,
+          "tp": 68.11621428,
+          "sl_pct": 5.811,
+          "rr": 2.0,
+          "bar_time": "2026-11-25 16:00:00+00:00",
+          "source": "hyperliquid"
+        },
+        {
+          "symbol": "VVV",
+          "direction": "long",
+          "interval": "1h",
+          "score": 7.68,
+          "entry": 29.298,
+          "sl": 27.82928571,
+          "tp": 32.23542858,
+          "sl_pct": 5.013,
+          "rr": 2.0,
+          "bar_time": "2026-11-25 23:00:00+00:00",
+          "source": "hyperliquid"
+        }
+      ]
+    },
     "3986": {
       "time": "2026-11-25T16:13:23.426460+00:00",
       "sigs": [
@@ -690,24 +737,6 @@
           "sl_pct": 2.403,
           "rr": 2.0,
           "bar_time": "2026-11-19 15:00:00+00:00",
-          "source": "hyperliquid"
-        }
-      ]
-    },
-    "3906": {
-      "time": "2026-11-19T00:48:56.485074+00:00",
-      "sigs": [
-        {
-          "symbol": "VVV",
-          "direction": "long",
-          "interval": "1h",
-          "score": 7.68,
-          "entry": 21.735,
-          "sl": 21.00557144,
-          "tp": 23.19385712,
-          "sl_pct": 3.356,
-          "rr": 2.0,
-          "bar_time": "2026-11-18 23:00:00+00:00",
           "source": "hyperliquid"
         }
       ]
@@ -1672,19 +1701,19 @@
       "symbol": "ENA",
       "direction": "long",
       "interval": "4h",
-      "first_seen": "2026-09-19T09:49:26.102073+00:00",
-      "last_seen": "2026-09-19T09:49:26.102073+00:00",
-      "last_bar_time": "2026-09-19 00:00:00+00:00",
-      "entry": 0.1836,
-      "target": 0.20702788,
-      "stop": 0.17188606,
-      "score": 8.07,
+      "first_seen": "2026-11-26T00:45:01.539968+00:00",
+      "last_seen": "2026-11-26T00:45:01.539968+00:00",
+      "last_bar_time": "2026-11-25 16:00:00+00:00",
+      "entry": 0.099325,
+      "target": 0.11233688,
+      "stop": 0.09281906,
+      "score": 7.79,
       "rr": 2.0,
-      "risk_emoji": "\ud83d\udfe2",
+      "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-09-19T09:49:26.102073+00:00",
-      "alert_count": 6
+      "last_alerted_at": "2026-11-26T00:45:01.539968+00:00",
+      "alert_count": 7
     },
     "SUI|long|4h": {
       "symbol": "SUI",
@@ -2140,19 +2169,19 @@
       "symbol": "VVV",
       "direction": "long",
       "interval": "1h",
-      "first_seen": "2026-11-21T10:20:33.046565+00:00",
-      "last_seen": "2026-11-21T10:20:33.046565+00:00",
-      "last_bar_time": "2026-11-21 06:00:00+00:00",
-      "entry": 22.017,
-      "target": 24.29314288,
-      "stop": 20.87892856,
-      "score": 8.07,
+      "first_seen": "2026-11-26T00:45:01.539968+00:00",
+      "last_seen": "2026-11-26T00:45:01.539968+00:00",
+      "last_bar_time": "2026-11-25 23:00:00+00:00",
+      "entry": 29.298,
+      "target": 32.23542858,
+      "stop": 27.82928571,
+      "score": 7.68,
       "rr": 2.0,
-      "risk_emoji": "\ud83d\udfe2",
+      "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-11-21T10:20:33.046565+00:00",
-      "alert_count": 32
+      "last_alerted_at": "2026-11-26T00:45:01.539968+00:00",
+      "alert_count": 33
     },
     "SPX|long|1d": {
       "symbol": "SPX",
@@ -4066,19 +4095,19 @@
       "symbol": "HYPE",
       "direction": "long",
       "interval": "4h",
-      "first_seen": "2026-10-29T21:30:13.513423+00:00",
-      "last_seen": "2026-10-29T21:30:13.513423+00:00",
-      "last_bar_time": "2026-10-29 08:00:00+00:00",
-      "entry": 87.993,
-      "target": 94.35428572,
-      "stop": 84.81235714,
-      "score": 7.99,
+      "first_seen": "2026-11-26T00:45:01.539968+00:00",
+      "last_seen": "2026-11-26T00:45:01.539968+00:00",
+      "last_bar_time": "2026-11-25 16:00:00+00:00",
+      "entry": 61.024,
+      "target": 68.11621428,
+      "stop": 57.47789286,
+      "score": 7.69,
       "rr": 2.0,
       "risk_emoji": "\ud83d\udfe1",
       "status": "active",
       "lifecycle_label": "new",
-      "last_alerted_at": "2026-10-29T21:30:13.513423+00:00",
-      "alert_count": 9
+      "last_alerted_at": "2026-11-26T00:45:01.539968+00:00",
+      "alert_count": 10
     },
     "WIF|long|1h": {
       "symbol": "WIF",
